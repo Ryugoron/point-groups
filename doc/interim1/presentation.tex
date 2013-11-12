@@ -19,55 +19,86 @@
 	\titlepage
 \end{frame}
 
-\begin{frame}{Goals}
+\begin{frame}{Aufgabe}
+	\begin{enumerate}
+	\item Modellierung und Darstellung von Symmetrien von 3-dimensionalen Polyedern. 
+	\item Modellierung und Darstellung von Symmetrien von 4-dimensionalen Polyedern. 
+	\item Visualisierung als Schlegeldiagramm.
+	\item Anzeigen des Fundamentalbereichs.
+	\end{enumerate}
+\end{frame}
+
+
+\begin{frame}{Details zu Aufgabe 1 und 2}
 	\begin{itemize}
-	\item TODO
+	\item Wähle eine Symmetriegruppe (TODO: Bild vom Würfel)
+	\item Wähle einen Punkt auf der Oberfläche
+	\item Berechne Punktmenge des Punktes unter der Symmetriegruppe (TODO: Bild)
+	\item Bilde die konvexe Hülle der Punktmenge
+	\item Darstellung als Schlegeldiagramm (TODO: Bild)	
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Organisation}
-  \begin{itemize}
-    \item mailing list, git
-    \item weekly meeting, protocol
-    \item custom software process
-      \begin{itemize}
-        \item determine tasks, groups
-        \item in groups: explain algorithms, implement
-        \item presentation of results
-        \item revison of tasks
-      \end{itemize}
-    \item java, elcipse, coding style
-  \end{itemize}
+  	\begin{itemize}
+   	 \item Git, Mailingliste, SplinePad
+    	\item wöchentliches Meeting
+		\begin{itemize}
+		\item Wer hat was getan?
+		\item Diskussion über aktuelle Probleme
+		\item Aufgabenverteilung für die nächste Woche
+		\end{itemize}
+    	\item T-Prozessmodell
+    	\item Java, Ecipse, Polymake, Javaview
+	\item Coding Style, MIT Lizenz
+  	\end{itemize}
 \end{frame}
 
-\begin{frame}{Architecture}
-  %TODO
+\begin{frame}{Architektur}
+	\begin{itemize}
+	\item Eventbasiert und kein MVC
+	\item Pipeline
+	\item Brücken zwischen Java und Polymake/Javaview
+	\item Symmetriegruppen als einzelne Klassen
+	\end{itemize}
 \end{frame}
+
+\begin{frame}{GUI}
+	\begin{itemize}
+	\item Wahl zwischen 3D und 4D
+	\item Auswahl der Symmetriegruppe und Untergruppe
+	\item Darstellung vom Fundamentalbereich zur Punktwahl
+	\item Darstellung des Schlegeldiagramms
+	\end{itemize}
+\end{frame}
+
 
 \begin{frame}{Roadmap}
   \begin{itemize}
-    \item until now
-      \begin{itemize}
-        \item TODO
-      \end{itemize}
-      \item next week
-      \begin{itemize}
-        \item TODO
-      \end{itemize}
-      \item before next presentation (mid december)
-        \begin{itemize}
-          \item TODO
-        \end{itemize}
-      \item mid january
-        \begin{itemize}
-          \item TODO
-        \end{itemize}
+    \item Bisher:
+      	\begin{itemize}
+        	\item Aufgabenstellung verstanden
+	\item Organisation umgesetzt
+	\item Berechungen der Punktmenge unter Oktaedergruppe in Java mittels Quaternionen
+	\item Architekturentwurf
+	\item Entwurf der GUI
+     	 \end{itemize}
+      \item Nächste Woche:
+      	\begin{itemize}
+	\item Einbindung von Polymake und Javaview
+	\item Code zur Berechung der Punktmenge ausbauen
+     	 \end{itemize}
+      \item Bis zur nächsten Präsentation:
+        	\begin{itemize}
+         	 \item Einbinden von Polymake und JavaView
+	\item §D-Fall gelösen (ohne GUI)
+        	\end{itemize}
+      \item Danach:
+        	\begin{itemize}
+         	 \item 4D-Fall lösen
+	\item GUI implementiert
+       	 \end{itemize}
   \end{itemize}
 \end{frame}
-
-\begin{frame}{Preview}
-  %TODO
-\end{frame}
-
 \end{document}
 
