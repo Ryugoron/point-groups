@@ -28,22 +28,23 @@ public class Point3D
    * point <code>this</code> is not altered by this operation.
    * 
    * @param q The rotation quaternion
-   * @return A new {@link Point3D} which is equivalent to p rotated with respect
-   *         to q
+   * @return A new {@link Point3D} which is equivalent to <code>this</code>
+   *         rotated with respect to q
    */
   public Point3D rotate(UnitQuaternion q) {
     return q.mult(this).mult(q.inverse()).asPoint3D();
   }
 
   /**
-   * Rotates the point <code>this</code> around the rotation axis <code>axis</code>
-   * by <code>angle</code> degrees and returns it as new {@link Point3D}. The
-   * point <code>this</code> is not altered by this operation.
-
+   * Rotates the point <code>this</code> around the rotation axis
+   * <code>axis</code> by <code>angle</code> degrees and returns it as new
+   * {@link Point3D}. The point <code>this</code> is not altered by this
+   * operation.
+   * 
    * @param angle The rotation angle in radians
    * @param axis The rotation axis
-   * @return A new {@link Point3D} which is equivalent to p rotated with respect
-   *         to (axis, angle).
+   * @return A new {@link Point3D} which is equivalent to <code>this</code>
+   *         rotated with respect to (axis, angle).
    */
   public Point3D rotate(double angle, Quaternion axis) {
     if (axis instanceof UnitQuaternion) return this.rotate(UnitQuaternion.from3DRotation(
