@@ -10,8 +10,8 @@ import java.util.Collection;
  * ://en.wikipedia.org/wiki/Point_groups_in_three_dimensions}
  * 
  * @author Alex
- * @param <P> The type of points accepted and created by the symmetry class (e.g.
- *          points in R^3 or in R^4)
+ * @param <P> The type of points accepted and created by the symmetry class
+ *          (e.g. points in R^3 or in R^4)
  * @param <E> The specific symmetry under consideration
  * @see TetrahedralSymmetry
  * @see OctahedralSymmetry
