@@ -23,8 +23,10 @@
 	\begin{enumerate}
 	\item Modellierung und Darstellung von Symmetrien von 3-dimensionalen Polyedern. 
 	\item Modellierung und Darstellung von Symmetrien von 4-dimensionalen Polyedern. 
+ \only<2->{
 	\item Visualisierung als Schlegeldiagramm.
 	\item Anzeigen des Fundamentalbereichs.
+}
 	\end{enumerate}
 \end{frame}
 
@@ -32,34 +34,46 @@
 \begin{frame}{Details zu Aufgabe 1 und 2}
 	\begin{itemize}
 	\item Wähle eine Symmetriegruppe (TODO: Bild vom Würfel)
+ \only<2->{
 	\item Wähle einen Punkt auf der Oberfläche
 	\item Abbilden Punktes unter der Symmetriegruppe (TODO: Bild)
+}
+ \only<3->{
 	\item Bilde die konvexe Hülle der Punktmenge
 	\item Darstellung als Schlegeldiagramm (TODO: Bild)	
+}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Organisation}
   	\begin{itemize}
    	 \item Git, Mailingliste, SplinePad
+ \only<2->{
     	\item wöchentliches Meeting
 		\begin{itemize}
 		\item Wer hat was getan?
 		\item Diskussion über aktuelle Probleme
 		\item Aufgabenverteilung für die nächste Woche
 		\end{itemize}
-    	\item T-Prozessmodell
+}
+ \only<3->{
+    	\item T-Modell
     	\item Java, Eclipse, Polymake, Javaview
 	\item Coding Style, MIT Lizenz
+}
   	\end{itemize}
 \end{frame}
 
 \begin{frame}{Architektur}
 	\begin{itemize}
 	\item Eventbasiert und kein MVC
+ \only<2->{
 	\item Pipeline
 	\item Brücken zwischen Java und Polymake/Javaview
+}
+ \only<3->{
 	\item Symmetriegruppen als einzelne Klassen
+}
 	\end{itemize}
 \end{frame}
 
@@ -83,21 +97,27 @@
 	\item Architekturentwurf
 	\item Entwurf der GUI
      	 \end{itemize}
+ \only<2->{
       \item Nächste Woche:
       	\begin{itemize}
 	\item Einbindung von Polymake und Javaview
 	\item Code zur Berechung der Punktmenge ausbauen
      	 \end{itemize}
+}
+ \only<3->{
       \item Bis zur nächsten Präsentation:
         	\begin{itemize}
          	 \item Einbinden von Polymake und JavaView
-	\item §D-Fall gelösen (ohne GUI)
+	\item 3D-Fall gelösen (ohne GUI)
         	\end{itemize}
+}
+ \only<4->{
       \item Danach:
         	\begin{itemize}
          	 \item 4D-Fall lösen
 	\item GUI implementiert
        	 \end{itemize}
+}
   \end{itemize}
 \end{frame}
 \end{document}
