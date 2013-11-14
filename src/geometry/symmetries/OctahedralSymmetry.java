@@ -38,14 +38,14 @@ public class OctahedralSymmetry
   final static UnitQuaternion id;
   /**
    * rotation about an axis from the center of a face to the center of the
-   * opposite face by an angle of 90°, 180°, 270° (3 axis)
+   * opposite face by an angle of 90Â°, 180Â°, 270Â° (3 axis)
    */
   final static UnitQuaternion faceAxisI_90, faceAxisJ_90, faceAxisK_90,
       faceAxisI_180, faceAxisJ_180, faceAxisK_180, faceAxisI_270,
       faceAxisJ_270, faceAxisK_270;
 
   /**
-   * rotation about a body diagonal by an angle of 120°, 240° (4 axes)
+   * rotation about a body diagonal by an angle of 120Â°, 240Â° (4 axes)
    */
   final static UnitQuaternion diagonalAxis1_120, diagonalAxis1_240,
       diagonalAxis2_120, diagonalAxis2_240, diagonalAxis3_120,
@@ -53,7 +53,7 @@ public class OctahedralSymmetry
 
   /**
    * rotation about an axis from the center of an edge to the center of the
-   * opposite edge by an angle of 180°
+   * opposite edge by an angle of 180Â°
    */
   final static UnitQuaternion edgeAxis_1, edgeAxis_2, edgeAxis_3, edgeAxis_4,
       edgeAxis_5, edgeAxis_6;

@@ -11,4 +11,6 @@ public class Point3D
   public Point3D rotate(UnitQuaternion q) {
     return q.mult(this).mult(q.inverse()).asPoint3D();
   }
+
+ 
 }

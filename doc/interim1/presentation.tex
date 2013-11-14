@@ -32,17 +32,37 @@
 
 
 \begin{frame}{Details zu Aufgabe 1 und 2}
-	\begin{itemize}
-	\item Wähle eine Symmetriegruppe (TODO: Bild vom Würfel)
- \only<2->{
+
+\begin{columns}
+\begin{column}{.48\textwidth}
+\begin{itemize}
+	\item Wähle eine Symmetriegruppe
 	\item Wähle einen Punkt auf der Oberfläche
-	\item Abbilden Punktes unter der Symmetriegruppe (TODO: Bild)
+ \visible<2->{
+	
+	\item Abbilden Punktes unter der Symmetriegruppe
 }
- \only<3->{
+ \visible<3->{
 	\item Bilde die konvexe Hülle der Punktmenge
-	\item Darstellung als Schlegeldiagramm (TODO: Bild)	
+	\item Darstellung als Schlegeldiagramm 
 }
 	\end{itemize}
+
+\end{column}%
+\hfill%
+\begin{column}{.48\textwidth}
+\only<1>{
+\includegraphics[width=1\textwidth]{javaviewwuerfel3D.png}
+}
+\only<2>{
+\includegraphics[width=1\textwidth]{konvexhull.png}
+}
+\only<3>{
+\includegraphics[width=1\textwidth]{schlegel.png}
+}
+\end{column}%
+\end{columns}
+	
 \end{frame}
 
 \begin{frame}{Organisation}
