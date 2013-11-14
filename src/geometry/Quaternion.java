@@ -71,6 +71,11 @@ public class Quaternion
   public Point4D asPoint4D() {
     return new Point4D(re, i, j, k);
   }
+  
+  @Override
+  public String toString() {
+    return re+" + "+i+"i "+j+" j"+k+" k";
+  }
 
   public static Quaternion fromDouble(double d) {
     return new Quaternion(d, 0, 0, 0);
