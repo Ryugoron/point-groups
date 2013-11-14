@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 
 \include{fu-beamer-template}
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
 
 %\titleimage{point-groups}
 
@@ -21,104 +22,84 @@
 
 \begin{frame}{Aufgabe}
 	\begin{enumerate}
-	\item Modellierung und Darstellung von Symmetrien von 3-dimensionalen Polyedern 
-	\item und von 4-dimensionalen Polyedern. 
- \only<2->{
-	\item Visualisierung als Schlegeldiagramm.
-	\item Anzeigen des Fundamentalbereichs.
-}
+		\item Modellierung und Darstellung von Symmetrien von 3-dimensionalen Polyedern \pause
+		\item und von 4-dimensionalen Polyedern. \pause
+		\item Visualisierung als Schlegeldiagramm. \pause
+		\item Anzeigen des Fundamentalbereichs.
 	\end{enumerate}
 \end{frame}
 
 
 \begin{frame}{Details zu Aufgabe 1 und 2}
 	\begin{itemize}
-	\item Selektierung einer Symmetriegruppe (TODO: Bild vom Würfel)
- \only<2->{
-	\item Auswahl eines Punktes auf der Oberfläche
-	\item Berechnung der Abbildungen des Punktes unter der Symmetriegruppe (TODO: Bild)
-}
- \only<3->{
-	\item Bilden der konvexen Hülle der resultierenden Punktmenge
-	\item Darstellung als Schlegeldiagramm (TODO: Bild)	
-}
+		\item Selektierung einer Symmetriegruppe (TODO: Bild vom Würfel)  \pause
+		\item Auswahl eines Punktes auf der Oberfläche \pause
+		\item Berechnung der Abbildungen des Punktes unter der Symmetriegruppe (TODO: Bild) \pause
+		\item Bilden der konvexen Hülle der resultierenden Punktmenge \pause
+		\item Darstellung als Schlegeldiagramm (TODO: Bild)
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Organisation}
-  	\begin{itemize}
-   	 \item Git, Mailingliste, SplinePad
- \only<2->{
-    	\item wöchentliches Meeting
 		\begin{itemize}
-		\item Wer hat was getan?
-		\item Diskussion über aktuelle Probleme
-		\item Aufgabenverteilung für die nächste Woche
+			\item Git, Mailingliste, SplinePad \pause
+			\item wöchentliches Meeting \pause
+				\begin{itemize}
+					\item Wer hat was getan?
+					\item Diskussion über aktuelle Probleme
+					\item Aufgabenverteilung für die nächste Woche
+				\end{itemize} \pause
+			\item T-Modell \pause
+			\item Java, Eclipse, polymake, JavaView \pause
+			\item Coding Style, MIT Lizenz
 		\end{itemize}
-}
- \only<3->{
-    	\item T-Modell
-    	\item Java, Eclipse, polymake, JavaView
-	\item Coding Style, MIT Lizenz
-}
-  	\end{itemize}
 \end{frame}
 
 \begin{frame}{Architektur}
 	\begin{itemize}
-	\item Eventbasiert und kein MVC
- \only<2->{
-	\item Pipeline
-	\item Brücken zwischen Java und polymake/JavaView
-}
- \only<3->{
-	\item Symmetriegruppen als einzelne Klassen
-}
+		\item Eventbasiert und kein MVC \pause
+		\item Pipeline \pause
+		\item Brücken zwischen Java und polymake/JavaView \pause
+		\item Symmetriegruppen als einzelne Klassen
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{GUI}
 	\begin{itemize}
-	\item Wahl zwischen 3D und 4D
-	\item Auswahl der Symmetriegruppe und Untergruppe
-	\item Darstellung vom Fundamentalbereich zur Punktwahl
-	\item Darstellung des Schlegeldiagramms
+		\item Wahl zwischen 3D und 4D \pause
+		\item Auswahl der Symmetriegruppe und Untergruppe \pause
+		\item Darstellung vom Fundamentalbereich zur Punktwahl \pause
+		\item Darstellung des Schlegeldiagramms
 	\end{itemize}
 \end{frame}
 
-
+\beamersetuncovermixins{\opaqueness<1>{0}}{\opaqueness<2->{1}}
 \begin{frame}{Roadmap}
-  \begin{itemize}
-    \item Bisher:
-      	\begin{itemize}
-        	\item Aufgabenstellung verstanden
-	\item Organisation umgesetzt
-	\item Berechnung der Punktmenge zur Oktaedergruppe in Java mittels Quaternionen
-	\item Architekturentwurf
-	\item Entwurf der GUI
-     	 \end{itemize}
- \only<2->{
-      \item Nächste Woche:
-      	\begin{itemize}
-	\item Einbindung von polymake und JavaView
-	\item Code zur Berechnung der Punktmenge ausbauen
-     	 \end{itemize}
-}
- \only<3->{
-      \item Bis zur nächsten Präsentation:
-        	\begin{itemize}
-         	 \item Einbinden von polymake und JavaView
-	\item 3D-Fall lösen (ohne GUI)
-        	\end{itemize}
-}
- \only<4->{
-      \item Danach:
-        	\begin{itemize}
-         	 \item 4D-Fall lösen
-	\item GUI implementieren
-       	 \end{itemize}
-}
-  \end{itemize}
+	\begin{itemize}
+		\item Bisher:
+			\begin{itemize}
+				\item Aufgabenstellung verstanden
+				\item Organisation umgesetzt
+				\item Berechnung der Punktmenge zur Oktaedergruppe in Java mittels Quaternionen
+				\item Architekturentwurf
+				\item Entwurf der GUI
+			\end{itemize} \pause
+		\item Nächste Woche:
+			\begin{itemize}
+				\item Einbindung von polymake und JavaView
+				\item Code zur Berechnung der Punktmenge ausbauen
+			\end{itemize} \pause
+		\item Bis zur nächsten Präsentation:
+			\begin{itemize}
+				\item Einbinden von polymake und JavaView
+				\item 3D-Fall lösen (ohne GUI)
+			\end{itemize} \pause
+		\item Danach:
+			\begin{itemize}
+				\item 4D-Fall lösen
+				\item GUI implementieren
+			\end{itemize}
+	\end{itemize}
 \end{frame}
-\end{document}
 
+\end{document}
