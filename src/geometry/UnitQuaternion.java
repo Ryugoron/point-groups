@@ -5,7 +5,7 @@ package geometry;
  * represent rotations in R^3 (by conjugation) and can be used to rotate
  * {@link Point}s.
  * 
- * @author lex
+ * @author Alex
  * @see Quaternion
  */
 public class UnitQuaternion

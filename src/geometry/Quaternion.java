@@ -1,10 +1,26 @@
 package geometry;
 
+/**
+ * A quaternion is a number from the set a+bi+cj+dk with a,b,c,d real numbers.
+ * The imaginary units i, j, k follow haliton's rules i^2 = j^2 = k^2 = ijk =
+ * -1. Quaternions can be used to represent rotations in R^3 and R^4 (see
+ * {@link UnitQuaternion}).
+ * 
+ * @author Alex
+ */
 public class Quaternion
   implements Point
 {
   public final double i, j, k, re;
 
+  /**
+   * Creates a {@link Quaternion} q with given coordinates.
+   * 
+   * @param re real coordinate of q
+   * @param i i-coordinate of q
+   * @param j j-coordinate of q
+   * @param k k-coordinate of q
+   */
   public Quaternion(double re, double i, double j, double k) {
     this.re = re;
     this.i = i;
@@ -71,10 +87,10 @@ public class Quaternion
   public Point4D asPoint4D() {
     return new Point4D(re, i, j, k);
   }
-  
+
   @Override
   public String toString() {
-    return re+" + "+i+"i "+j+" j"+k+" k";
+    return re + " + " + i + "i " + j + " j" + k + " k";
   }
 
   public static Quaternion fromDouble(double d) {
