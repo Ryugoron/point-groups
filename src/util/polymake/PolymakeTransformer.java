@@ -2,7 +2,7 @@ package util.polymake;
 
 
 /**
- * An instance holds everything polymake needs for computation
+ * An instance holds everything polymake needs for computation.
  * 
  * @author Nadja, Simon
  */

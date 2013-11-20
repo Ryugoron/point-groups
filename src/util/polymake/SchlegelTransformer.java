@@ -13,16 +13,17 @@ public class SchlegelTransformer
   implements PolymakeTransformer
 {
   
-  private final Collection<Point> points;
+  private final Collection<? extends Point> points;
   private final int facet;
+  private String result;
   
-  public SchlegelTransformer(Collection<Point> points)
+  public SchlegelTransformer(Collection<? extends Point> points)
   {
     this.points = points;
     this.facet = -1;
   }
   
-  public SchlegelTransformer(Collection<Point> points, int facet)
+  public SchlegelTransformer(Collection<? extends Point> points, int facet)
   {
     this.points = points;
     this.facet = facet;
@@ -34,24 +35,49 @@ public class SchlegelTransformer
     String script = "";
     script += "use application \"polytope\";\n";
 
-    my $mat=new Matrix<Rational>([[1,0,0,0],[1,0,0,1],[1,0,1,0],[1,0,1,1],[1, 0.5, 0.5, 0.5]]);
-    my $p = new Polytope(POINTS=>$mat);
+    script += "my $mat=new Matrix<Rational>(";
+    script += pointsToString();
+    script += ");\n";
+    script += "my $p = new Polytope(POINTS=>$mat);\n";
 
-    my $schlegelverts = $p->SCHLEGEL_DIAGRAM->VERTICES;
-    my $edges = $p->GRAPH->EDGES;
+    script += "my $schlegelverts = $p->SCHLEGEL_DIAGRAM->VERTICES;\n";
+    script += "my $edges = $p->GRAPH->EDGES;\n";
 
 
-    my $v = "$schlegelverts";
-    my $e = "$edges";
+    script += "my $v = \"$schlegelverts\";\n";
+    script += "my $e = \"$edges\";\n";
 
-    print $v.$e"
-    return null;
+    script += "print $v.$e";
+    return script;
+  }
+
+  private String pointsToString(){
+    String matrix = "[";
+    String pointString;
+    
+    for(Point point : points){
+      matrix += "[1,";
+      pointString = point.toString();
+      pointString = pointString.substring(1, pointString.length()-1);
+      matrix += pointString;
+      matrix += "],";
+    }
+    
+    matrix = matrix.substring(0, matrix.length()-1) + "]";
+    return matrix;
   }
 
   @Override
-  public Object fromPolymake(String str) {
-    // TODO Auto-generated method stub
-    return null;
+  public void setResult(String result) {
+    this.result = result;
+  }
+
+  @Override
+  public PolymakeResult getResult() {
+    if (result == null){
+      
+    }
+    return new SchlegelResult(result);
   }
 
 }
