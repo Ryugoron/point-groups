@@ -12,7 +12,6 @@ import java.util.Collection;
 public class SchlegelTransformer
   implements PolymakeTransformer
 {
-  //Besprechung mit Marcel hat ergeben, dass jedesmal ein neuer Transformer ersellt werden soll. Ergo kein get und set und damit können sie private sein
   
   private final Collection<Point> points;
   private final int facet;
