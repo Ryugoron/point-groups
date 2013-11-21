@@ -31,7 +31,7 @@ public class SchlegelTransformer
 
   @Override
   public String toScript() {
-    // TODO Auto-generated method stub
+    // TODO mit Stringbuilder bauen
     String script = "";
     script += "use application \"polytope\";\n";
 
