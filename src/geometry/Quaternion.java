@@ -96,4 +96,18 @@ public class Quaternion
   public static Quaternion fromDouble(double d) {
     return new Quaternion(d, 0, 0, 0);
   }
+  
+  /**
+   * 
+   * @param a
+   * @param b
+   * @return euclidean distance between a und b
+   */
+  public static double distance(Quaternion a, Quaternion b){
+    double re = (a.re - b.re)* (a.re - b.re); 
+    double i = Math.pow((a.i - b.i),2);
+    double j = Math.pow((a.j - b.j),2);
+    double k = Math.pow((a.k - b.k),2);
+    return Math.sqrt(re+i+j+k);
+  }
 }
