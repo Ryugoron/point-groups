@@ -33,7 +33,7 @@ public class IcosahedralSymmetry
   private final Map<Subgroup<IcosahedralSymmetry>, Collection<UnitQuaternion>> subgroupTable;
 
   {
-    subgroupTable = new HashMap<>();
+    subgroupTable = new HashMap<Subgroup<IcosahedralSymmetry>, Collection<UnitQuaternion>>();
   }
 
   static {

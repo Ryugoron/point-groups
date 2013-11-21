@@ -6,17 +6,29 @@ qi = (i+s*j+t*k)/2
 
 
 x = qi*w
-rQuat = set([qi,w,x]) # Set of quaternions
+rQuat = {hash(qi):qi,hash(w):w} # Set of quaternions
 newQuat = list([x])
 z = 0
 while(len(newQuat) > 0 and z < 70):
 	print('z=',z)
 	z = z+1
 	x = newQuat.pop()
-	rQuat.add(x)
-	for y in rQuat:
-		result = x*y
-		if(result not in newQuat and result not in rQuat):
-			newQuat.append(result)
-			print result
-			print ('#new: ',len(newQuat))
+	hx = hash(x)
+	if(hx not in rQuat):
+	  l = 0
+	  rQuat[hx] = x
+	  for y in rQuat.values():
+		  print 'Begin multi' 
+		  result = x*y
+		  hr = hash(result)
+		  print 'End Mltiplication'
+		  if(hr not in rQuat):
+			  newQuat.append(result)
+			  #print result
+			  print 'new Quaterion'
+			  print ('#new: ',len(newQuat))
+			  print ('#Quat: ',len(rQuat))
+		  else:
+		    l+1
+		  print 'ende suche'
+	  print('Doppele berechnet:',l)

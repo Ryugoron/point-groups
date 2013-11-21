@@ -51,7 +51,7 @@ public class TetrahedralSymmetry
   final static UnitQuaternion edgeAxis_1, edgeAxis_2, edgeAxis_3;
 
   {
-    subgroupTable = new HashMap<>();
+    subgroupTable = new HashMap<Subgroup<TetrahedralSymmetry>, Collection<UnitQuaternion>>();
   }
 
   /**

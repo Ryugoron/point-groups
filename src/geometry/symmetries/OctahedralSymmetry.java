@@ -3,6 +3,7 @@ package geometry.symmetries;
 import geometry.Point3D;
 import geometry.Symmetry;
 import geometry.UnitQuaternion;
+import geometry.Symmetry.Subgroup;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -59,7 +60,7 @@ public class OctahedralSymmetry
       edgeAxis_5, edgeAxis_6;
 
   {
-    subgroupTable = new HashMap<>();
+    subgroupTable = new HashMap<Subgroup<OctahedralSymmetry>, Collection<UnitQuaternion>>();
   }
 
   static {
@@ -106,7 +107,7 @@ public class OctahedralSymmetry
     sym.subgroupTable.put(Subgroups.Id, Collections.singleton(id));
 
     // temporal
-    Collection<UnitQuaternion> full = new HashSet<>();
+    Collection<UnitQuaternion> full = new HashSet<UnitQuaternion>();
     full.add(id);
     full.add(faceAxisI_90);
     full.add(faceAxisJ_90);
