@@ -52,6 +52,15 @@ public class Point3D
     else return this.rotate(UnitQuaternion.from3DRotation(angle, axis));
   }
 
+  /**
+   * @return Ordered coordinates (x,y,z) of the point.
+   */
+  @Override
+  public double[] getComponents() {
+    double[] components = {i, j, k};
+    return components;
+  }
+
   @Override
   public String toString() {
     return "(" + i + "," + j + "," + k + ")";

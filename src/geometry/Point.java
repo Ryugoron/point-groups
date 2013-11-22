@@ -8,4 +8,11 @@ package geometry;
  * @author Alex
  */
 public interface Point
-{}
+{
+  /**
+   * 
+   * @return Ordered coordinates of the point.
+   */
+  public double[] getComponents();
+
+}

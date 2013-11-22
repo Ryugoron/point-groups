@@ -9,7 +9,7 @@ package geometry;
  * @author Alex
  */
 public class Quaternion
-  implements Point
+implements Point
 {
   public final double i, j, k, re;
 
@@ -96,7 +96,7 @@ public class Quaternion
   public static Quaternion fromDouble(double d) {
     return new Quaternion(d, 0, 0, 0);
   }
-  
+
   /**
    * 
    * @param a
@@ -109,5 +109,15 @@ public class Quaternion
     double j = Math.pow((a.j - b.j),2);
     double k = Math.pow((a.k - b.k),2);
     return Math.sqrt(re+i+j+k);
+  }
+
+  /**
+   * @return components of the quaternion represented in an array of doubles
+   */
+  @Override
+  public double[] getComponents() {
+    double[] components = {re, i, j, k};
+
+    return components;
   }
 }
