@@ -31,40 +31,45 @@ public class SchlegelTransformer
 
   @Override
   public String toScript() {
-    // TODO mit Stringbuilder bauen
-    String script = "";
-    script += "use application \"polytope\";\n";
+    
+    // Suppose the script has around 1000 characters
+    StringBuilder script = new StringBuilder(1000);
+    script.append("use application \"polytope\";\n");
 
-    script += "my $mat=new Matrix<Rational>(";
-    script += pointsToString();
-    script += ");\n";
-    script += "my $p = new Polytope(POINTS=>$mat);\n";
+    script.append("my $mat=new Matrix<Rational>(");
+    script.append(pointsToString());
+    script.append(");\n");
+    script.append("my $p = new Polytope(POINTS=>$mat);\n");
 
-    script += "my $schlegelverts = $p->SCHLEGEL_DIAGRAM->VERTICES;\n";
-    script += "my $edges = $p->GRAPH->EDGES;\n";
+    script.append("my $schlegelverts = $p->SCHLEGEL_DIAGRAM->VERTICES;\n");
+    script.append("my $edges = $p->GRAPH->EDGES;\n");
 
+    script.append("my $v = \"$schlegelverts\";\n");
+    script.append("my $e = \"$edges\";\n");
 
-    script += "my $v = \"$schlegelverts\";\n";
-    script += "my $e = \"$edges\";\n";
-
-    script += "print $v.$e";
-    return script;
+    script.append("print $v.$e");
+    return script.toString();
   }
 
   private String pointsToString(){
-    String matrix = "[";
-    String pointString;
+    StringBuilder matrix = new StringBuilder(200);
+    double[] pointComps;
+    
+    matrix.append("[");
     
     for(Point point : points){
-      matrix += "[1,";
-      pointString = point.toString();
-      pointString = pointString.substring(1, pointString.length()-1);
-      matrix += pointString;
-      matrix += "],";
+      matrix.append("[1");
+      pointComps = point.getComponents();
+      for (double comp : pointComps) {
+        matrix.append("," + comp);
+      }
+      // for simplicity always appending a comma after each transformation of a point
+      // afterwards the last comma will be replaced by a closing bracket ']' of the matrix 
+      matrix.append("],");
     }
-    
-    matrix = matrix.substring(0, matrix.length()-1) + "]";
-    return matrix;
+    // replacing last comma of the for-loop with a closing bracket of the matrix
+    matrix.setCharAt(matrix.length()-1, ']');
+    return matrix.toString();
   }
 
   @Override
