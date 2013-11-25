@@ -1,4 +1,4 @@
-package geometry;
+package pointGroups.geometry;
 
 public final class Pair<A, B>
 {

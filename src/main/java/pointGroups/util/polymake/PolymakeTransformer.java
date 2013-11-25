@@ -1,4 +1,4 @@
-package util.polymake;
+package pointGroups.util.polymake;
 
 
 /**

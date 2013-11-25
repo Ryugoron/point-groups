@@ -1,6 +1,6 @@
-package util.polymake;
+package pointGroups.util.polymake;
 
-import geometry.Point;
+import pointGroups.geometry.Point;
 
 import java.util.Collection;
 

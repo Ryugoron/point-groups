@@ -1,9 +1,9 @@
-package geometry.symmetries;
+package pointGroups.geometry.symmetries;
 
-import geometry.Point3D;
-import geometry.Symmetry;
-import geometry.UnitQuaternion;
-import geometry.Symmetry.Subgroup;
+import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Symmetry;
+import pointGroups.geometry.UnitQuaternion;
+import pointGroups.geometry.Symmetry.Subgroup;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -90,7 +90,7 @@ public class IcosahedralSymmetry
 
   @Override
   public Collection<UnitQuaternion> getSymmetries(
-      geometry.Symmetry.Subgroup<IcosahedralSymmetry> s) {
+      pointGroups.geometry.Symmetry.Subgroup<IcosahedralSymmetry> s) {
     // TODO Auto-generated method stub
     return null;
   }

@@ -1,4 +1,4 @@
-package geometry;
+package pointGroups.geometry;
 
 /**
  * A {@link Point4D} is a point which lives in the R^4. It is modelled as a

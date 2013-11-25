@@ -1,6 +1,6 @@
-package geometry.symmetries;
+package pointGroups.geometry.symmetries;
 
-import geometry.Quaternion;
+import pointGroups.geometry.Quaternion;
 
 import java.util.ArrayList;
 import java.util.List;

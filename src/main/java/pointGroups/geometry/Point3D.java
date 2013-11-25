@@ -1,4 +1,4 @@
-package geometry;
+package pointGroups.geometry;
 
 /**
  * A {@link Point3D} is a point which lives in the R^3. It is modelled as a
