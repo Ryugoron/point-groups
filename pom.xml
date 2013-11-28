@@ -7,6 +7,13 @@
   <name>point-groups</name>
   <description>Visualization of 3- and 4-dimensional point groups</description>
 
+  <repositories>
+    <repository>
+      <id>local-repo</id>
+      <url>file://${basedir}/lib/maven</url>
+    </repository>
+  </repositories>
+
   <build>
     <plugins>
       <plugin>
@@ -19,6 +26,7 @@
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
@@ -28,7 +36,174 @@
           <workspaceCodeStylesURL>file://${basedir}/point-groups-coding-style.xml</workspaceCodeStylesURL>
         </configuration>
       </plugin>
+
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+             <execution>
+      <id>id.validate</id>
+      <phase>validate</phase>
+      <goals>
+         <goal>run</goal>
+      </goals>
+      <configuration>
+         <tasks>
+            <echo>validate phase</echo>
+         </tasks>
+      </configuration>
+   </execution>
+   <execution>
+      <id>id.compile</id>
+      <phase>compile</phase>
+      <goals>
+         <goal>run</goal>
+      </goals>
+      <configuration>
+         <tasks>
+            <echo>compile phase</echo>
+         </tasks>
+      </configuration>
+   </execution>
+   <execution>
+      <id>id.test</id>
+      <phase>test</phase>
+      <goals>
+         <goal>run</goal>
+      </goals>
+      <configuration>
+         <tasks>
+            <echo>test phase</echo>
+         </tasks>
+      </configuration>
+   </execution>
+   <execution>
+         <id>id.package</id>
+         <phase>package</phase>
+         <goals>
+            <goal>run</goal>
+         </goals>
+         <configuration>
+         <tasks>
+            <echo>package phase</echo>
+         </tasks>
+      </configuration>
+   </execution>
+   <execution>
+      <id>id.deploy</id>
+      <phase>deploy</phase>
+      <goals>
+         <goal>run</goal>
+      </goals>
+      <configuration>
+      <tasks>
+         <echo>deploy phase</echo>
+      </tasks>
+      </configuration>
+   </execution>
+   <execution>
+         <id>id.dependency.copy</id>
+         <phase>dependency:copy</phase>
+         <goals>
+            <goal>run</goal>
+         </goals>
+         <configuration>
+         <tasks>
+            <echo>dependency:copy phase</echo>
+         </tasks>
+      </configuration>
+   </execution>
+   <execution>
+         <id>id.dependency.copy-dependencies</id>
+         <phase>dependency:copy-dependencies</phase>
+         <goals>
+            <goal>run</goal>
+         </goals>
+         <configuration>
+         <tasks>
+            <echo>dependency:copy-dependencies phase</echo>
+         </tasks>
+      </configuration>
+   </execution>
+          <execution>
+            <phase>package</phase>
+            <configuration>
+              <target>
+
+                <property name="lib" location="lib"/>
+                <property name="src" location="src"/>
+                <property name="jreality" location="lib/jreality"/>
+
+                <!-- Create the time stamp -->
+                <tstamp/>
+
+                <!-- Create the build directory structure used by compile -->
+                <mkdir dir="${lib}"/>
+                <mkdir dir="${jreality}"/>
+
+                <!-- download jReality sources -->
+                <get src="http://www3.math.tu-berlin.de/jreality/download/latest/jReality.jar"
+                  dest="${jreality}/jReality.jar"
+                  verbose="true"
+                  usetimestamp="true" skipexisting='true'/>
+
+                <get src="http://www3.math.tu-berlin.de/jreality/download/latest/jReality-3rd-party.zip"
+                  dest="${jreality}/jReality-3rd-party.zip"
+                  verbose="true"
+                  usetimestamp="true" skipexisting='true'/>
+
+                <!-- unzip jReality 3rd party libs -->
+                <unzip src="${jreality}/jReality-3rd-party.zip" dest="${jreality}"/>
+
+                <!-- add each jreality jar file  -->
+                <apply executable='${src}/main/bash/add_jreality_jar_to_maven.sh' parallel="false" verbose='true'>
+                  <fileset dir="${jreality}" includes="**/*.jar"/>
+                </apply>
+
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>
+                      org.apache.maven.plugins
+                    </groupId>
+                    <artifactId>
+                      maven-antrun-plugin
+                    </artifactId>
+                    <versionRange>[1.7,)</versionRange>
+                    <goals>
+                      <goal>run</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <dependencies>
@@ -53,6 +228,38 @@
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
+
+    <!--jReality dependencies-->
+    <dependency>
+      <groupId>jreality</groupId>
+      <artifactId>jReality</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jreality</groupId>
+      <artifactId>jrworkspace</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jreality</groupId>
+      <artifactId>jterm</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jreality</groupId>
+      <artifactId>sunflow</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jreality</groupId>
+      <artifactId>colorpicker</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jreality</groupId>
+      <artifactId>beans</artifactId>
+      <version>1.0</version>
+    </dependency>
   </dependencies>
 
   <properties>
@@ -69,40 +276,5 @@
   <issueManagement>
     <url>https://github.com/Ryugoron/point-groups/issues</url>
   </issueManagement>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>jreality</groupId>
-        <artifactId>jrworkspace</artifactId>
-        <version>1.0</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>jreality</groupId>
-        <artifactId>jterm</artifactId>
-        <version>1.0</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>jreality</groupId>
-        <artifactId>sunflow.jar</artifactId>
-        <version>1.0</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>jreality</groupId>
-        <artifactId>colorpicker</artifactId>
-        <version>1.0</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>jreality</groupId>
-        <artifactId>beans</artifactId>
-        <version>1.0</version>
-        <scope>provided</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
 </project>

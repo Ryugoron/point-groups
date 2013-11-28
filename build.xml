@@ -1,0 +1,40 @@
+<project name="MyProject" default="init" basedir=".">
+    <description>
+        simple example build file
+    </description>
+  <!-- set global properties for this build -->
+  <property name="lib" location="lib"/>
+  <property name="jreality" location="lib/jreality"/>
+  <property name="src" location="src"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${lib}"/>
+    <mkdir dir="${jreality}"/>
+
+    <!-- download jReality sources -->
+    <get src="http://www3.math.tu-berlin.de/jreality/download/latest/jReality.jar"
+      dest="${jreality}/jReality.jar"
+      verbose="true"
+      usetimestamp="true" skipexisting='true'/>
+
+    <get src="http://www3.math.tu-berlin.de/jreality/download/latest/jReality-3rd-party.zip"
+      dest="${jreality}/jReality-3rd-party.zip"
+      verbose="true"
+      usetimestamp="true" skipexisting='true'/>
+
+    <!-- unzip jReality 3rd party libs -->
+    <unzip src="${jreality}/jReality-3rd-party.zip" dest="${lib}">
+        <mapper type="flatten"/>
+    </unzip>
+
+    <!-- add each jreality jar file  -->
+    <apply executable='${src}/main/bash/add_jreality_jar_to_maven.sh' parallel="false" verbose='true'>
+      <fileset dir="${jreality}" includes="**/*.jar"/>
+    </apply>
+
+  </target>
+
+</project>
