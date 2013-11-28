@@ -1,15 +1,18 @@
-<project name="MyProject" default="init" basedir=".">
-    <description>
-        simple example build file
-    </description>
+<project name="pointGroups" default="init" basedir=".">
+  <description>
+    Download jReality and create local maven repository from it.
+  </description>
+
   <!-- set global properties for this build -->
   <property name="lib" location="lib"/>
   <property name="jreality" location="lib/jreality"/>
   <property name="src" location="src"/>
 
   <target name="init">
+
     <!-- Create the time stamp -->
     <tstamp/>
+
     <!-- Create the build directory structure used by compile -->
     <mkdir dir="${lib}"/>
     <mkdir dir="${jreality}"/>
@@ -26,9 +29,7 @@
       usetimestamp="true" skipexisting='true'/>
 
     <!-- unzip jReality 3rd party libs -->
-    <unzip src="${jreality}/jReality-3rd-party.zip" dest="${lib}">
-        <mapper type="flatten"/>
-    </unzip>
+    <unzip src="${jreality}/jReality-3rd-party.zip" dest="${jreality}"/>
 
     <!-- add each jreality jar file  -->
     <apply executable='${src}/main/bash/add_jreality_jar_to_maven.sh' parallel="false" verbose='true'>
