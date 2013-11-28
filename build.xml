@@ -1,39 +1,84 @@
-<project name="pointGroups" default="init" basedir=".">
+<project name="pointGroups" default="compile" basedir=".">
   <description>
     Download jReality and create local maven repository from it.
   </description>
 
   <!-- set global properties for this build -->
   <property name="lib" location="lib"/>
-  <property name="jreality" location="lib/jreality"/>
   <property name="src" location="src"/>
 
-  <target name="init">
+  <target name='compile' depends='compile-jReality, compile-polymake'>
+  </target>
+
+  <target name='init'>
 
     <!-- Create the time stamp -->
     <tstamp/>
 
     <!-- Create the build directory structure used by compile -->
     <mkdir dir="${lib}"/>
-    <mkdir dir="${jreality}"/>
+    <mkdir dir="${lib}/jreality"/>
+    <mkdir dir="${lib}/polymake"/>
+
+  </target>
+
+  <target name="download-jReality" depends="init">
 
     <!-- download jReality sources -->
     <get src="http://www3.math.tu-berlin.de/jreality/download/latest/jReality.jar"
-      dest="${jreality}/jReality.jar"
+      dest="${lib}/jreality/jReality.jar"
       verbose="true"
       usetimestamp="true" skipexisting='true'/>
 
     <get src="http://www3.math.tu-berlin.de/jreality/download/latest/jReality-3rd-party.zip"
-      dest="${jreality}/jReality-3rd-party.zip"
+      dest="${lib}/jreality/jReality-3rd-party.zip"
       verbose="true"
       usetimestamp="true" skipexisting='true'/>
 
     <!-- unzip jReality 3rd party libs -->
-    <unzip src="${jreality}/jReality-3rd-party.zip" dest="${jreality}"/>
+    <unzip src="${lib}/jreality/jReality-3rd-party.zip" dest="${lib}/jreality"/>
+
+  </target>
+
+  <target name="download-polymake" depends="init, check-polymake-exists" unless='polymake.exists'>
+
+    <!-- download polymake sources -->
+    <get src="http://polymake.org/lib/exe/fetch.php/download/polymake-2.12-rc3.tar.bz2"
+      dest="${lib}/polymake"
+      verbose="true"
+      usetimestamp="true" skipexisting='true'/>
+
+    <!-- unzip polymake -->
+    <!--<untar src="${lib}/polymake/polymake-2.12-rc3.tar.bz2" dest="${lib}/polymake" compression='bzip2'/>-->
+    <exec dir="${lib}/polymake" executable="tar" >
+       <arg line="-xvf polymake-2.12-rc3.tar.bz2"/>
+    </exec>
+
+  </target>
+
+  <target name='check-polymake-exists'>
+    <available file="${lib}/polymake/bin/polymake"  property="polymake.exists"/>
+  </target>
+
+  <target name='compile-polymake' depends='init, check-polymake-exists, download-polymake' unless='polymake.exists'>
+    <exec dir="${lib}/polymake/polymake-2.12/" executable="chmod" failonerror="true">
+      <arg line="+x ./configure"/>
+    </exec>
+
+    <exec dir="${lib}/polymake/polymake-2.12/" executable="./configure" failonerror="true">
+      <arg line="--prefix=${lib}/polymake"/>
+    </exec>
+
+    <exec dir="${lib}/polymake/polymake-2.12/" executable="make" failonerror="true">
+      <arg line="-j4"/>
+    </exec>
+  </target>
+
+  <target name="compile-jReality" depends='init, download-jReality'>
 
     <!-- add each jreality jar file  -->
     <apply executable='${src}/main/bash/add_jreality_jar_to_maven.sh' parallel="false" verbose='true'>
-      <fileset dir="${jreality}" includes="**/*.jar"/>
+      <fileset dir="${lib}/jreality" includes="**/*.jar"/>
     </apply>
 
   </target>
