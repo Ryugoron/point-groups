@@ -1,7 +1,4 @@
-/**
- * 
- */
-package pointGroups.util.polymake;
+package pointGroups.geometry;
 
 /**
  * Right now this only contains a String. We may change this to a propper
@@ -9,13 +6,11 @@ package pointGroups.util.polymake;
  * 
  * @author nadjascharf
  */
-public class SchlegelResult
-  implements PolymakeResult
-
+public class Schlegel
 {
   public final String result;
 
-  public SchlegelResult(String result) {
+  public Schlegel(String result) {
     this.result = result;
   }
 }

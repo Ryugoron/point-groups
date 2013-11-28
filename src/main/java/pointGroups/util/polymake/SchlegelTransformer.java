@@ -1,6 +1,7 @@
 package pointGroups.util.polymake;
 
 import pointGroups.geometry.Point;
+import pointGroups.geometry.Schlegel;
 
 import java.util.Collection;
 
@@ -10,7 +11,7 @@ import java.util.Collection;
  * @author Nadja, Simon
  */
 public class SchlegelTransformer
-  implements PolymakeTransformer
+  implements PolymakeTransformer<Schlegel>
 {
   
   private final Collection<? extends Point> points;
@@ -78,11 +79,8 @@ public class SchlegelTransformer
   }
 
   @Override
-  public PolymakeResult getResult() {
-    if (result == null){
-      
-    }
-    return new SchlegelResult(result);
+  public Schlegel getResult() {
+    return new Schlegel(result);
   }
 
 }

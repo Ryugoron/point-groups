@@ -6,7 +6,7 @@ package pointGroups.util.polymake;
  * 
  * @author Nadja, Simon
  */
-public interface PolymakeTransformer
+public interface PolymakeTransformer<E>
 {
   /**
    * Generates a script.
@@ -23,5 +23,5 @@ public interface PolymakeTransformer
   /**
    * @return a representation ({@link PolymakeResult}) of the computation-result set by {@link PolymakeTransformer#setResult(String)}.
    */
-  public PolymakeResult getResult();
+  public E getResult();
 }
