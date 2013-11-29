@@ -1,0 +1,55 @@
+===== Installation =====
+
+The point-groups Project is only supported for *nix platforms.
+
+To install point-groups you have to first read the "Setup" section.
+Normally you only need to do the steps in the section "setup" once, it may
+be necessary to do it again, due to changes.
+
+===== Setup =====
+
+We are using maven (http://maven.apache.org/) as dependency resolver.
+Unfortunatly, we have some dependencies that are not in any official maven
+repositories and because it is mainly third-party software with different
+licenses, we can't host a maven repository for the missing dependecies.
+
+But we want to use maven as depedency resolver to make sure taht everything is
+available at compile time.
+
+So we wrote an ant script that will setup a local maven repository with all the
+needed jar files. This files will be downloaded from the respective places.
+
+To setup the project simply run
+
+> ant setup
+
+Please check, whether you are compiling to the respective licenses of the
+third-party libraries.
+
+===== Compile the project =====
+
+To compile the project simply run
+
+> mvn compile
+
+===== Further requirements =====
+
+=== polymake (required) ===
+
+Our project makes use of polymake (http://polymake.org), which will be called at
+runtime.
+
+If you don't have polymake, you can download it from the website and compile it.
+
+*OR* you can use the following ant script to do the job
+
+> ant compile-polymake
+
+Note: Our project was mainly tested against polymake version 2.12-rc3, so it is
+prefered to use this version.
+
+=== OpenGL (optional, but recommended) ===
+
+For Ubuntu, see
+
+http://ubuntuforums.org/showthread.php?t=345177
