@@ -1,4 +1,4 @@
-<project name="pointGroups" default="compile" basedir=".">
+<project name="pointGroups" default="setup" basedir=".">
   <description>
     Download jReality and create local maven repository from it.
   </description>
@@ -7,7 +7,7 @@
   <property name="lib" location="lib"/>
   <property name="src" location="src"/>
 
-  <target name='compile' depends='compile-jReality, compile-polymake'>
+  <target name='compile' depends='compile-polymake'>
   </target>
 
   <target name='init'>
@@ -37,6 +37,15 @@
 
     <!-- unzip jReality 3rd party libs -->
     <unzip src="${lib}/jreality/jReality-3rd-party.zip" dest="${lib}/jreality"/>
+
+  </target>
+
+  <target name="setup" depends='init, download-jReality'>
+
+    <!-- add each jreality jar file  -->
+    <apply executable='${src}/main/bash/add_jreality_jar_to_maven.sh' parallel="false" verbose='true'>
+      <fileset dir="${lib}/jreality" includes="**/*.jar"/>
+    </apply>
 
   </target>
 
@@ -72,15 +81,6 @@
     <exec dir="${lib}/polymake/polymake-2.12/" executable="make" failonerror="true">
       <arg line="-j4"/>
     </exec>
-  </target>
-
-  <target name="compile-jReality" depends='init, download-jReality'>
-
-    <!-- add each jreality jar file  -->
-    <apply executable='${src}/main/bash/add_jreality_jar_to_maven.sh' parallel="false" verbose='true'>
-      <fileset dir="${lib}/jreality" includes="**/*.jar"/>
-    </apply>
-
   </target>
 
 </project>
