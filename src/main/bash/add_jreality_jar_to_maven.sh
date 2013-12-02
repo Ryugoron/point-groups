@@ -11,7 +11,7 @@ version="1.0"
 
 # http://stackoverflow.com/questions/4774054/reliable-way-for-a-bash-script-to-get-the-full-path-to-itself
 scriptpath="$( cd "$(dirname "$0")" ; pwd -P )"
-projectroot=$(readlink -f "$scriptpath/../../../")
+projectroot="$scriptpath/../../../"
 localMaven="$projectroot/lib/maven-repo"
 
 echo "current script: $scriptpath";
