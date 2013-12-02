@@ -1,4 +1,4 @@
-package geometry;
+package pointGroups.geometry;
 
 import java.util.Collection;
 

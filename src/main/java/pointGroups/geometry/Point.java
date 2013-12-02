@@ -1,4 +1,4 @@
-package geometry;
+package pointGroups.geometry;
 
 /**
  * Marker interface for point classes.

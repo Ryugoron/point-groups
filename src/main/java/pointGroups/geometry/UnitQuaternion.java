@@ -1,4 +1,4 @@
-package geometry;
+package pointGroups.geometry;
 
 /**
  * A unit quaternions is a quaternion q with norm(q) = 1. Unit quaternions

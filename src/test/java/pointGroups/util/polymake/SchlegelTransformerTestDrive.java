@@ -1,13 +1,12 @@
-package test.util.polymake;
+package pointGroups.util.polymake;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import geometry.Point;
-import geometry.Point3D;
-import geometry.Point4D;
-
-import util.polymake.SchlegelTransformer;
+import pointGroups.geometry.Point;
+import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Point4D;
+import pointGroups.util.polymake.SchlegelTransformer;
 
 public class SchlegelTransformerTestDrive
 {

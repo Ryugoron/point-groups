@@ -1,7 +1,7 @@
 /**
  * 
  */
-package util.polymake;
+package pointGroups.util.polymake;
 
 /**
  * Result of a computation by polymake

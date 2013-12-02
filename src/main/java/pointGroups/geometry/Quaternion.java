@@ -1,4 +1,4 @@
-package geometry;
+package pointGroups.geometry;
 
 /**
  * A quaternion is a number from the set a+bi+cj+dk with a,b,c,d real numbers.
