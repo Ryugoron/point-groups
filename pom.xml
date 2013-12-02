@@ -1,0 +1,129 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>de.fu-berlin.imp.point-groups</groupId>
+  <artifactId>point-groups</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>point-groups</name>
+  <description>Visualization of 3- and 4-dimensional point groups</description>
+
+  <repositories>
+    <repository>
+      <id>local-repo</id>
+      <url>file://${basedir}/lib/maven-repo</url>
+    </repository>
+  </repositories>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.5.1</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.8</version>
+        <configuration>
+          <workspace>${basedir}</workspace>
+          <workspaceCodeStylesURL>file://${basedir}/point-groups-coding-style.xml</workspaceCodeStylesURL>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+        <artifactId>maven-java-formatter-plugin</artifactId>
+        <version>0.3.1</version>
+        <configuration>
+          <compilerSource>${java.version}</compilerSource>
+          <compilerCompliance>${java.version}</compilerCompliance>
+          <compilerTargetPlatform>${java.version}</compilerTargetPlatform>
+          <lineEnding>LF</lineEnding>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.junit.version}</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jogamp.gluegen</groupId>
+      <artifactId>gluegen-rt-main</artifactId>
+      <version>${org.jogamp.gluegen.gluegen-rt-main.version}</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jogamp.jogl</groupId>
+      <artifactId>jogl-all-main</artifactId>
+      <version>${org.jogamp.jogl.jogl-all-main.version}</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+
+    <!--jReality dependencies-->
+    <dependency>
+      <groupId>jreality</groupId>
+      <artifactId>jReality</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jreality</groupId>
+      <artifactId>jrworkspace</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jreality</groupId>
+      <artifactId>jterm</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jreality</groupId>
+      <artifactId>xstream-1.4.2</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jreality</groupId>
+      <artifactId>xpp3-1.1.4c</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jreality</groupId>
+      <artifactId>beans</artifactId>
+      <version>1.0</version>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <java.version>1.6</java.version>
+    <junit.junit.version>[4.10,)</junit.junit.version>
+    <org.jogamp.gluegen.gluegen-rt-main.version>[2.0.2,)</org.jogamp.gluegen.gluegen-rt-main.version>
+    <org.jogamp.jogl.jogl-all-main.version>[2.0.2,)</org.jogamp.jogl.jogl-all-main.version>
+  </properties>
+
+  <url>https://github.com/Ryugoron/point-groups</url>
+  <scm>
+    <url>git@github.com:Ryugoron/point-groups.git</url>
+  </scm>
+
+  <issueManagement>
+    <url>https://github.com/Ryugoron/point-groups/issues</url>
+  </issueManagement>
+
+</project>
