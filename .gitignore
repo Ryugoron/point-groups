@@ -46,3 +46,4 @@ target
 .svn
 *.fdb_latexmk
 
+lib/
