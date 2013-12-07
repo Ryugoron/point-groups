@@ -1,6 +1,7 @@
 package pointGroups.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -16,12 +17,14 @@ public class SymmetryChooser
   public SymmetryChooser() {
     super();
 
+    setPreferredSize(new Dimension(250, 0));
+
     JButton button1 = new JButton("Generate");
     JPanel panel1 = new JPanel();
     panel1.setLayout(new BorderLayout());
     panel1.add(button1, BorderLayout.PAGE_END);
 
-    JButton button2 = new JButton("Generate");
+    JButton button2 = new JButton("Generate2");
     JPanel panel2 = new JPanel();
     panel2.setLayout(new BorderLayout());
     panel2.add(button2, BorderLayout.PAGE_END);

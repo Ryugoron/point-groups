@@ -1,8 +1,7 @@
 package pointGroups.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
+import java.util.concurrent.Future;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -17,23 +16,22 @@ public class PointPicker
 
   private static final long serialVersionUID = -3642299900579728806L;
 
+  protected Future<JRViewer> viewerFuture;
   protected JRViewer pointPickerViewer;
   protected Viewer pointPickerView;
 
   public PointPicker() {
     super();
 
-    pointPickerViewer = UiViewer.viewerFactory();
-    pointPickerView = pointPickerViewer.getViewer();
-
     setLayout(new BorderLayout());
 
-    setBounds(0, 0, 300, 500);
-    setPreferredSize(new Dimension(450, 125));
-
-    add((Component) pointPickerView.getViewingComponent(), BorderLayout.CENTER);
-
     JButton button3 = new JButton("VIEW");
-    add(button3, BorderLayout.PAGE_END);
+    PointPicker.this.add(button3, BorderLayout.PAGE_END);
+
+    viewerFuture = UiViewer.viewerFactory(this);
+  }
+
+  public void dispose() {
+    UiViewer.dispose(viewerFuture);
   }
 }

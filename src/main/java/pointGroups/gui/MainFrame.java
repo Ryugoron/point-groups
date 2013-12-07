@@ -1,6 +1,7 @@
 package pointGroups.gui;
 
-import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -18,39 +19,68 @@ public class MainFrame
   protected PointPicker pointPicker = new PointPicker();
 
   public MainFrame() {
-    // tabpane.addChangeListener(new ChangeListener() {
-    // public void stateChanged(ChangeEvent arg0) {
-    // System.out.println(arg0);
-    // }
-    // });
-
     // Layout the main window.
-    setLayout(new BorderLayout(5, 5));
-    add(symmetryChooser, BorderLayout.WEST);
+    setLayout(new GridBagLayout());
+    GridBagConstraints c = new GridBagConstraints();
 
-    add(schlegelView, BorderLayout.CENTER);
-    add(pointPicker, BorderLayout.EAST);
+    c.fill = GridBagConstraints.BOTH;
+    c.weightx = 0;
+    c.weighty = 1;
+    c.gridx = 0;
+    c.gridy = 0;
+    add(symmetryChooser, c);
 
-    setTitle("PolygonGen");
+    c.weightx = 0.5;
+    c.gridx = 1;
+    add(schlegelView, c);
+
+    c.gridx = 2;
+    add(pointPicker, c);
+
+    setTitle("Point groups");
     setSize(1000, 650);
     setLocationRelativeTo(null); // center window
 
     addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
-        System.exit(0);
+        shutdown();
       }
     });
 
-    // Position of left upper corner and size of frame when run as
-    // application.
-    // this.setBounds(new Rectangle(420, 5, 640, 550));
     setVisible(true);
+  }
+
+  protected void shutdown() {
+
+    // dispose will block until it gets the resources, but if we block on the
+    // current EventDispatchThread it will result in a dead-lock, because the
+    // resources will also be created on the EventDispatchThread. So to break
+    // this cycle, we will call the dispose functions in a own thread.
+    //
+    // Note:
+    // This edge case should only occur in the startup phase, if we try to close
+    // the window before it is completely initialized.
+    new Thread(new Runnable() {
+
+      @Override
+      public void run() {
+        schlegelView.dispose();
+        pointPicker.dispose();
+        System.exit(0);
+      }
+    }).start();
   }
 
   public static void main(String args[]) {
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      new MainFrame();
+
+      SwingUtilities.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+          new MainFrame();
+        }
+      });
     }
     catch (Exception e) {
       e.printStackTrace();
