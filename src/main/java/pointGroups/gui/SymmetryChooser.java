@@ -17,7 +17,9 @@ public class SymmetryChooser
   public SymmetryChooser() {
     super();
 
-    setPreferredSize(new Dimension(250, 0));
+    Dimension dim = new Dimension(250, 0);
+    setMinimumSize(dim);
+    setPreferredSize(dim);
 
     JButton button1 = new JButton("Generate");
     JPanel panel1 = new JPanel();
