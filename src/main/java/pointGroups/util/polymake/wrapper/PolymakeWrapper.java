@@ -13,143 +13,162 @@ import java.util.logging.Logger;
 import pointGroups.util.polymake.PolymakeException;
 import pointGroups.util.polymake.PolymakeTransformer;
 
-public class PolymakeWrapper {
-	final Logger logger = Logger.getLogger(PolymakeWrapper.class.getName());
-	final String polymakePath;
-	final String polymakeDriverPath;
 
-	private Process polymakeInstance;
-	private final Queue<PolymakeTransformer> pending;
+public class PolymakeWrapper
+{
+  final Logger logger = Logger.getLogger(PolymakeWrapper.class.getName());
+  final String polymakePath;
+  final String polymakeDriverPath;
 
-	private Socket polymakeSocket;
-	private BufferedWriter toPolymake;
+  private Process polymakeInstance;
+  private final Queue<PolymakeTransformer> pending;
 
-	private boolean isRunning = false;
+  private Socket polymakeSocket;
+  private BufferedWriter toPolymake;
 
-	// private boolean isRunning_ = false;
+  private volatile boolean isRunning = false;
 
-	public PolymakeWrapper(final String polymakePath,
-			final String polymakeDriverPath) {
-		this.polymakePath = polymakePath;
-		this.polymakeDriverPath = polymakeDriverPath;
-		this.pending = new LinkedList<PolymakeTransformer>();
-	}
+  // private boolean isRunning_ = false;
 
-	private String getRunCommand() {
-		return this.polymakePath + " --script=" + polymakeDriverPath;
-	}
+  public PolymakeWrapper(final String polymakePath,
+      final String polymakeDriverPath) {
+    this.polymakePath = polymakePath;
+    this.polymakeDriverPath = polymakeDriverPath;
+    this.pending = new LinkedList<PolymakeTransformer>();
+  }
 
-	public void start() {
-		try {
-			if (!isRunning) {
-				this.isRunning = true;
+  private String getRunCommand() {
+    return this.polymakePath + " --script=" + polymakeDriverPath;
+  }
 
-				this.polymakeInstance = Runtime.getRuntime().exec(
-						getRunCommand());
-				new Thread(new PolymakeErrorStreamHandler(
-						this.polymakeInstance.getErrorStream())).start();
+  public void start() {
+    try {
+      if (!isRunning) {
+        this.isRunning = true;
 
-				fetchInitialOutput();
-			} else {
-				logger.warning("Polymake process already started, but start was invoked.");
-			}
-		} catch (IOException e) {
-			logger.severe(PolymakeException.CANNOT_START + e.getMessage());
-			throw new PolymakeException(PolymakeException.CANNOT_START
-					+ e.getMessage());
-		}
-	}
+        this.polymakeInstance = Runtime.getRuntime().exec(getRunCommand());
+        logger.info("Starting Polymake...");
+        new Thread(new PolymakeErrorStreamHandler(this,
+            this.polymakeInstance.getErrorStream())).start();
 
-	private void fetchInitialOutput() {
-		BufferedReader polymakeStdOut = new BufferedReader(
-				new InputStreamReader(this.polymakeInstance.getInputStream()));
-		try {
-			String input;
-			// First line is the port polymake is listening on
-			input = polymakeStdOut.readLine();
-			int polymakePort = Integer.parseInt(input);
-			logger.info("Polymake is running on port " + polymakePort);
+        fetchInitialOutput();
+      }
+      else {
+        logger.warning("Polymake process already started, but start was invoked.");
+      }
+    }
+    catch (IOException e) {
+      logger.severe(PolymakeException.CANNOT_START + e.getMessage());
+      throw new PolymakeException(PolymakeException.CANNOT_START +
+          e.getMessage());
+    }
+  }
 
-			openConnection(polymakePort);
-		} catch (IOException e) {
-			throw new PolymakeException(PolymakeException.CANNOT_START
-					+ e.getMessage());
-		} catch (NumberFormatException e) {
-			throw new PolymakeException(PolymakeException.CANNOT_START
-					+ e.getMessage());
-		}
-	}
+  private void fetchInitialOutput() {
+    BufferedReader polymakeStdOut =
+        new BufferedReader(new InputStreamReader(
+            this.polymakeInstance.getInputStream()));
+    try {
+      logger.info("Waiting for Polymake to start up...");
+      String input;
+      // First line is the port polymake is listening on
+      input = polymakeStdOut.readLine();
+      int polymakePort = Integer.parseInt(input);
+      logger.info("Polymake is running on port " + polymakePort);
 
-	private void openConnection(int port) {
-		try {
-			this.polymakeSocket = new Socket("localhost", port);
-			logger.info("Connection established with Polymake on port " + port);
+      openConnection(polymakePort);
+    }
+    catch (IOException e) {
+      throw new PolymakeException(PolymakeException.CANNOT_START +
+          e.getMessage());
+    }
+    catch (NumberFormatException e) {
+      throw new PolymakeException(PolymakeException.CANNOT_START +
+          e.getMessage());
+    }
+  }
 
-			this.toPolymake = new BufferedWriter(new OutputStreamWriter(
-					this.polymakeSocket.getOutputStream()));
+  private void openConnection(int port) {
+    try {
+      this.polymakeSocket = new Socket("localhost", port);
+      logger.info("Connection established with Polymake on port " + port);
 
-			new Thread(new PolymakeResultHandler(this,
-					this.polymakeSocket.getInputStream())).start();
-		} catch (IOException e) {
-			throw new PolymakeException(PolymakeException.CANNOT_START
-					+ e.getMessage());
-		}
-	}
+      this.toPolymake =
+          new BufferedWriter(new OutputStreamWriter(
+              this.polymakeSocket.getOutputStream()));
 
-	public void stop() {
-		if (isRunning) {
-			try {
-				this.isRunning = false;
-				// TODO: Zeichenkonstanten
-				this.toPolymake.write("__EXIT__" + "\n");
-				this.toPolymake.flush();
-			} catch (IOException e) {
-				logger.warning("Could not write closing string to Polymake: "
-						+ e.getMessage());
-				this.polymakeInstance.destroy();
-			} finally {
-				try {
-					this.polymakeSocket.close();
-				} catch (IOException e) {
-					logger.warning("Closing the socket connection threw an error: "
-							+ e.getMessage());
-				}
-			}
-		} else {
-			logger.warning("Polymake process was not started, but stop() was invoked.");
-		}
-	}
+      new Thread(new PolymakeResultHandler(this,
+          this.polymakeSocket.getInputStream())).start();
+    }
+    catch (IOException e) {
+      throw new PolymakeException(PolymakeException.CANNOT_START +
+          e.getMessage());
+    }
+  }
 
-	public boolean isRunning() {
-		return this.isRunning;
-	}
+  public void stop() {
+    if (isRunning) {
+      try {
+        logger.fine("Attempting to stop polymake wrapper");
+        this.isRunning = false;
+        // TODO: Zeichenkonstanten
+        this.toPolymake.write("__EXIT__" + "\n");
+        this.toPolymake.flush();
+        this.polymakeInstance.getErrorStream().close();
+      }
+      catch (IOException e) {
+        logger.warning("Could not write closing string to Polymake or close error stream.");
+        logger.fine(e.getMessage());
+        this.polymakeInstance.destroy();
+      }
+      finally {
+        try {
+          this.polymakeSocket.close();
+        }
+        catch (IOException e) {
+          logger.warning("Closing the socket connection threw an error: " +
+              e.getMessage());
+        }
+      }
+    }
+    else {
+      logger.warning("Polymake process was not started, but stop() was invoked.");
+    }
+  }
 
-	public void sendRequest(PolymakeTransformer req) {
-		if (isRunning) {
-			try {
-				this.toPolymake.write(req.toScript().replaceAll("\n", "") + "\n");
-				this.toPolymake.flush();
-				logger.info("Writing Transformerrequest to Polymake: "
-						+ req.toScript());
-				this.pending.add(req);
-			} catch (IOException e) {
-				throw new PolymakeException(
-						"Cannot send transformer request to polymake: "
-								+ e.getMessage());
-			}
-		} else {
-			logger.warning("Polymake process was not started, but sendRequest was invoked.");
-		}
+  public boolean isRunning() {
+    return this.isRunning;
+  }
 
-	}
+  public void sendRequest(PolymakeTransformer req) {
+    if (isRunning) {
+      try {
+        this.toPolymake.write(req.toScript().replaceAll("\n", "") + "\n");
+        this.toPolymake.flush();
+        logger.info("Writing Transformerrequest to Polymake.");
+        logger.fine(req.toScript());
+        this.pending.add(req);
+      }
+      catch (IOException e) {
+        throw new PolymakeException(
+            "Cannot send transformer request to polymake: " + e.getMessage());
+      }
+    }
+    else {
+      logger.warning("Polymake process was not started, but sendRequest was invoked.");
+    }
 
-	void onMessageReceived(String msg) {
-		PolymakeTransformer pt = this.pending.poll();
-		if (pt != null) {
-			pt.setResult(msg);
-		} else {
-			logger.warning("Received message from polymake, but no request was pending.");
-		}
-	}
+  }
+
+  void onMessageReceived(String msg) {
+    logger.info("Got answer from polymake");
+    PolymakeTransformer pt = this.pending.poll();
+    if (pt != null) {
+      pt.setResult(msg);
+    }
+    else {
+      logger.warning("Received message from polymake, but no request was pending.");
+    }
+  }
 
 }
