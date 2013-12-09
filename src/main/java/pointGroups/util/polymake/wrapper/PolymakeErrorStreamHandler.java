@@ -7,7 +7,8 @@ import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
 class PolymakeErrorStreamHandler implements Runnable {
-	final Logger logger = Logger.getLogger(PolymakeErrorStreamHandler.class.getName());
+	final Logger logger = Logger.getLogger(PolymakeErrorStreamHandler.class
+			.getName());
 	private final BufferedReader err;
 
 	PolymakeErrorStreamHandler(InputStream errorStream) {
@@ -25,5 +26,4 @@ class PolymakeErrorStreamHandler implements Runnable {
 			e.printStackTrace();
 		}
 	}
-
 }
