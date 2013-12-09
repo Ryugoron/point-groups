@@ -3,7 +3,7 @@ use strict; use warnings;
 use IO::Socket;
 use IO::Handle;
 
-
+STDOUT->autoflush(1);
 my $sock = IO::Socket::INET->new (
                                LocalHost => 'localhost',
                                LocalPort => '0',
