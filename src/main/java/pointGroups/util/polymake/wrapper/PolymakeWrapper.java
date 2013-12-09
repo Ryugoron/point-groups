@@ -127,7 +127,7 @@ public class PolymakeWrapper {
 	public void sendRequest(PolymakeTransformer req) {
 		if (isRunning) {
 			try {
-				this.toPolymake.write(req.toScript() + "\n");
+				this.toPolymake.write(req.toScript().replaceAll("\n", "") + "\n");
 				this.toPolymake.flush();
 				logger.info("Writing Transformerrequest to Polymake: "
 						+ req.toScript());

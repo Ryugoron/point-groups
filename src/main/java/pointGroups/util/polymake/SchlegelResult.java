@@ -18,4 +18,10 @@ public class SchlegelResult
   public SchlegelResult(String result) {
     this.result = result;
   }
+  
+  
+  @Override
+	public String toString() {
+		return result;
+	}
 }
