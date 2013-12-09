@@ -98,7 +98,23 @@ public class PolymakeWrapper {
 
 	public void stop() {
 		if (isRunning) {
-			// TODO: ENDE schicken
+			try {
+				this.isRunning = false;
+				// TODO: Zeichenkonstanten
+				this.toPolymake.write("__END__" + "\n");
+				this.toPolymake.flush();
+			} catch (IOException e) {
+				logger.warning("Could not write closing string to Polymake: "
+						+ e.getMessage());
+				this.polymakeInstance.destroy();
+			} finally {
+				try {
+					this.polymakeSocket.close();
+				} catch (IOException e) {
+					logger.warning("Closing the socket connection threw an error: "
+							+ e.getMessage());
+				}
+			}
 		} else {
 			logger.warning("Polymake process was not started, but stop() was invoked.");
 		}
@@ -112,6 +128,7 @@ public class PolymakeWrapper {
 		if (isRunning) {
 			try {
 				this.toPolymake.write(req.toScript() + "\n");
+				this.toPolymake.flush();
 				logger.info("Writing Transformerrequest to Polymake: "
 						+ req.toScript());
 				this.pending.add(req);
