@@ -6,15 +6,16 @@ use IO::Handle;
 
 my $sock = IO::Socket::INET->new (
                                LocalHost => 'localhost',
-                               LocalPort => '57177',
+                               LocalPort => '0',
                                Proto => 'tcp',
                                Listen => 1,
                                Reuse => 1,
                               );
-die "Couln't open socket: $!" unless $sock;
+print $sock->sockport();
+die "Polymake: Couln't open socket. $!" unless $sock;
                               
 my $bridge = $sock->accept();
-open STDOUT, '>&', $bridge or die "Nope: $!\n";
+open STDOUT, '>&', $bridge or die "Polymake: Could not redirect STDOUT. $!\n";
 STDOUT->autoflush(1);
 
  while(<$bridge>) {
