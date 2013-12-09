@@ -11,7 +11,7 @@ my $sock = IO::Socket::INET->new (
                                Listen => 1,
                                Reuse => 1,
                               );
-print $sock->sockport();
+print $sock->sockport()."\n";
 die "Polymake: Couln't open socket. $!" unless $sock;
                               
 my $bridge = $sock->accept();
