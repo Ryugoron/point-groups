@@ -39,16 +39,15 @@ class PolymakeResultHandler
 
   @Override
   public void run() {
-    // Continously listen on the input stream for responses by polymake.
+    // Continuously listen on the input stream for responses by polymake.
     // Invoke PolymakeWrapper#onMessageReceived on new response.
     String output;
     StringBuilder sb = new StringBuilder();
     try {
       while ((output = this.res.readLine()) != null) {
-        // TODO: String constants
-        if (output.equals("__END__")) { // If the symbol __END__ occured, the
-                                        // response message is complete and can
-                                        // be forwarded.
+        if (output.equals(PolymakeWrapper.END_OF_RESPONSE)) {
+          // If the symbol END_OF_RESPONSE occurred, the response message is
+          // complete and can be forwarded.
           this.wrapper.onMessageReceived(sb.toString());
           sb = new StringBuilder();
         }
@@ -59,12 +58,12 @@ class PolymakeResultHandler
     }
     catch (IOException e) {
       if (this.wrapper.isRunning()) {
-        // Socket should not be closed (or some other error occured)
+        // Socket should not be closed (or some other error occurred)
         logger.severe("Socket was closed or another IO error occured");
         logger.fine(e.getMessage());
       }
       else {
-        // No Error occured, polymake was shut down
+        // No Error occurred, polymake was shut down
         logger.info("Socket was closed itentionally, Resulthandler is terminating");
       }
     }

@@ -28,6 +28,9 @@ public class PolymakeWrapper
 
   private volatile boolean isRunning = false;
 
+  public static final String END_OF_RESPONSE = "__END__";
+  public static final String END_OF_COMMUNICATION = "__EXIT__";
+
   // private boolean isRunning_ = false;
 
   public PolymakeWrapper(final String polymakePath,
@@ -111,8 +114,7 @@ public class PolymakeWrapper
       try {
         logger.fine("Attempting to stop polymake wrapper");
         this.isRunning = false;
-        // TODO: Zeichenkonstanten
-        this.toPolymake.write("__EXIT__" + "\n");
+        this.toPolymake.write(END_OF_COMMUNICATION + "\n");
         this.toPolymake.flush();
         this.polymakeInstance.getErrorStream().close();
       }
