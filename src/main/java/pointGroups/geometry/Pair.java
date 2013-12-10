@@ -1,10 +1,24 @@
 package pointGroups.geometry;
 
+/**
+ * <b>Obsolete class</b>. May be used in the future, though. An implementation
+ * of a tuple object (2-pair).
+ * 
+ * @author Alex
+ * @param <A> Type of left entry
+ * @param <B> Type of right entry
+ */
 public final class Pair<A, B>
 {
   public final A left;
   public final B right;
 
+  /**
+   * Creates a new {@link Pair} object with given fields.
+   * 
+   * @param left Left value of tuple
+   * @param right Right value of tuple
+   */
   public Pair(A left, B right) {
     this.left = left;
     this.right = right;
@@ -12,7 +26,7 @@ public final class Pair<A, B>
 
   @Override
   public int hashCode() {
-    return left.hashCode() ^ right.hashCode();
+    return this.left.hashCode() ^ this.right.hashCode();
   }
 
   @Override
