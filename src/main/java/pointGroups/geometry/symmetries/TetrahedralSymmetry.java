@@ -1,14 +1,14 @@
 package pointGroups.geometry.symmetries;
 
-import pointGroups.geometry.Point3D;
-import pointGroups.geometry.Symmetry;
-import pointGroups.geometry.UnitQuaternion;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Symmetry;
+import pointGroups.geometry.UnitQuaternion;
 
 
 /**
@@ -51,7 +51,8 @@ public class TetrahedralSymmetry
   final static UnitQuaternion edgeAxis_1, edgeAxis_2, edgeAxis_3;
 
   {
-    subgroupTable = new HashMap<Subgroup<TetrahedralSymmetry>, Collection<UnitQuaternion>>();
+    subgroupTable =
+        new HashMap<Subgroup<TetrahedralSymmetry>, Collection<UnitQuaternion>>();
   }
 
   /**
