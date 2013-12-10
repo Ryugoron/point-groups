@@ -85,7 +85,7 @@ public class SchlegelTransformer implements PolymakeTransformer<Schlegel> {
 	}
 
 	@Override
-	public Schlegel getResult() {
+	public Schlegel getResult() throws PolymakeOutputException {
 		while (result == null) {
 			try {
 				wait();
@@ -95,14 +95,21 @@ public class SchlegelTransformer implements PolymakeTransformer<Schlegel> {
 			}
 		}
 		StringBuilder regex = new StringBuilder();
-		//minimum one 2D point or...
+		// minimum one 2D point or...
 		regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\s[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+|");
-		//minimum one 3D point followed by...
+		// minimum one 3D point followed by...
 		regex.append("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\s[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\s[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+");
-		//a $\n...
+		// a $\n...
 		regex.append("\\$\\n");
-		//minimum one edge
+		// minimum one edge
 		regex.append("(\\{[0-9]+\\s[0-9]+\\}\\n)+");
+
+		// test if result is formatted correct
+		if (!result.matches(regex.toString())) {
+			throw new PolymakeOutputException(
+					"String set by setResult() does not match defined format for schlegel.");
+		} else {
+		}
 		// splitting result string into two. One contains the points, the other
 		// the
 		// edges.
@@ -151,6 +158,5 @@ public class SchlegelTransformer implements PolymakeTransformer<Schlegel> {
 
 		return new Schlegel(points, edges);
 	}
-
 
 }
