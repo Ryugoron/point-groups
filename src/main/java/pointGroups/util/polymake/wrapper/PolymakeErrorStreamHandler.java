@@ -7,6 +7,15 @@ import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
 
+/**
+ * A {@link Runnable} that allows to continously log errors from the polymake
+ * process encapsulated by the {@link PolymakeWrapper} class. Uses
+ * {@link Logger} to log the errors recieved.
+ * 
+ * @author Alex
+ * @see Logger
+ * @see PolymakeWrapper
+ */
 class PolymakeErrorStreamHandler
   implements Runnable
 {
@@ -15,6 +24,14 @@ class PolymakeErrorStreamHandler
   private final BufferedReader err;
   private final PolymakeWrapper wrapper;
 
+  /**
+   * Creates a new {@link Runnable} of type {@link PolymakeErrorStreamHandler}
+   * that will continously listen on the error stream <code>errorStream</code>
+   * from the polymake process wrapper by <code>polymakeWrapper</code>.
+   * 
+   * @param polymakeWrapper The wrapped source of the error messages
+   * @param errorStream The error stream to listen on
+   */
   PolymakeErrorStreamHandler(PolymakeWrapper polymakeWrapper,
       InputStream errorStream) {
     this.err = new BufferedReader(new InputStreamReader(errorStream));
@@ -25,6 +42,7 @@ class PolymakeErrorStreamHandler
   public void run() {
     String err;
     try {
+      // Log all output as 'severe' log message
       while ((err = this.err.readLine()) != null) {
         logger.severe(err);
       }
@@ -36,6 +54,7 @@ class PolymakeErrorStreamHandler
         logger.fine(e.getMessage());
       }
       else {
+        // No Error occured, polymake was shut down
         logger.info("Socket was closed itentionally, Resulthandler is terminating");
       }
     }
