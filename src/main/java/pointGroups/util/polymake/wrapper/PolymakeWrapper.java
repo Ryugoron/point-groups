@@ -71,6 +71,7 @@ public class PolymakeWrapper
     BufferedReader polymakeStdOut =
         new BufferedReader(new InputStreamReader(
             this.polymakeInstance.getInputStream()));
+
     try {
       logger.info("Waiting for Polymake to start up...");
       String input;
@@ -112,14 +113,13 @@ public class PolymakeWrapper
   public void stop() {
     if (isRunning) {
       try {
-        logger.fine("Attempting to stop polymake wrapper");
+        logger.info("Attempting to stop polymake wrapper");
         this.isRunning = false;
-        this.toPolymake.write(END_OF_COMMUNICATION + "\n");
-        this.toPolymake.flush();
+        send(END_OF_COMMUNICATION);
         this.polymakeInstance.getErrorStream().close();
       }
       catch (IOException e) {
-        logger.warning("Could not write closing string to Polymake or close error stream.");
+        logger.warning("Could not close error stream to polymake.");
         logger.fine(e.getMessage());
         this.polymakeInstance.destroy();
       }
@@ -144,17 +144,8 @@ public class PolymakeWrapper
 
   public void sendRequest(PolymakeTransformer req) {
     if (isRunning) {
-      try {
-        this.toPolymake.write(req.toScript().replaceAll("\n", "") + "\n");
-        this.toPolymake.flush();
-        logger.info("Writing Transformerrequest to Polymake.");
-        logger.fine(req.toScript());
-        this.pending.add(req);
-      }
-      catch (IOException e) {
-        throw new PolymakeException(
-            "Cannot send transformer request to polymake: " + e.getMessage());
-      }
+      send(req.toScript().replaceAll("\n", ""));
+      this.pending.add(req);
     }
     else {
       logger.warning("Polymake process was not started, but sendRequest was invoked.");
@@ -170,6 +161,20 @@ public class PolymakeWrapper
     }
     else {
       logger.warning("Received message from polymake, but no request was pending.");
+    }
+  }
+
+  protected void send(String msg) {
+    final String finalMsg = msg + "\n";
+    try {
+      this.toPolymake.write(finalMsg);
+      this.toPolymake.flush();
+      logger.info("Writing request to Polymake. ");
+      logger.fine("Request: " + finalMsg);
+    }
+    catch (IOException e) {
+      throw new PolymakeException("Cannot send request to polymake: " +
+          e.getMessage());
     }
   }
 
