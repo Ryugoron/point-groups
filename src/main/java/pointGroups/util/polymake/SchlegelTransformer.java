@@ -8,32 +8,33 @@ import pointGroups.util.AbstractTransformer;
 
 import java.util.Collection;
 
+
 /**
- * Transforms points into a script as string for computing schlegel vertices and edges
+ * Transforms points into a script as string for computing schlegel vertices and
+ * edges
+ * 
  * @author Nadja, Simon
  */
 public class SchlegelTransformer
   extends AbstractTransformer<Schlegel>
 {
-  
+
   private final Collection<? extends Point> points;
   private final int facet;
-  
-  public SchlegelTransformer(Collection<? extends Point> points)
-  {
+
+  public SchlegelTransformer(Collection<? extends Point> points) {
     this.points = points;
     this.facet = -1;
   }
-  
-  public SchlegelTransformer(Collection<? extends Point> points, int facet)
-  {
+
+  public SchlegelTransformer(Collection<? extends Point> points, int facet) {
     this.points = points;
     this.facet = facet;
   }
 
   @Override
   public String toScript() {
-    
+
     // Suppose the script has around 1000 characters
     StringBuilder script = new StringBuilder(1000);
     script.append("use application \"polytope\";");
@@ -53,88 +54,91 @@ public class SchlegelTransformer
     return script.toString();
   }
 
-  private String pointsToString(){
+  private String pointsToString() {
     StringBuilder matrix = new StringBuilder(200);
     double[] pointComps;
-    
+
     matrix.append("[");
-    
-    for(Point point : points){
+
+    for (Point point : points) {
       matrix.append("[1");
       pointComps = point.getComponents();
       for (double comp : pointComps) {
         matrix.append("," + comp);
       }
-      // for simplicity always appending a comma after each transformation of a point
-      // afterwards the last comma will be replaced by a closing bracket ']' of the matrix 
+      // for simplicity always appending a comma after each transformation of a
+      // point
+      // afterwards the last comma will be replaced by a closing bracket ']' of
+      // the matrix
       matrix.append("],");
     }
     // replacing last comma of the for-loop with a closing bracket of the matrix
-    matrix.setCharAt(matrix.length()-1, ']');
+    matrix.setCharAt(matrix.length() - 1, ']');
     return matrix.toString();
   }
 
-	@Override
-	public Schlegel transformResultString() {
-		StringBuilder regex = new StringBuilder();
-		// minimum one 2D point or...
-		regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+|");
-		// minimum one 3D point followed by...
-		regex.append("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+");
-		// a $\n...
-		regex.append("\\$\\n");
-		// minimum one edge
-		regex.append("(\\{[0-9]+ [0-9]+\\}\\n)+");
+  @Override
+  public Schlegel transformResultString() {
+    StringBuilder regex = new StringBuilder();
+    // minimum one 2D point or...
+    regex.append("(([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+|");
+    // minimum one 3D point followed by...
+    regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+)");
+    // a $\n...
+    regex.append("\\$\\n");
+    // minimum one edge
+    regex.append("(\\{[0-9]+ [0-9]+\\}\\n)+");
 
-		// test if result is formatted correct
-		if (!resultString.matches(regex.toString())) {
-			throw new PolymakeException(
-					"String set by setResultString() does not match defined format for schlegel.");
-		} else {
-		}
-		// splitting result string into two. One contains the points, the other
-		// the
-		// edges.
-		String[] pointsAndEdges = resultString.split("\\$\n");
-		String pointsString = pointsAndEdges[0];
-		String edgesString = pointsAndEdges[1];
+    // test if result is formatted correct
+    if (!resultString.matches(regex.toString())) {
+      throw new PolymakeException(
+          "String set by setResultString() does not match defined format for schlegel.");
+    }
+    else {}
+    // splitting result string into two. One contains the points, the other
+    // the
+    // edges.
+    String[] pointsAndEdges = resultString.split("\\$\n");
+    String pointsString = pointsAndEdges[0];
+    String edgesString = pointsAndEdges[1];
 
-		// splitting string containing points into one per point
-		String[] splittedPointsString = pointsString.split("\n");
-		// transforming strings into Point-Objects
-		Point3D[] points = new Point3D[splittedPointsString.length];
-		for (int i = 0; i < splittedPointsString.length; i++) {
-			String str = splittedPointsString[i];
-			// ignore brackets and split into components
-			String[] compStr = str.substring(1, str.length() - 2).split(" ");
-			if (compStr.length == 2) {
-				points[i] = new Point3D(Double.parseDouble(compStr[0]),
-						Double.parseDouble(compStr[1]), 0);
-			} else if (compStr.length == 3) {
-				points[i] = new Point3D(Double.parseDouble(compStr[0]),
-						Double.parseDouble(compStr[1]),
-						Double.parseDouble(compStr[2]));
-			} else {
-				// TODO Fehler? Vorher? Try-Catch? versehentliche Mischung aus
-				// 3D und 2D
-				// Punkten?
-			}
-		}
-		// Store Edges as Array von Pair<Point3D,Point3D>
-		String[] splittedEdgesString = edgesString.split("\n");
-		Pair<Point3D, Point3D>[] edges = new Pair[splittedEdgesString.length];
-		// start iteration with i = 1 because the first string after splitting
-		// is
-		// empty caused by leading \n
-		for (int i = 0; i < splittedEdgesString.length; i++) {
-			String str = splittedEdgesString[i];
-			// ignore brackets and split into components
-			String[] compStr = str.substring(1, str.length() - 2).split(" ");
-			Point3D from = points[Integer.valueOf(compStr[0])];
-			Point3D to = points[Integer.valueOf(compStr[1])];
-			edges[i] = new Pair<Point3D, Point3D>(from, to);
-		}
+    // splitting string containing points into one per point
+    String[] splittedPointsString = pointsString.split("\n");
+    // transforming strings into Point-Objects
+    Point3D[] points = new Point3D[splittedPointsString.length];
+    for (int i = 0; i < splittedPointsString.length; i++) {
+      String str = splittedPointsString[i];
+      // ignore brackets and split into components
+      String[] compStr = str.substring(0, str.length()).split(" ");
+      if (compStr.length == 2) {
+        points[i] =
+            new Point3D(Double.parseDouble(compStr[0]),
+                Double.parseDouble(compStr[1]), 0);
+      }
+      else if (compStr.length == 3) {
+        points[i] =
+            new Point3D(Double.parseDouble(compStr[0]),
+                Double.parseDouble(compStr[1]), Double.parseDouble(compStr[2]));
+      }
+      else {
 
-		return new Schlegel(points, edges);
-	}
+      }
+    }
+    // Store Edges as Array von Pair<Point3D,Point3D>
+    String[] splittedEdgesString = edgesString.split("\n");
+    Pair<Point3D, Point3D>[] edges = new Pair[splittedEdgesString.length];
+    // start iteration with i = 1 because the first string after splitting
+    // is
+    // empty caused by leading \n
+    for (int i = 0; i < splittedEdgesString.length; i++) {
+      String str = splittedEdgesString[i];
+      // ignore brackets and split into components
+      String[] compStr = str.substring(1, str.length() - 1).split(" ");
+      Point3D from = points[Integer.valueOf(compStr[0])];
+      Point3D to = points[Integer.valueOf(compStr[1])];
+      edges[i] = new Pair<Point3D, Point3D>(from, to);
+    }
+
+    return new Schlegel(points, edges);
+  }
 }
