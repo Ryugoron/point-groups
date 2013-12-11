@@ -34,18 +34,18 @@ public class SchlegelTransformer<Schlegel>
     
     // Suppose the script has around 1000 characters
     StringBuilder script = new StringBuilder(1000);
-    script.append("use application \"polytope\";\n");
+    script.append("use application \"polytope\";");
 
     script.append("my $mat=new Matrix<Rational>(");
     script.append(pointsToString());
-    script.append(");\n");
-    script.append("my $p = new Polytope(POINTS=>$mat);\n");
+    script.append(");");
+    script.append("my $p = new Polytope(POINTS=>$mat);");
 
-    script.append("my $schlegelverts = $p->SCHLEGEL_DIAGRAM->VERTICES;\n");
-    script.append("my $edges = $p->GRAPH->EDGES;\n");
+    script.append("my $schlegelverts = $p->SCHLEGEL_DIAGRAM->VERTICES;");
+    script.append("my $edges = $p->GRAPH->EDGES;");
 
-    script.append("my $v = \"$schlegelverts\";\n");
-    script.append("my $e = \"$edges\";\n");
+    script.append("my $v = \"$schlegelverts\";");
+    script.append("my $e = \"$edges\";");
 
     script.append("print $v.$e");
     return script.toString();
