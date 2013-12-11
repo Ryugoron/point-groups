@@ -57,12 +57,12 @@ public class Point3D
    */
   @Override
   public double[] getComponents() {
-    double[] components = {i, j, k};
+    double[] components = { this.i, this.j, this.k };
     return components;
   }
 
   @Override
   public String toString() {
-    return "(" + i + "," + j + "," + k + ")";
+    return "(" + this.i + "," + this.j + "," + this.k + ")";
   }
 }
