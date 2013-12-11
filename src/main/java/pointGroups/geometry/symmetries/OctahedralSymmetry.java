@@ -146,7 +146,23 @@ public class OctahedralSymmetry
    */
   public enum Subgroups
     implements Subgroup<OctahedralSymmetry> {
-    Id, Full;
+    Id("Trivial group"), Full("Full octahedral group");
+
+    private final String name;
+
+    private Subgroups(String s) {
+      this.name = s;
+    }
+
+    @Override
+    public String getName() {
+      return this.name;
+    }
+
+    @Override
+    public int order() {
+      return sym.order(this);
+    }
   }
 
   /**
@@ -185,6 +201,11 @@ public class OctahedralSymmetry
   public Collection<UnitQuaternion>
       getSymmetries(Subgroup<OctahedralSymmetry> s) {
     return sym.subgroupTable.get(s);
+  }
+
+  @Override
+  public Collection<Subgroup<OctahedralSymmetry>> getSubgroups() {
+    return sym.subgroupTable.keySet();
   }
 
 }

@@ -2,6 +2,10 @@ package pointGroups.geometry;
 
 import java.util.Collection;
 
+import pointGroups.geometry.symmetries.IcosahedralSymmetry;
+import pointGroups.geometry.symmetries.OctahedralSymmetry;
+import pointGroups.geometry.symmetries.TetrahedralSymmetry;
+
 
 /**
  * Representation of the point groups (symmetry groups) in three and four
@@ -26,7 +30,11 @@ public interface Symmetry<P extends Point, E extends Symmetry<P, E>>
    * @param <E> The symmetry under consideration
    */
   interface Subgroup<E extends Symmetry<?, ?>>
-  {};
+  {
+    public String getName();
+
+    public int order();
+  };
 
   /**
    * Returns a {@link Collection} of points which are the images of applying the
@@ -47,6 +55,8 @@ public interface Symmetry<P extends Point, E extends Symmetry<P, E>>
    * @return Order of subgroup s
    */
   public int order(Subgroup<E> s);
+
+  public Collection<Subgroup<E>> getSubgroups();
 
   public Collection<UnitQuaternion> getSymmetries(Subgroup<E> s);
 }

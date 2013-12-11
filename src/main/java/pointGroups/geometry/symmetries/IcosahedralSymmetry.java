@@ -1,6 +1,7 @@
 package pointGroups.geometry.symmetries;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,6 +32,11 @@ public class IcosahedralSymmetry
    */
   private final Map<Subgroup<IcosahedralSymmetry>, Collection<UnitQuaternion>> subgroupTable;
 
+  /**
+   * identity rotation
+   */
+  final static UnitQuaternion id;
+
   {
     subgroupTable =
         new HashMap<Subgroup<IcosahedralSymmetry>, Collection<UnitQuaternion>>();
@@ -39,7 +45,12 @@ public class IcosahedralSymmetry
   static {
     sym = new IcosahedralSymmetry();
 
+    id = new UnitQuaternion(1, 0, 0, 0);
     // ...list symmetries
+  }
+
+  static {
+    sym.subgroupTable.put(Subgroups.Id, Collections.singleton(id));
   }
 
 
@@ -53,7 +64,23 @@ public class IcosahedralSymmetry
    */
   public enum Subgroups
     implements Subgroup<IcosahedralSymmetry> {
-    Id, Full;
+    Id("Trivial group"), Full("Full icosahedral group");
+
+    private final String name;
+
+    private Subgroups(String s) {
+      this.name = s;
+    }
+
+    @Override
+    public String getName() {
+      return this.name;
+    }
+
+    @Override
+    public int order() {
+      return sym.order(this);
+    }
   }
 
   /**
@@ -93,6 +120,12 @@ public class IcosahedralSymmetry
       pointGroups.geometry.Symmetry.Subgroup<IcosahedralSymmetry> s) {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public Collection<pointGroups.geometry.Symmetry.Subgroup<IcosahedralSymmetry>>
+      getSubgroups() {
+    return sym.subgroupTable.keySet();
   }
 
 }
