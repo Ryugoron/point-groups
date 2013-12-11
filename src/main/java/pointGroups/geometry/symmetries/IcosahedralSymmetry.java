@@ -1,15 +1,14 @@
 package pointGroups.geometry.symmetries;
 
-import pointGroups.geometry.Point3D;
-import pointGroups.geometry.Symmetry;
-import pointGroups.geometry.UnitQuaternion;
-import pointGroups.geometry.Symmetry.Subgroup;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Symmetry;
+import pointGroups.geometry.UnitQuaternion;
 
 
 /**
@@ -33,7 +32,8 @@ public class IcosahedralSymmetry
   private final Map<Subgroup<IcosahedralSymmetry>, Collection<UnitQuaternion>> subgroupTable;
 
   {
-    subgroupTable = new HashMap<Subgroup<IcosahedralSymmetry>, Collection<UnitQuaternion>>();
+    subgroupTable =
+        new HashMap<Subgroup<IcosahedralSymmetry>, Collection<UnitQuaternion>>();
   }
 
   static {

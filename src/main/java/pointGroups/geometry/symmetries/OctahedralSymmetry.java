@@ -1,16 +1,15 @@
 package pointGroups.geometry.symmetries;
 
-import pointGroups.geometry.Point3D;
-import pointGroups.geometry.Symmetry;
-import pointGroups.geometry.UnitQuaternion;
-import pointGroups.geometry.Symmetry.Subgroup;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Symmetry;
+import pointGroups.geometry.UnitQuaternion;
 
 
 /**
@@ -60,7 +59,8 @@ public class OctahedralSymmetry
       edgeAxis_5, edgeAxis_6;
 
   {
-    subgroupTable = new HashMap<Subgroup<OctahedralSymmetry>, Collection<UnitQuaternion>>();
+    subgroupTable =
+        new HashMap<Subgroup<OctahedralSymmetry>, Collection<UnitQuaternion>>();
   }
 
   static {

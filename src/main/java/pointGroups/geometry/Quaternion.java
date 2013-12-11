@@ -9,7 +9,7 @@ package pointGroups.geometry;
  * @author Alex
  */
 public class Quaternion
-implements Point
+  implements Point
 {
   public final double i, j, k, re;
 
@@ -39,7 +39,8 @@ implements Point
   }
 
   public Quaternion plus(Quaternion b) {
-    return new Quaternion(re + b.re, i + b.i, j + b.j, k + b.k);
+    return new Quaternion(this.re + b.re, this.i + b.i, this.j + b.j, this.k +
+        b.k);
   }
 
   public Quaternion mult(Quaternion b) {
@@ -54,43 +55,46 @@ implements Point
   }
 
   public Quaternion conjugate() {
-    return new Quaternion(re, -i, -j, -k);
+    return new Quaternion(this.re, -this.i, -this.j, -this.k);
   }
 
   public Quaternion inverse() {
-    double mron = 1d / this.norm();
-    return new Quaternion(re * mron, -i * mron, -j * mron, -k * mron);
+    double mron = 1d / norm();
+    return new Quaternion(this.re * mron, -this.i * mron, -this.j * mron,
+        -this.k * mron);
   }
 
   public double norm() {
-    return Math.sqrt(i * i + j * j + k * k + re * re);
+    return Math.sqrt(this.i * this.i + this.j * this.j + this.k * this.k +
+        this.re * this.re);
   }
 
   public double normSquared() {
-    return i * i + j * j + k * k + re * re;
+    return this.i * this.i + this.j * this.j + this.k * this.k + this.re *
+        this.re;
   }
 
   public UnitQuaternion asUnit() {
     double y0, y1, y2, y3;
-    double mron = 1d / this.norm();
-    y0 = mron * re;
-    y1 = mron * i;
-    y2 = mron * j;
-    y3 = mron * k;
+    double mron = 1d / norm();
+    y0 = mron * this.re;
+    y1 = mron * this.i;
+    y2 = mron * this.j;
+    y3 = mron * this.k;
     return new UnitQuaternion(y0, y1, y2, y3);
   }
 
   public Point3D asPoint3D() {
-    return new Point3D(i, j, k);
+    return new Point3D(this.i, this.j, this.k);
   }
 
   public Point4D asPoint4D() {
-    return new Point4D(re, i, j, k);
+    return new Point4D(this.re, this.i, this.j, this.k);
   }
 
   @Override
   public String toString() {
-    return re + " + " + i + "i " + j + " j" + k + " k";
+    return this.re + " + " + this.i + "i " + this.j + " j" + this.k + " k";
   }
 
   public static Quaternion fromDouble(double d) {
@@ -98,17 +102,16 @@ implements Point
   }
 
   /**
-   * 
    * @param a
    * @param b
    * @return euclidean distance between a und b
    */
-  public static double distance(Quaternion a, Quaternion b){
-    double re = (a.re - b.re)* (a.re - b.re); 
-    double i = Math.pow((a.i - b.i),2);
-    double j = Math.pow((a.j - b.j),2);
-    double k = Math.pow((a.k - b.k),2);
-    return Math.sqrt(re+i+j+k);
+  public static double distance(Quaternion a, Quaternion b) {
+    double re = (a.re - b.re) * (a.re - b.re);
+    double i = Math.pow((a.i - b.i), 2);
+    double j = Math.pow((a.j - b.j), 2);
+    double k = Math.pow((a.k - b.k), 2);
+    return Math.sqrt(re + i + j + k);
   }
 
   /**
@@ -116,7 +119,7 @@ implements Point
    */
   @Override
   public double[] getComponents() {
-    double[] components = {re, i, j, k};
+    double[] components = { this.re, this.i, this.j, this.k };
 
     return components;
   }
