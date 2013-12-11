@@ -44,7 +44,7 @@ public class PointGroups
     try {
       // Start Polymake
       p = Runtime.getRuntime().exec(polyCmd + " --script=" + polyDriver);
-      Thread.sleep(1000);
+      Thread.sleep(10000);
       
       
       // Provisional input
@@ -67,7 +67,7 @@ public class PointGroups
       String perl = st.toScript().replaceAll("\n", "");
 
       // Wait for start-up of polymake
-      Thread.sleep(5000);
+      Thread.sleep(10000);
 
       s = new Socket("localhost", 57177);
       BufferedWriter bw =
