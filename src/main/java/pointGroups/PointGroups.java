@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Properties;
 
 import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Schlegel;
 import pointGroups.geometry.symmetries.OctahedralSymmetry;
 import pointGroups.util.polymake.SchlegelTransformer;
 import pointGroups.util.polymake.wrapper.PolymakeWrapper;
@@ -57,13 +58,13 @@ public class PointGroups
           OctahedralSymmetry.get().images(pt, OctahedralSymmetry.Subgroups.Full);
 
       // Apply Schlegeltransformation script
-      SchlegelTransformer st = new SchlegelTransformer(im);
+      SchlegelTransformer<Schlegel> st = new SchlegelTransformer<Schlegel>(im);
       pmWrapper.sendRequest(st);
       // Since Transformer is not yet a future
       Thread.sleep(2000);
       System.out.println("Result is:");
       System.out.println("------------");
-      System.out.println(st.getResult().toString());
+//      System.out.println(st.get().toString());
       System.out.println("------------");
       pmWrapper.stop();
       Thread.sleep(2000);

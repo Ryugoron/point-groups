@@ -1,6 +1,7 @@
 package pointGroups.util.polymake;
 
 import pointGroups.geometry.Point;
+import pointGroups.util.AbstractTransformer;
 
 import java.util.Collection;
 
@@ -9,13 +10,12 @@ import java.util.Collection;
  * Transforms points into a script as string for computing schlegel vertices and edges
  * @author Nadja, Simon
  */
-public class SchlegelTransformer
-  implements PolymakeTransformer
+public class SchlegelTransformer<Schlegel>
+  extends AbstractTransformer<Schlegel>
 {
   
   private final Collection<? extends Point> points;
   private final int facet;
-  private String result;
   
   public SchlegelTransformer(Collection<? extends Point> points)
   {
@@ -73,16 +73,9 @@ public class SchlegelTransformer
   }
 
   @Override
-  public void setResult(String result) {
-    this.result = result;
-  }
-
-  @Override
-  public PolymakeResult getResult() {
-    if (result == null){
-      
-    }
-    return new SchlegelResult(result);
+  protected Schlegel transformResultString() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }
