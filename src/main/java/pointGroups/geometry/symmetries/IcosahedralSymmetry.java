@@ -118,14 +118,36 @@ public class IcosahedralSymmetry
   @Override
   public Collection<UnitQuaternion> getSymmetries(
       pointGroups.geometry.Symmetry.Subgroup<IcosahedralSymmetry> s) {
-    // TODO Auto-generated method stub
-    return null;
+    return sym.subgroupTable.get(s);
+  }
+
+  @Override
+  public Collection<UnitQuaternion> getSymmetriesByName(String subgroup) {
+    return getSymmetries(Subgroups.valueOf(subgroup));
   }
 
   @Override
   public Collection<pointGroups.geometry.Symmetry.Subgroup<IcosahedralSymmetry>>
       getSubgroups() {
     return sym.subgroupTable.keySet();
+  }
+
+  @Override
+  public int order() {
+    return order(Subgroups.Full);
+  }
+
+  @Override
+  public Collection<Point3D> imagesByName(Point3D p, String subgroup) {
+    Subgroups s = Subgroups.valueOf(subgroup);
+
+    return images(p, s);
+  }
+
+  @Override
+  public pointGroups.geometry.Symmetry.Subgroup<IcosahedralSymmetry>
+      getSubgroupByName(String subgroup) {
+    return Subgroups.valueOf(subgroup);
   }
 
 }

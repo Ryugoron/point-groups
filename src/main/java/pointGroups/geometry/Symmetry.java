@@ -48,6 +48,8 @@ public interface Symmetry<P extends Point, E extends Symmetry<P, E>>
    */
   public Collection<P> images(P p, Subgroup<E> s);
 
+  public Collection<P> imagesByName(P p, String subgroup);
+
   /**
    * The order of the specified subgroup.
    * 
@@ -56,7 +58,13 @@ public interface Symmetry<P extends Point, E extends Symmetry<P, E>>
    */
   public int order(Subgroup<E> s);
 
+  public int order();
+
+  public Subgroup<E> getSubgroupByName(String subgroup);
+
   public Collection<Subgroup<E>> getSubgroups();
 
   public Collection<UnitQuaternion> getSymmetries(Subgroup<E> s);
+
+  public Collection<UnitQuaternion> getSymmetriesByName(String subgroup);
 }
