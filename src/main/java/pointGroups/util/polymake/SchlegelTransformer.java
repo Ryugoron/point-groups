@@ -91,7 +91,7 @@ public class SchlegelTransformer
 
     // test if result is formatted correct
     if (!resultString.matches(regex.toString())) {
-      throw new PolymakeException(
+      throw new PolymakeOutputException(
           "String set by setResultString() does not match defined format for schlegel.");
     }
     else {}
