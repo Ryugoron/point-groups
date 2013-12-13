@@ -2,6 +2,7 @@ package pointGroups.gui.symchooser.elements;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.MouseListener;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,7 +15,7 @@ public class SymmetryEntry
   extends JPanel
 {
   private static final long serialVersionUID = 9127866137316472526L;
-  private JPanel p2 = new JPanel();
+  private final JPanel p2 = new JPanel();
 
   public SymmetryEntry(SymmetryInfo<?> info) {
     super();
@@ -26,5 +27,10 @@ public class SymmetryEntry
       p2.add(new SubgroupEntry(subgroup));
     }
     add(p2, BorderLayout.CENTER);
+  }
+
+  @Override
+  public void addMouseListener(MouseListener l) {
+
   }
 }

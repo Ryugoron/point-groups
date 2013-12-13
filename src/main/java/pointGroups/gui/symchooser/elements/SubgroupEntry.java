@@ -15,8 +15,7 @@ public class SubgroupEntry
   implements MouseListener
 {
   private static final long serialVersionUID = 8333248703174706898L;
-
-  private SubgroupInfo info;
+  private final SubgroupInfo info;
 
   public SubgroupEntry(SubgroupInfo info) {
     super(info.getName() + " (Order: " + info.getOrder() + ")");
