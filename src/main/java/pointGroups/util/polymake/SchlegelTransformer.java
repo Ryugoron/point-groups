@@ -94,7 +94,6 @@ public class SchlegelTransformer
       throw new PolymakeOutputException(
           "String set by setResultString() does not match defined format for schlegel.");
     }
-    else {}
     // splitting result string into two. One contains the points, the other
     // the
     // edges.
@@ -121,7 +120,7 @@ public class SchlegelTransformer
                 Double.parseDouble(compStr[1]), Double.parseDouble(compStr[2]));
       }
       else {
-
+        logger.severe("point in resultString split in: " + compStr.length + "components");
       }
     }
     // Store Edges as Array von Pair<Point3D,Point3D>
