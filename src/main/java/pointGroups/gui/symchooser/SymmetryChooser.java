@@ -12,9 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
-import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
-import pointGroups.gui.symchooser.elements.SubgroupEntry;
 import pointGroups.gui.symchooser.elements.SymmetryEntry;
 
 
@@ -41,9 +39,10 @@ public class SymmetryChooser
     JPanel symmetryListPanel = new JPanel();
     symmetryListPanel.setLayout(new GridLayout(prov2.getSymmetryInfo(
         Point3D.class).size(), 1));
-    for (SymmetryInfo<? extends Point> info : prov2.getSymmetryInfo(Point3D.class)) {
+
+    for (SymmetryInfo<Point3D> info : prov2.get(Point3D.class)) {
       SymmetryEntry e = new SymmetryEntry(info);
-      e.addMouseListener(this);
+      // e.addMouseListener(new Input3DListener());
       symmetryListPanel.add(e);
     }
     panel1.add(symmetryListPanel, BorderLayout.NORTH);
@@ -83,48 +82,54 @@ public class SymmetryChooser
     add("3D Groups", panel1);
     add("4D Groups", panel2);
   }
-  
-  
-  class InputListener implements MouseListener  {
-    private SubgroupInfo s;
-    
-    public void setSubgroupEntry(SubgroupInfo s) {
+
+
+  public class Input3DListener
+    implements MouseListener
+  {
+    private SubgroupInfo<Point3D> s;
+
+    public void setSubgroupEntry(final SubgroupInfo<Point3D> s) {
       this.s = s;
     }
+
     @Override
     public void mouseClicked(MouseEvent e) {
       final double x = Double.parseDouble(SymmetryChooser.this.x.getText());
       final double y = Double.parseDouble(SymmetryChooser.this.y.getText());
       final double z = Double.parseDouble(SymmetryChooser.this.z.getText());
-      
-      s.getSymmetryInfo().get().imagesByName(new Point3D(x, y, z), s.get().toString());
-      
+
+      System.out.println(s.getSymmetryInfo().get().imagesByName(
+          new Point3D(x, y, z), s.get().toString()));
+
+      // System.out.println(s.getSymmetryInfo().get().images(new Point3D(x, y,
+      // z),
+      // s.get()));
+
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
       // TODO Auto-generated method stub
-      
+
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
       // TODO Auto-generated method stub
-      
+
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
       // TODO Auto-generated method stub
-      
+
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
       // TODO Auto-generated method stub
-      
+
     }
   }
-  }
-
 }

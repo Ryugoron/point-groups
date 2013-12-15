@@ -41,11 +41,11 @@ public abstract class Symmetry3DInfo
   }
 
   @Override
-  public Collection<SubgroupInfo> getSubgroupInfo() {
-    Collection<SubgroupInfo> c = new HashSet<SubgroupInfo>();
+  public Collection<SubgroupInfo<Point3D>> getSubgroupInfo() {
+    Collection<SubgroupInfo<Point3D>> c = new HashSet<SubgroupInfo<Point3D>>();
 
-    for (Subgroup<?> subgroup : this.getSubgroups()) {
-      c.add(new SubgroupInfo(subgroup, this));
+    for (Subgroup<? extends Symmetry<Point3D, ?>> subgroup : this.getSubgroups()) {
+      c.add(new SubgroupInfo<Point3D>(subgroup, this));
     }
     return c;
   }

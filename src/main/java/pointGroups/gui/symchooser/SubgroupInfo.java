@@ -1,15 +1,17 @@
 package pointGroups.gui.symchooser;
 
+import pointGroups.geometry.Point;
 import pointGroups.geometry.Symmetry;
 
 
-public class SubgroupInfo
+public class SubgroupInfo<P extends Point>
 {
 
-  Symmetry.Subgroup<?> subgroup;
-  SymmetryInfo<?> sym;
+  Symmetry.Subgroup<? extends Symmetry<P, ?>> subgroup;
+  SymmetryInfo<P> sym;
 
-  public SubgroupInfo(Symmetry.Subgroup<?> subgroup, SymmetryInfo<?> sym) {
+  public SubgroupInfo(Symmetry.Subgroup<? extends Symmetry<P, ?>> subgroup,
+      SymmetryInfo<P> sym) {
     this.subgroup = subgroup;
     this.sym = sym;
   }
@@ -22,11 +24,11 @@ public class SubgroupInfo
     return this.subgroup.order();
   }
 
-  public Symmetry.Subgroup<?> get() {
+  public Symmetry.Subgroup<? extends Symmetry<P, ?>> get() {
     return subgroup;
   }
 
-  public SymmetryInfo<?> getSymmetryInfo() {
+  public SymmetryInfo<P> getSymmetryInfo() {
     return this.sym;
   }
 }

@@ -26,6 +26,6 @@ public interface SymmetryInfo<P extends Point>
   public Collection<? extends Symmetry.Subgroup<? extends Symmetry<P, ?>>>
       getSubgroups();
 
-  public Collection<SubgroupInfo> getSubgroupInfo();
+  public Collection<SubgroupInfo<P>> getSubgroupInfo();
 
 }

@@ -41,4 +41,9 @@ public class SymmetryInfoProvider
     return this.symmetryInfos.get(clazz);
   }
 
+  @SuppressWarnings("unchecked")
+  public <A extends Point> Collection<SymmetryInfo<A>> get(Class<A> clazz) {
+    return (Collection<SymmetryInfo<A>>) this.symmetryInfos.get(clazz);
+  }
+
 }
