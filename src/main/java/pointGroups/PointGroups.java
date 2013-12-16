@@ -1,26 +1,23 @@
 package pointGroups;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
 import java.util.Collection;
 import java.util.Properties;
 
 import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Schlegel;
 import pointGroups.geometry.symmetries.OctahedralSymmetry;
 import pointGroups.util.polymake.SchlegelTransformer;
+import pointGroups.util.polymake.wrapper.PolymakeWrapper;
 
 
 public class PointGroups
 {
   private static final Properties prop = new Properties();
-  private static Socket s;
-  private static Process p;
 
   public static void main(String[] args) {
 
@@ -41,12 +38,10 @@ public class PointGroups
     final String polyCmd = prop.getProperty("POLYMAKEPATH");
     final String polyDriver = prop.getProperty("POLYMAKEDRIVER");
 
+    PolymakeWrapper pmWrapper = new PolymakeWrapper(polyCmd, polyDriver);
+    pmWrapper.start();
+
     try {
-      // Start Polymake
-      p = Runtime.getRuntime().exec(polyCmd + " --script=" + polyDriver);
-      Thread.sleep(1000);
-      
-      
       // Provisional input
       System.out.println("Please input a 3D-Point in Format x,y,z:");
       BufferedReader stdin =
@@ -63,46 +58,24 @@ public class PointGroups
           OctahedralSymmetry.get().images(pt, OctahedralSymmetry.Subgroups.Full);
 
       // Apply Schlegeltransformation script
-      SchlegelTransformer st = new SchlegelTransformer(im);
-      String perl = st.toScript().replaceAll("\n", "");
+      SchlegelTransformer<Schlegel> st = new SchlegelTransformer<Schlegel>(im);
+      pmWrapper.sendRequest(st);
+      // Since Transformer is not yet a future
+      Thread.sleep(2000);
+      System.out.println("Result is:");
+      System.out.println("------------");
+//      System.out.println(st.get().toString());
+      System.out.println("------------");
+      pmWrapper.stop();
+      Thread.sleep(2000);
 
-      // Wait for start-up of polymake
-      Thread.sleep(5000);
 
-      s = new Socket("localhost", 57177);
-      BufferedWriter bw =
-          new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
-      BufferedReader br =
-          new BufferedReader(new InputStreamReader(s.getInputStream()));
-
-      bw.write(perl + "\n");
-      bw.flush();
-
-      String output;
-      while ((output = br.readLine()) != null) {
-        if (output.equals("__END__")) break;
-        System.out.println(output);
-      }
-      bw.write("__END__" + "\n");
-      bw.flush();
-      
-      s.close();
-      p.destroy();
     }
     catch (IOException e) {
       e.printStackTrace();
     }
     catch (InterruptedException e) {
       e.printStackTrace();
-    }
-    finally {
-      p.destroy();
-      try {
-        s.close();
-      }
-      catch (IOException e) {
-        e.printStackTrace();
-      }
     }
 
   }
