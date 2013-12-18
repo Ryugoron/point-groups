@@ -1,7 +1,10 @@
 package pointGroups.gui.event.types;
 
+import pointGroups.gui.event.HasEventHandlers;
+
+
 public interface HasSymmetry3DChooseHandlers
-  extends HasHandlers
+  extends HasEventHandlers
 {
   void addSymmetry3DChooseHandler(Symmetry3DChooseHandler handler);
 
