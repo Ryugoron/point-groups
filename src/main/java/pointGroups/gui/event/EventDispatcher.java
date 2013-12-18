@@ -50,7 +50,7 @@ public class EventDispatcher
   @Override
   public void dispatchEvent(Event e) {
     for (EventHandler handler : eventTypeHandlerMap.get(e.getClass())) {
-      // want to call onSymmetryChanged somehow
+      handler.dispatchEvent(e);
     }
   }
 }
