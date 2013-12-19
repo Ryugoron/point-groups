@@ -31,7 +31,7 @@ public class EventDispatcher
     fireEvent0(event);
   }
 
-  protected <H extends EventHandler> void fireEvent0(Event<H> event) {
+  private <H extends EventHandler> void fireEvent0(Event<H> event) {
     Collection<H> handlers = this.getHandlers(event.getType());
 
     for (H h : handlers) {

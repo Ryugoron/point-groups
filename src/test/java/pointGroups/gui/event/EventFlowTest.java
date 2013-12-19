@@ -9,7 +9,6 @@ import pointGroups.geometry.Symmetry;
 import pointGroups.geometry.symmetries.TetrahedralSymmetry;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseHandler;
-import pointGroups.gui.event.types.Symmetry3DChooseListener;
 
 
 public class EventFlowTest
@@ -32,19 +31,19 @@ public class EventFlowTest
     }
 
     public void changeSymmetry(Symmetry<Point3D, ?> symmetry) {
-      dispatcher.dispatchEvent(new Symmetry3DChooseEvent(symmetry));
+      dispatcher.fireEvent(new Symmetry3DChooseEvent(symmetry));
     }
   }
 
 
   public static class PointPicker
-    implements Symmetry3DChooseListener
+    implements Symmetry3DChooseHandler
   {
     EventDispatcher dispatcher;
     Symmetry<Point3D, ?> symmetry;
 
     public PointPicker(EventDispatcher dispatcher) {
-      dispatcher.addSymmetry3DChooseHandler(new Symmetry3DChooseHandler(this));
+      dispatcher.addHandler(Symmetry3DChooseHandler.class, this);
 
       this.dispatcher = dispatcher;
     }
