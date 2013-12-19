@@ -1,56 +1,68 @@
 package pointGroups.gui.event;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import pointGroups.gui.event.types.HasSymmetry3DChooseHandlers;
-import pointGroups.gui.event.types.Symmetry3DChooseHandler;
-
 
 public class EventDispatcher
-  implements HasSymmetry3DChooseHandlers
+  implements HasEventHandlers
 {
 
-  public Map<Class<? extends Event>, Collection<EventHandler>> eventTypeHandlerMap =
+  public Map<Class<? extends EventHandler>, Collection<? extends EventHandler>> eventTypeHandlerMap =
       new HashMap<>();
-  
-  protected void add(EventHandler handler) {
-    Class<? extends Event> clazz = handler.getEventType();
-    Collection<EventHandler> handlers = eventTypeHandlerMap.get(clazz);
 
-    if (handlers == null) {
-      handlers = new LinkedList<EventHandler>();
-      eventTypeHandlerMap.put(clazz, handlers);
-    }
-
+  public <H extends EventHandler> void addHandler(final Class<H> handlerType,
+      final H handler) {
+    Collection<H> handlers = forceHandlerCollection(handlerType);
     handlers.add(handler);
   }
 
-  protected void remove(EventHandler handler) {
-    Class<? extends Event> clazz = handler.getEventType();
-    Collection<EventHandler> handlers = eventTypeHandlerMap.get(clazz);
-
-    if (handlers == null) return;
-
+  public <H extends EventHandler> void removeHandler(
+      final Class<H> handlerType, final H handler) {
+    Collection<H> handlers = forceHandlerCollection(handlerType);
     handlers.remove(handler);
   }
 
   @Override
-  public void addSymmetry3DChooseHandler(Symmetry3DChooseHandler handler) {
-    add(handler);
+  public void fireEvent(final Event<?> event) {
+    fireEvent0(event);
   }
 
-  @Override
-  public void removeSymmetry3DChooseHandler(Symmetry3DChooseHandler handler) {
-    remove(handler);
+  protected <H extends EventHandler> void fireEvent0(Event<H> event) {
+    Collection<H> handlers = this.getHandlers(event.getType());
+
+    for (H h : handlers) {
+      event.dispatch(h);
+    }
   }
 
-  @Override
-  public void dispatchEvent(Event e) {
-    for (EventHandler handler : eventTypeHandlerMap.get(e.getClass())) {
-      handler.dispatchEvent(e);
+  private <H extends EventHandler> Collection<H> forceHandlerCollection(
+      final Class<H> handlerType) {
+    @SuppressWarnings("unchecked")
+    Collection<H> existingHandlers =
+        (Collection<H>) eventTypeHandlerMap.get(handlerType);
+
+    if (existingHandlers == null) {
+      existingHandlers = new LinkedList<>();
+      eventTypeHandlerMap.put(handlerType, existingHandlers);
+    }
+
+    return existingHandlers;
+  }
+
+  private <H extends EventHandler> Collection<H> getHandlers(
+      Class<H> handlerType) {
+    @SuppressWarnings("unchecked")
+    Collection<H> handlers =
+        (Collection<H>) eventTypeHandlerMap.get(handlerType);
+    if (handlers == null) {
+      return Collections.emptyList();
+    }
+    else {
+      return handlers;
     }
   }
 }

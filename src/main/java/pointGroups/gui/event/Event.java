@@ -1,6 +1,11 @@
 package pointGroups.gui.event;
 
-public interface Event
+public abstract class Event<H extends EventHandler>
 {
+  protected Event() {
+  }
 
+  public abstract Class<H> getType();
+
+  protected abstract void dispatch(H handler);
 }
