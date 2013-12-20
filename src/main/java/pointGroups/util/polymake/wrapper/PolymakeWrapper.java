@@ -11,8 +11,8 @@ import java.util.Queue;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
+import pointGroups.util.Transformer;
 import pointGroups.util.polymake.PolymakeException;
-import pointGroups.util.polymake.PolymakeTransformer;
 
 
 /**
@@ -31,7 +31,7 @@ public class PolymakeWrapper
   final String polymakeDriverPath;
 
   private Process polymakeInstance;
-  private final Queue<PolymakeTransformer> pending;
+  private final Queue<Transformer<?>> pending;
 
   private Socket polymakeSocket;
   private BufferedWriter toPolymake;
@@ -61,7 +61,7 @@ public class PolymakeWrapper
       final String polymakeDriverPath) {
     this.polymakePath = polymakePath;
     this.polymakeDriverPath = polymakeDriverPath;
-    this.pending = new LinkedList<PolymakeTransformer>();
+    this.pending = new LinkedList<Transformer<?>>();
   }
 
   /**
@@ -199,7 +199,7 @@ public class PolymakeWrapper
    * @param req The {@link PolymakeTransformer} to be submitted.
    * @see PolymakeTransformer
    */
-  public void sendRequest(PolymakeTransformer req) {
+  public void sendRequest(Transformer<?> req) {
     if (isRunning) {
       send(req.toScript().replaceAll("\n", ""));
       this.pending.add(req);
@@ -220,9 +220,9 @@ public class PolymakeWrapper
    */
   void onMessageReceived(String msg) {
     logger.info("Got answer from polymake");
-    PolymakeTransformer pt = this.pending.poll();
+    Transformer<?> pt = this.pending.poll();
     if (pt != null) {
-      pt.setResult(msg);
+      pt.setResultString(msg);
     }
     else {
       logger.warning("Received message from polymake, but no request was pending.");
