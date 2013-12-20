@@ -7,6 +7,6 @@ public interface Symmetry3DChooseHandler
   extends EventHandler
 {
 
-  public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event);
+  public void onSymmetry3DChooseEvent(final Symmetry3DChooseEvent event);
 
 }

@@ -7,5 +7,5 @@ public abstract class Event<H extends EventHandler>
 
   public abstract Class<H> getType();
 
-  protected abstract void dispatch(H handler);
+  protected abstract void dispatch(final H handler);
 }
