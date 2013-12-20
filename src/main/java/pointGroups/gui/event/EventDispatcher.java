@@ -8,7 +8,6 @@ import java.util.Map;
 
 
 public class EventDispatcher
-  implements HasEventHandlers
 {
 
   public Map<Class<? extends EventHandler>, Collection<? extends EventHandler>> eventTypeHandlerMap =
@@ -26,12 +25,11 @@ public class EventDispatcher
     handlers.remove(handler);
   }
 
-  @Override
   public void fireEvent(final Event<?> event) {
     fireEvent0(event);
   }
 
-  private <H extends EventHandler> void fireEvent0(Event<H> event) {
+  private <H extends EventHandler> void fireEvent0(final Event<H> event) {
     Collection<H> handlers = this.getHandlers(event.getType());
 
     for (H h : handlers) {
@@ -54,7 +52,7 @@ public class EventDispatcher
   }
 
   private <H extends EventHandler> Collection<H> getHandlers(
-      Class<H> handlerType) {
+      final Class<H> handlerType) {
     @SuppressWarnings("unchecked")
     Collection<H> handlers =
         (Collection<H>) eventTypeHandlerMap.get(handlerType);

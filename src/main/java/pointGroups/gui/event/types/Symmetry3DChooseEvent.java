@@ -8,10 +8,11 @@ import pointGroups.gui.event.Event;
 public class Symmetry3DChooseEvent
   extends Event<Symmetry3DChooseHandler>
 {
+  protected final Symmetry<Point3D, ?> symmetry;
+  public final static Class<Symmetry3DChooseHandler> TYPE =
+      Symmetry3DChooseHandler.class;
 
-  protected Symmetry<Point3D, ?> symmetry;
-
-  public Symmetry3DChooseEvent(Symmetry<Point3D, ?> symmetry) {
+  public Symmetry3DChooseEvent(final Symmetry<Point3D, ?> symmetry) {
     this.symmetry = symmetry;
   }
 
@@ -20,12 +21,12 @@ public class Symmetry3DChooseEvent
   }
 
   @Override
-  public Class<Symmetry3DChooseHandler> getType() {
-    return Symmetry3DChooseHandler.class;
+  public final Class<Symmetry3DChooseHandler> getType() {
+    return TYPE;
   }
 
   @Override
-  protected void dispatch(Symmetry3DChooseHandler handler) {
+  protected void dispatch(final Symmetry3DChooseHandler handler) {
     handler.onSymmetry3DChooseEvent(this);
   }
 }

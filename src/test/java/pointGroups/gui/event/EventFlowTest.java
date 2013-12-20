@@ -43,13 +43,13 @@ public class EventFlowTest
     Symmetry<Point3D, ?> symmetry;
 
     public PointPicker(EventDispatcher dispatcher) {
-      dispatcher.addHandler(Symmetry3DChooseHandler.class, this);
+      dispatcher.addHandler(Symmetry3DChooseEvent.TYPE, this);
 
       this.dispatcher = dispatcher;
     }
 
     @Override
-    public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
+    public void onSymmetry3DChooseEvent(final Symmetry3DChooseEvent event) {
       onSymmetry3DChooseEventCalled++;
 
       symmetry = event.getSymmetry3D();
