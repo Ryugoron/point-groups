@@ -27,7 +27,7 @@ public abstract class AbstractTransformer<E>
 
   @Override
   public void setResultString(String resultString) {
-    logger.info("received resultString");
+    logger.fine(logger.getName() + ": received resultString");
     this.resultString = resultString;
     synchronized (this) {
       this.notifyAll();
@@ -43,7 +43,7 @@ public abstract class AbstractTransformer<E>
           this.wait();
         }
         catch (InterruptedException e) {
-          logger.warning("InterruptedException while waiting for resultString: " + e.getMessage());
+          logger.warning(logger.getName() + ": InterruptedException while waiting for resultString: " + e.getMessage());
           // Nothing to do. Still waiting for setResult().
         }
       }

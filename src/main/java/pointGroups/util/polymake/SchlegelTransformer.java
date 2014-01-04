@@ -120,7 +120,8 @@ public class SchlegelTransformer
                 Double.parseDouble(compStr[1]), Double.parseDouble(compStr[2]));
       }
       else {
-        logger.severe("point in resultString split in: " + compStr.length + "components");
+        logger.severe(logger.getName() + ": point in resultString split in: " + compStr.length + "components");
+        logger.fine(logger.getName() + ": resultString was: " + resultString);
       }
     }
     // Store Edges as Array von Pair<Point3D,Point3D>
