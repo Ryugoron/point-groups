@@ -3,15 +3,22 @@ package pointGroups.util;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
 
 public abstract class AbstractTransformer<E>
   implements Transformer<E>
 {
-
+  //TODO maybe long is better? 
+  public static int count = 0;
+  public final int id = count ++;
+  //TODO is it a good idea to name the logger this way?
+  final protected Logger logger = Logger.getLogger(this.getClass().getName() + "(id: " + id + ")");
+  
   private E result;
   private volatile boolean done;
-  private volatile String resultString;
+  // has to be protected, otherwise transformResultString can't use it
+  protected volatile String resultString;
 
   @Override
   public boolean cancel(boolean mayInterruptIfRunning) {
@@ -20,8 +27,11 @@ public abstract class AbstractTransformer<E>
 
   @Override
   public void setResultString(String resultString) {
+    logger.fine(logger.getName() + ": received resultString");
     this.resultString = resultString;
-    this.notifyAll();
+    synchronized (this) {
+      this.notifyAll();
+    }
   }
 
   @Override
@@ -33,6 +43,7 @@ public abstract class AbstractTransformer<E>
           this.wait();
         }
         catch (InterruptedException e) {
+          logger.warning(logger.getName() + ": InterruptedException while waiting for resultString: " + e.getMessage());
           // Nothing to do. Still waiting for setResult().
         }
       }
@@ -45,8 +56,8 @@ public abstract class AbstractTransformer<E>
   }
 
   /**
-   * Transforms result string of the
-   * {@link Transformer#setResultString(String)} to the internal representation.
+   * Transforms result string of the {@link Transformer#setResultString(String)}
+   * to the internal representation.
    * 
    * @return Internal representation of the external calculation.
    */

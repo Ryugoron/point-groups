@@ -58,7 +58,7 @@ public class PointGroups
           OctahedralSymmetry.get().images(pt, OctahedralSymmetry.Subgroups.Full);
 
       // Apply Schlegeltransformation script
-      SchlegelTransformer<Schlegel> st = new SchlegelTransformer<Schlegel>(im);
+      SchlegelTransformer st = new SchlegelTransformer(im);
       pmWrapper.sendRequest(st);
       // Since Transformer is not yet a future
       Thread.sleep(2000);
