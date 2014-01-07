@@ -57,8 +57,16 @@ public class SymmetryChoosePanel
     // Fill 4D-Tab with Top-Level-3D-Symmetries
     Collection<SymmetryInfo<Point4D>> symmetries4D = prov.get(Point4D.class);
 
-    for (SymmetryInfo<Point4D> symmetryInfo : symmetries4D) {
-      symmetries4DPanel.add(new SymmetryEntry(symmetryInfo));
+    for (final SymmetryInfo<Point4D> symmetryInfo : symmetries4D) {
+      final SymmetryEntry s = new SymmetryEntry(symmetryInfo);
+      s.addMouseListener(new MouseClickListener() {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+          subgroupChoosePanel.choose(symmetryInfo);
+        }
+      });
+      symmetries4DPanel.add(s);
     }
   }
 }
