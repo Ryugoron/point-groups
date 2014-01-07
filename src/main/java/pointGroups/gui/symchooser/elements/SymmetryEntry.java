@@ -1,9 +1,6 @@
 package pointGroups.gui.symchooser.elements;
 
-import java.awt.BorderLayout;
-
 import javax.swing.JButton;
-import javax.swing.JLabel;
 
 import pointGroups.geometry.Point;
 import pointGroups.gui.symchooser.SymmetryInfo;
@@ -19,9 +16,7 @@ public class SymmetryEntry
   // private final List<SubgroupEntry> sEntry;
 
   public <P extends Point> SymmetryEntry(SymmetryInfo<P> info) {
-    super();
-    setLayout(new BorderLayout());
-    add(new JLabel(info.getTitle()), BorderLayout.CENTER);
+    super(info.getTitle());
 
     // p2.setLayout(new GridLayout(info.getSubgroups().size(), 1));
     // sEntry = new LinkedList<SubgroupEntry>();
@@ -33,7 +28,6 @@ public class SymmetryEntry
     // }
     // add(p2, BorderLayout.CENTER);
   }
-
   // @Override
   // public void addMouseListener(MouseListener l) {
   // if (l instanceof InputListener<?>) {

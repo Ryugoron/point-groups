@@ -18,6 +18,11 @@ import java.util.Map;
  */
 public class EventDispatcher
 {
+  protected final static EventDispatcher dispatcher = new EventDispatcher();
+
+  public static EventDispatcher get() {
+    return dispatcher;
+  }
 
   public Map<Class<? extends EventHandler>, Collection<? extends EventHandler>> eventTypeHandlerMap =
       new HashMap<>();

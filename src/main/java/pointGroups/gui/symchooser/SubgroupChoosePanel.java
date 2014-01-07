@@ -8,6 +8,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
 import pointGroups.geometry.Point;
+import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.symchooser.elements.SubgroupEntry;
 import pointGroups.util.gui.MouseClickListener;
 
@@ -15,6 +16,7 @@ import pointGroups.util.gui.MouseClickListener;
 public class SubgroupChoosePanel
   extends JList<SubgroupEntry>
 {
+  protected final EventDispatcher dispatcher = EventDispatcher.get();
 
   public SubgroupChoosePanel() {
     super(new DefaultListModel<SubgroupEntry>());
