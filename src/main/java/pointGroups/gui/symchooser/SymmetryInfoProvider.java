@@ -2,9 +2,9 @@ package pointGroups.gui.symchooser;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
@@ -24,12 +24,12 @@ public class SymmetryInfoProvider
     this.symmetryInfos =
         new HashMap<Class<? extends Point>, Collection<? extends SymmetryInfo<? extends Point>>>();
 
-    Set<Symmetry3DInfo> symmetries3D = new HashSet<Symmetry3DInfo>();
+    List<Symmetry3DInfo> symmetries3D = new LinkedList<Symmetry3DInfo>();
     symmetries3D.add(new TetrahedralSymmetryInfo());
     symmetries3D.add(new OctahedralSymmetryInfo());
     symmetries3D.add(new IcosahedralSymmetryInfo());
 
-    Set<Symmetry4DInfo> symmetries4D = new HashSet<Symmetry4DInfo>();
+    List<Symmetry4DInfo> symmetries4D = new LinkedList<Symmetry4DInfo>();
     // todo
 
     this.symmetryInfos.put(Point3D.class, symmetries3D);

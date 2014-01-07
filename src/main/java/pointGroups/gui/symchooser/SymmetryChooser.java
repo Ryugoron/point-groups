@@ -2,134 +2,34 @@ package pointGroups.gui.symchooser;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-
-import pointGroups.geometry.Point3D;
-import pointGroups.gui.symchooser.elements.SymmetryEntry;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 
 
 public class SymmetryChooser
-  extends JTabbedPane
+  extends JPanel
 {
-
-  private static final long serialVersionUID = -4774655588276858307L;
-  private final JTextField x, y, z;
 
   public SymmetryChooser() {
     super();
+    // Dimension dim = new Dimension(250, 0);
+    // setMinimumSize(dim);
+    // setPreferredSize(dim);
+    setLayout(new BorderLayout());
 
-    Dimension dim = new Dimension(250, 0);
-    setMinimumSize(dim);
-    setPreferredSize(dim);
+    final SubgroupChoosePanel subgroupChoose = new SubgroupChoosePanel();
+    final SymmetryChoosePanel symChoose =
+        new SymmetryChoosePanel(subgroupChoose);
+    final JSeparator separator = new JSeparator(SwingConstants.VERTICAL);
 
-    JButton button1 = new JButton("Generate");
-    JPanel panel1 = new JPanel();
-    panel1.setLayout(new BorderLayout());
+    Dimension d = separator.getPreferredSize();
+    d.height = symChoose.getPreferredSize().height;
+    separator.setPreferredSize(d);
 
-    SymmetryInfoProvider prov2 = new SymmetryInfoProvider();
-    // List symmetries
-    JPanel symmetryListPanel = new JPanel();
-    symmetryListPanel.setLayout(new GridLayout(prov2.getSymmetryInfo(
-        Point3D.class).size(), 1));
-
-    for (SymmetryInfo<Point3D> info : prov2.get(Point3D.class)) {
-      SymmetryEntry e = new SymmetryEntry(info);
-      // e.addMouseListener(new Input3DListener());
-      symmetryListPanel.add(e);
-    }
-    panel1.add(symmetryListPanel, BorderLayout.NORTH);
-    // Input
-
-    JPanel inputPanel = new JPanel();
-    inputPanel.setLayout(new BorderLayout());
-
-    JLabel inputlbl = new JLabel("Input coordinates");
-
-    JPanel coords = new JPanel();
-    coords.setLayout(new GridLayout(1, 6));
-    JLabel xlbl = new JLabel("X:");
-    x = new JTextField();
-    JLabel ylbl = new JLabel("Y:");
-    y = new JTextField();
-    JLabel zlbl = new JLabel("Z:");
-    z = new JTextField();
-
-    coords.add(xlbl);
-    coords.add(x);
-    coords.add(ylbl);
-    coords.add(y);
-    coords.add(zlbl);
-    coords.add(z);
-
-    inputPanel.add(inputlbl, BorderLayout.CENTER);
-    inputPanel.add(coords, BorderLayout.SOUTH);
-    panel1.add(inputPanel, BorderLayout.CENTER);
-    panel1.add(button1, BorderLayout.PAGE_END);
-
-    JButton button2 = new JButton("Generate2");
-    JPanel panel2 = new JPanel();
-    panel2.setLayout(new BorderLayout());
-    panel2.add(button2, BorderLayout.PAGE_END);
-
-    add("3D Groups", panel1);
-    add("4D Groups", panel2);
-  }
-
-
-  public class Input3DListener
-    implements MouseListener
-  {
-    private SubgroupInfo<Point3D> s;
-
-    public void setSubgroupEntry(final SubgroupInfo<Point3D> s) {
-      this.s = s;
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-      final double x = Double.parseDouble(SymmetryChooser.this.x.getText());
-      final double y = Double.parseDouble(SymmetryChooser.this.y.getText());
-      final double z = Double.parseDouble(SymmetryChooser.this.z.getText());
-
-      System.out.println(s.getSymmetryInfo().get().imagesByName(
-          new Point3D(x, y, z), s.get().toString()));
-
-      // System.out.println(s.getSymmetryInfo().get().images(new Point3D(x, y,
-      // z),
-      // s.get()));
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-      // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-      // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-      // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-      // TODO Auto-generated method stub
-
-    }
+    this.add(symChoose, BorderLayout.WEST);
+    this.add(separator);
+    this.add(subgroupChoose, BorderLayout.EAST);
   }
 }
