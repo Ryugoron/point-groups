@@ -25,6 +25,9 @@ public class ShowFundamentalDomainEvent
     handler.onShowFundamentalDomainEvent(this);
   }
 
+  /**
+   * @return true if PointPicker shall be shown, false otherwise
+   */
   public boolean getVisible() {
     return visible;
   }

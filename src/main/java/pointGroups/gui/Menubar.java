@@ -2,9 +2,6 @@ package pointGroups.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -12,33 +9,41 @@ import javax.swing.JMenuItem;
 
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.RedoEvent;
+import pointGroups.gui.event.types.ShowCoordinateEvent;
 import pointGroups.gui.event.types.ShowFundamentalDomainEvent;
+import pointGroups.gui.event.types.ShowLogEvent;
+import pointGroups.gui.event.types.TutorialEvent;
 import pointGroups.gui.event.types.UndoEvent;
 
 
 public class Menubar
   extends JMenuBar
 {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = -6870787436220684514L;
+
   private final EventDispatcher dispatcher;
 
-  private JMenu editMenu;
-  private JMenu viewMenu;
-  private JMenu debugMenu;
-  private JMenu helpMenu;
+  public final JMenu editMenu;
+  public final JMenu viewMenu;
+  public final JMenu debugMenu;
+  public final JMenu helpMenu;
 
   // Items of editMenu
-  private JMenuItem undoItem;
-  private JMenuItem redoItem;
+  public final JMenuItem undoItem;
+  public final JMenuItem redoItem;
 
   // Items of debugMenu
-  private JMenuItem showLogItem;
+  public final JMenuItem showLogItem;
 
   // Items of helpMenu
-  private JMenuItem tutorialItem;
+  public final JMenuItem tutorialItem;
 
   // Items of viewMenu
-  private JCheckBoxMenuItem pointPickerItem;
-  private JCheckBoxMenuItem coordinateItem;
+  public final JCheckBoxMenuItem pointPickerItem;
+  public final JCheckBoxMenuItem coordinateItem;
 
   public Menubar(final EventDispatcher dispatcher) {
     super();
@@ -50,7 +55,6 @@ public class Menubar
 
     undoItem = new JMenuItem("Undo");
     redoItem = new JMenuItem("Redo");
-    // TODO: create Events show Log, Tutorial
     showLogItem = new JMenuItem("Show Log");
     tutorialItem = new JMenuItem("Tutorial");
     pointPickerItem = new JCheckBoxMenuItem("Show Fundametal Domain");
@@ -69,11 +73,30 @@ public class Menubar
         dispatcher.fireEvent(new RedoEvent());
       }
     });
+    
+    showLogItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        dispatcher.fireEvent(new ShowLogEvent());
+      }
+    });
+    
+    tutorialItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        dispatcher.fireEvent(new TutorialEvent());
+      }
+    });
 
     pointPickerItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         dispatcher.fireEvent(new ShowFundamentalDomainEvent(
             pointPickerItem.getState()));
+      }
+    });
+    
+    coordinateItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        dispatcher.fireEvent(new ShowCoordinateEvent(
+            coordinateItem.getState()));
       }
     });
 
@@ -83,7 +106,7 @@ public class Menubar
     viewMenu.add(pointPickerItem);
     viewMenu.add(coordinateItem);
 
-    debugMenu.add(showLogItem);
+    debugMenu.add(showLogItem); 
 
     helpMenu.add(tutorialItem);
 

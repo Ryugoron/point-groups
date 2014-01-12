@@ -16,7 +16,5 @@ public class RedoEvent
   @Override
   protected void dispatch(RedoHandler handler) {
     handler.onRedoEvent(this);
-
   }
-
 }
