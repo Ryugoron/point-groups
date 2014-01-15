@@ -3,8 +3,8 @@ package pointGroups.gui.event.types;
 import pointGroups.gui.event.EventHandler;
 
 
-public interface RedoHandler
+public interface ShowNextHandler
   extends EventHandler
 {
-  public void onRedoEvent(RedoEvent event);
+  public void onRedoEvent(ShowNextEvent event);
 }

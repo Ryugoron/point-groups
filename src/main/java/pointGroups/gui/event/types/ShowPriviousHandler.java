@@ -6,15 +6,15 @@ import pointGroups.gui.event.EventHandler;
 /**
  * @author Oliver, Nadja
  */
-public interface UndoHandler
+public interface ShowPriviousHandler
   extends EventHandler
 {
   /**
    * This method is invoked while dispatching a previously fired
-   * {@link UndoEvent}.
+   * {@link ShowPreviousEvent}.
    * 
    * @param event The event received
    */
-  public void onUndoEvent(final UndoEvent event);
+  public void onUndoEvent(final ShowPreviousEvent event);
 
 }

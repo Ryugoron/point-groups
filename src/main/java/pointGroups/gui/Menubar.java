@@ -2,18 +2,22 @@ package pointGroups.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 import pointGroups.gui.event.EventDispatcher;
-import pointGroups.gui.event.types.RedoEvent;
+import pointGroups.gui.event.types.ShowNextEvent;
 import pointGroups.gui.event.types.ShowCoordinateEvent;
 import pointGroups.gui.event.types.ShowFundamentalDomainEvent;
 import pointGroups.gui.event.types.ShowLogEvent;
 import pointGroups.gui.event.types.TutorialEvent;
-import pointGroups.gui.event.types.UndoEvent;
+import pointGroups.gui.event.types.ShowPreviousEvent;
 
 
 public class Menubar
@@ -26,14 +30,14 @@ public class Menubar
 
   private final EventDispatcher dispatcher;
 
-  public final JMenu editMenu;
+  public final JMenu historyMenu;
   public final JMenu viewMenu;
   public final JMenu debugMenu;
   public final JMenu helpMenu;
 
   // Items of editMenu
-  public final JMenuItem undoItem;
-  public final JMenuItem redoItem;
+  public final JMenuItem previousItem;
+  public final JMenuItem nextItem;
 
   // Items of debugMenu
   public final JMenuItem showLogItem;
@@ -48,13 +52,13 @@ public class Menubar
   public Menubar(final EventDispatcher dispatcher) {
     super();
     this.dispatcher = dispatcher;
-    editMenu = new JMenu("Edit");
+    historyMenu = new JMenu("History");
     viewMenu = new JMenu("View");
     debugMenu = new JMenu("Debug");
     helpMenu = new JMenu("Help");
 
-    undoItem = new JMenuItem("Undo");
-    redoItem = new JMenuItem("Redo");
+    previousItem = new JMenuItem("Previous");
+    nextItem = new JMenuItem("Next");
     showLogItem = new JMenuItem("Show Log");
     tutorialItem = new JMenuItem("Tutorial");
     pointPickerItem = new JCheckBoxMenuItem("Show Fundametal Domain");
@@ -62,15 +66,15 @@ public class Menubar
     coordinateItem = new JCheckBoxMenuItem("Show Coordinates");
     coordinateItem.setState(true);
 
-    undoItem.addActionListener(new ActionListener() {
+    previousItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
-        dispatcher.fireEvent(new UndoEvent());
+        dispatcher.fireEvent(new ShowPreviousEvent());
       }
     });
 
-    redoItem.addActionListener(new ActionListener() {
+    nextItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
-        dispatcher.fireEvent(new RedoEvent());
+        dispatcher.fireEvent(new ShowNextEvent());
       }
     });
     
@@ -99,9 +103,16 @@ public class Menubar
             coordinateItem.getState()));
       }
     });
+    
+    previousItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+    nextItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+    pointPickerItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+    pointPickerItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+    showLogItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
+    tutorialItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
 
-    editMenu.add(undoItem);
-    editMenu.add(redoItem);
+    historyMenu.add(previousItem);
+    historyMenu.add(nextItem);
 
     viewMenu.add(pointPickerItem);
     viewMenu.add(coordinateItem);
@@ -110,7 +121,7 @@ public class Menubar
 
     helpMenu.add(tutorialItem);
 
-    this.add(editMenu);
+    this.add(historyMenu);
     this.add(viewMenu);
     this.add(debugMenu);
     this.add(helpMenu);
