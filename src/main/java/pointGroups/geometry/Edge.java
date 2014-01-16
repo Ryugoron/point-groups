@@ -8,18 +8,18 @@ package pointGroups.geometry;
  * @param <A> Type of left entry
  * @param <B> Type of right entry
  */
-public final class Pair<A, B>
+public final class Edge<A, B>
 {
   public final A left;
   public final B right;
 
   /**
-   * Creates a new {@link Pair} object with given fields.
+   * Creates a new {@link Edge} object with given fields.
    * 
    * @param left Left value of tuple
    * @param right Right value of tuple
    */
-  public Pair(A left, B right) {
+  public Edge(A left, B right) {
     this.left = left;
     this.right = right;
   }
@@ -32,8 +32,8 @@ public final class Pair<A, B>
   @Override
   public boolean equals(Object o) {
     if (o == null) return false;
-    if (!(o instanceof Pair)) return false;
-    Pair<?, ?> p = (Pair<?, ?>) o;
+    if (!(o instanceof Edge)) return false;
+    Edge<?, ?> p = (Edge<?, ?>) o;
     return this.left.equals(p.left) && this.right.equals(p.right);
   }
 }

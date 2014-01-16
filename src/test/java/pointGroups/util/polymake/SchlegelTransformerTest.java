@@ -40,12 +40,18 @@ public class SchlegelTransformerTest
     Assert.assertEquals(schlegel.points[1].j, 3, 0);
     Assert.assertEquals(schlegel.points[2].i, 4, 0);
     Assert.assertEquals(schlegel.points[2].j, 5.5, 0);
-    Assert.assertEquals(schlegel.edges[0].left, schlegel.points[1]);
-    Assert.assertEquals(schlegel.edges[0].right, schlegel.points[0]);
-    Assert.assertEquals(schlegel.edges[1].left, schlegel.points[1]);
-    Assert.assertEquals(schlegel.edges[1].right, schlegel.points[2]);
-    Assert.assertEquals(schlegel.edges[2].left, schlegel.points[0]);
-    Assert.assertEquals(schlegel.edges[2].right, schlegel.points[2]);
+    Assert.assertEquals(schlegel.edgesViaPoints[0].left, schlegel.points[1]);
+    Assert.assertEquals(schlegel.edgesViaPoints[0].right, schlegel.points[0]);
+    Assert.assertEquals(schlegel.edgesViaPoints[1].left, schlegel.points[1]);
+    Assert.assertEquals(schlegel.edgesViaPoints[1].right, schlegel.points[2]);
+    Assert.assertEquals(schlegel.edgesViaPoints[2].left, schlegel.points[0]);
+    Assert.assertEquals(schlegel.edgesViaPoints[2].right, schlegel.points[2]);
+    Assert.assertEquals(schlegel.edgesViaIndices[0].left, 1, 0);
+    Assert.assertEquals(schlegel.edgesViaIndices[0].right, 0, 0);
+    Assert.assertEquals(schlegel.edgesViaIndices[1].left, 1, 0);
+    Assert.assertEquals(schlegel.edgesViaIndices[1].right, 2, 0);
+    Assert.assertEquals(schlegel.edgesViaIndices[2].left, 0, 0);
+    Assert.assertEquals(schlegel.edgesViaIndices[2].right, 2, 0);
   }
 
   @Test
@@ -63,12 +69,18 @@ public class SchlegelTransformerTest
     Assert.assertEquals(schlegel.points[2].i, 4, 0);
     Assert.assertEquals(schlegel.points[2].j, 5.5, 0);
     Assert.assertEquals(schlegel.points[2].k, -2, 0);
-    Assert.assertEquals(schlegel.edges[0].left, schlegel.points[1]);
-    Assert.assertEquals(schlegel.edges[0].right, schlegel.points[0]);
-    Assert.assertEquals(schlegel.edges[1].left, schlegel.points[1]);
-    Assert.assertEquals(schlegel.edges[1].right, schlegel.points[2]);
-    Assert.assertEquals(schlegel.edges[2].left, schlegel.points[0]);
-    Assert.assertEquals(schlegel.edges[2].right, schlegel.points[2]);
+    Assert.assertEquals(schlegel.edgesViaPoints[0].left, schlegel.points[1]);
+    Assert.assertEquals(schlegel.edgesViaPoints[0].right, schlegel.points[0]);
+    Assert.assertEquals(schlegel.edgesViaPoints[1].left, schlegel.points[1]);
+    Assert.assertEquals(schlegel.edgesViaPoints[1].right, schlegel.points[2]);
+    Assert.assertEquals(schlegel.edgesViaPoints[2].left, schlegel.points[0]);
+    Assert.assertEquals(schlegel.edgesViaPoints[2].right, schlegel.points[2]);
+    Assert.assertEquals(schlegel.edgesViaIndices[0].left, 1, 0);
+    Assert.assertEquals(schlegel.edgesViaIndices[0].right, 0, 0);
+    Assert.assertEquals(schlegel.edgesViaIndices[1].left, 1, 0);
+    Assert.assertEquals(schlegel.edgesViaIndices[1].right, 2, 0);
+    Assert.assertEquals(schlegel.edgesViaIndices[2].left, 0, 0);
+    Assert.assertEquals(schlegel.edgesViaIndices[2].right, 2, 0);
   }
 
   @Test
@@ -87,12 +99,12 @@ public class SchlegelTransformerTest
     Assert.assertEquals(schlegel.points[2].i, 4, 0);
     Assert.assertEquals(schlegel.points[2].j, 5.5, 0);
     Assert.assertEquals(schlegel.points[2].k, -2, 0);
-    Assert.assertSame(schlegel.points[1], schlegel.edges[0].left);
-    Assert.assertSame(schlegel.points[0], schlegel.edges[0].right);
-    Assert.assertSame(schlegel.points[1], schlegel.edges[1].left);
-    Assert.assertSame(schlegel.points[2], schlegel.edges[1].right);
-    Assert.assertSame(schlegel.points[0], schlegel.edges[2].left);
-    Assert.assertSame(schlegel.points[2], schlegel.edges[2].right);
+    Assert.assertSame(schlegel.points[1], schlegel.edgesViaPoints[0].left);
+    Assert.assertSame(schlegel.points[0], schlegel.edgesViaPoints[0].right);
+    Assert.assertSame(schlegel.points[1], schlegel.edgesViaPoints[1].left);
+    Assert.assertSame(schlegel.points[2], schlegel.edgesViaPoints[1].right);
+    Assert.assertSame(schlegel.points[0], schlegel.edgesViaPoints[2].left);
+    Assert.assertSame(schlegel.points[2], schlegel.edgesViaPoints[2].right);
 
     Assert.assertTrue(st.isDone());
   }
@@ -108,8 +120,8 @@ public class SchlegelTransformerTest
     Assert.assertEquals(1, schlegel.points[1].i, 0);
     Assert.assertEquals(1, schlegel.points[1].j, 0);
     Assert.assertEquals(1, schlegel.points[1].k, 0);
-    Assert.assertSame(schlegel.points[0], schlegel.edges[0].left);
-    Assert.assertSame(schlegel.points[1], schlegel.edges[0].right);
+    Assert.assertSame(schlegel.points[0], schlegel.edgesViaPoints[0].left);
+    Assert.assertSame(schlegel.points[1], schlegel.edgesViaPoints[0].right);
 
     Assert.assertTrue(st.isDone());
   }
