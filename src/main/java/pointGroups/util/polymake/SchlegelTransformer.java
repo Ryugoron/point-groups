@@ -127,6 +127,7 @@ public class SchlegelTransformer
     // Store Edges as Array von Pair<Point3D,Point3D>
     String[] splittedEdgesString = edgesString.split("\n");
     Edge<Point3D, Point3D>[] edges = new Edge[splittedEdgesString.length];
+    Edge<Integer, Integer>[] edgesindices = new Edge[splittedEdgesString.length];
     // start iteration with i = 1 because the first string after splitting
     // is
     // empty caused by leading \n
@@ -134,11 +135,14 @@ public class SchlegelTransformer
       String str = splittedEdgesString[i];
       // ignore brackets and split into components
       String[] compStr = str.substring(1, str.length() - 1).split(" ");
-      Point3D from = points[Integer.valueOf(compStr[0])];
-      Point3D to = points[Integer.valueOf(compStr[1])];
+      int fromIndex = Integer.valueOf(compStr[0]);
+      int toIndex = Integer.valueOf(compStr[1]);
+      Point3D from = points[fromIndex];
+      Point3D to = points[toIndex];
       edges[i] = new Edge<Point3D, Point3D>(from, to);
+      edgesindices[i] = new Edge<Integer, Integer>(fromIndex, toIndex);
     }
 
-    return new Schlegel(points, edges);
+    return new Schlegel(points, edges, edgesindices);
   }
 }
