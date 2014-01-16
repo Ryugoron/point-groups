@@ -9,9 +9,9 @@ package pointGroups.geometry;
 public class Schlegel
 {
   public final Point3D[] points;
-  public final Pair<Point3D,Point3D>[] edges;
+  public final Edge<Point3D,Point3D>[] edges;
 
-  public Schlegel(Point3D[] points, Pair<Point3D,Point3D>[] edges) {
+  public Schlegel(Point3D[] points, Edge<Point3D,Point3D>[] edges) {
     this.points = points;
     this.edges = edges;
   }

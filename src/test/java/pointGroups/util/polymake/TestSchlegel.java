@@ -2,7 +2,7 @@ package pointGroups.util.polymake;
 
 import java.util.Collection;
 
-import pointGroups.geometry.Pair;
+import pointGroups.geometry.Edge;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Schlegel;
 import pointGroups.geometry.symmetries.OctahedralSymmetry;
@@ -71,7 +71,7 @@ public class TestSchlegel {
     // Store Edges as Array von Pair<Point3D,Point3D>
     String[] splittedEdgesString = edgesString.split("\n");
     // TODO das mit den Generics ist Mist. Geht das besser?
-    Pair<Point3D, Point3D>[] edges = new Pair[splittedEdgesString.length] ;
+    Edge<Point3D, Point3D>[] edges = new Edge[splittedEdgesString.length] ;
     // start iteration with i = 1 because the first string after splitting
     // is
     // empty caused by leading \n
@@ -83,7 +83,7 @@ public class TestSchlegel {
             // edge?
             Point3D from = points[Integer.valueOf(compStr[0])];
             Point3D to = points[Integer.valueOf(compStr[1])];
-            edges[i] = new Pair<Point3D, Point3D>(from, to);
+            edges[i] = new Edge<Point3D, Point3D>(from, to);
     }
 
     return new Schlegel(points, edges);
