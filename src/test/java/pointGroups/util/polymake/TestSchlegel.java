@@ -2,7 +2,7 @@ package pointGroups.util.polymake;
 
 import java.util.Collection;
 
-import pointGroups.geometry.Pair;
+import pointGroups.geometry.Edge;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Schlegel;
 import pointGroups.geometry.symmetries.OctahedralSymmetry;
@@ -70,23 +70,24 @@ public class TestSchlegel {
     }
     // Store Edges as Array von Pair<Point3D,Point3D>
     String[] splittedEdgesString = edgesString.split("\n");
-    // TODO das mit den Generics ist Mist. Geht das besser?
-    Pair<Point3D, Point3D>[] edges = new Pair[splittedEdgesString.length] ;
+    Edge<Point3D, Point3D>[] edges = new Edge[splittedEdgesString.length] ;
+    Edge<Integer, Integer>[] edgesindices = new Edge[splittedEdgesString.length];
     // start iteration with i = 1 because the first string after splitting
     // is
     // empty caused by leading \n
     for (int i = 0; i < splittedEdgesString.length; i++) {
-            String str = splittedEdgesString[i];
-            // ignore brackets and split into components
-            String[] compStr = str.substring(1, str.length() - 1).split(" ");          
-            // TODO what if there are more or less than two components for an
-            // edge?
-            Point3D from = points[Integer.valueOf(compStr[0])];
-            Point3D to = points[Integer.valueOf(compStr[1])];
-            edges[i] = new Pair<Point3D, Point3D>(from, to);
+      String str = splittedEdgesString[i];
+      // ignore brackets and split into components
+      String[] compStr = str.substring(1, str.length() - 1).split(" ");
+      int fromIndex = Integer.valueOf(compStr[0]);
+      int toIndex = Integer.valueOf(compStr[0]);
+      Point3D from = points[fromIndex];
+      Point3D to = points[toIndex];
+      edges[i] = new Edge<Point3D, Point3D>(from, to);
+      edgesindices[i] = new Edge<Integer, Integer>(fromIndex, toIndex);
     }
 
-    return new Schlegel(points, edges);
-	}
+    return new Schlegel(points, edges, edgesindices);
+  }
 
 }
