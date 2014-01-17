@@ -30,8 +30,8 @@ public class EventFlowTest
       this.dispatcher = dispatcher;
     }
 
-    public void changeSymmetry(Symmetry<Point3D, ?> symmetry) {
-      dispatcher.fireEvent(new Symmetry3DChooseEvent(symmetry));
+    public void changeSymmetry(Symmetry<Point3D, ?> symmetry, String subgroup) {
+      dispatcher.fireEvent(new Symmetry3DChooseEvent(symmetry, subgroup));
     }
   }
 
@@ -65,7 +65,8 @@ public class EventFlowTest
     SymmetryChooser chooser = new SymmetryChooser(main.dispatcher);
     PointPicker picker = new PointPicker(main.dispatcher);
 
-    chooser.changeSymmetry(TetrahedralSymmetry.get());
+    chooser.changeSymmetry(TetrahedralSymmetry.get(),
+        TetrahedralSymmetry.Subgroups.Full.getName());
 
     assertEquals(
         "PointPicker#onSymmetry3DChooseEvent should be called at least once",
