@@ -15,6 +15,6 @@ public class ShowNextEvent
 
   @Override
   protected void dispatch(ShowNextHandler handler) {
-    handler.onRedoEvent(this);
+    handler.onNextEvent(this);
   }
 }
