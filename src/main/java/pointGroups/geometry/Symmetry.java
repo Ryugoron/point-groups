@@ -2,6 +2,10 @@ package pointGroups.geometry;
 
 import java.util.Collection;
 
+import pointGroups.geometry.symmetries.IcosahedralSymmetry;
+import pointGroups.geometry.symmetries.OctahedralSymmetry;
+import pointGroups.geometry.symmetries.TetrahedralSymmetry;
+
 
 /**
  * Representation of the point groups (symmetry groups) in three and four
@@ -26,7 +30,21 @@ public interface Symmetry<P extends Point, E extends Symmetry<P, E>>
    * @param <E> The symmetry under consideration
    */
   interface Subgroup<E extends Symmetry<?, ?>>
-  {};
+  {
+    /**
+     * Returns the name of the underlying subgroup.
+     * 
+     * @return Name of the sungroup
+     */
+    public String getName();
+
+    /**
+     * Gives the order of the according subgroup
+     * 
+     * @return the subgroup order
+     */
+    public int order();
+  };
 
   /**
    * Returns a {@link Collection} of points which are the images of applying the
@@ -48,5 +66,19 @@ public interface Symmetry<P extends Point, E extends Symmetry<P, E>>
    */
   public int order(Subgroup<E> s);
 
-  public Collection<UnitQuaternion> getSymmetries(Subgroup<E> s);
+  /**
+   * Returns the name of the underlying symmetry group
+   * 
+   * @return the groups name
+   */
+  public String getName();
+
+  /**
+   * Returns the subgroup associated to subgroup, if existing.
+   * 
+   * @param subgroup The canonical representation of the subgroup, i.e.
+   *          <code>subgroup.toString()</code>
+   * @return the subgroup object, if existing
+   */
+  public Subgroup<E> getSubgroupByName(String subgroup);
 }

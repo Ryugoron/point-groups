@@ -1,6 +1,7 @@
 package pointGroups.geometry.symmetries;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -78,6 +79,26 @@ public class TetrahedralSymmetry
     diagonalAxis4_240 = new UnitQuaternion(0.5d, -0.5d, 0.5d, -0.5d);
   }
 
+  static {
+    sym.subgroupTable.put(Subgroups.Id, Collections.singleton(id));
+
+    // temporal
+    Collection<UnitQuaternion> full = new HashSet<UnitQuaternion>();
+    full.add(id);
+    full.add(diagonalAxis1_120);
+    full.add(diagonalAxis1_240);
+    full.add(diagonalAxis2_120);
+    full.add(diagonalAxis2_240);
+    full.add(diagonalAxis3_120);
+    full.add(diagonalAxis3_240);
+    full.add(diagonalAxis4_120);
+    full.add(diagonalAxis4_240);
+    full.add(edgeAxis_1);
+    full.add(edgeAxis_2);
+    full.add(edgeAxis_3);
+    sym.subgroupTable.put(Subgroups.Full, full);
+  }
+
 
   /**
    * Identifiers for the five subgroups of the tetrahedral group. See
@@ -89,7 +110,23 @@ public class TetrahedralSymmetry
    */
   public enum Subgroups
     implements Subgroup<TetrahedralSymmetry> {
-    Id, Full;
+    Id("Trivial group"), Full("Full tetrahedral symmetry");
+
+    private final String name;
+
+    Subgroups(final String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String getName() {
+      return this.name;
+    }
+
+    @Override
+    public int order() {
+      return sym.order(this);
+    }
   }
 
   /**
@@ -109,7 +146,8 @@ public class TetrahedralSymmetry
   }
 
   @Override
-  public Collection<Point3D> images(Point3D p, Subgroup<TetrahedralSymmetry> s) {
+  public Collection<Point3D> images(final Point3D p,
+      final Subgroup<TetrahedralSymmetry> s) {
     Set<Point3D> res = new HashSet<Point3D>(24);
 
     for (UnitQuaternion q : subgroupTable.get(s)) {
@@ -120,14 +158,18 @@ public class TetrahedralSymmetry
   }
 
   @Override
-  public int order(Subgroup<TetrahedralSymmetry> s) {
+  public int order(final Subgroup<TetrahedralSymmetry> s) {
     return sym.subgroupTable.get(s).size();
   }
 
   @Override
-  public Collection<UnitQuaternion> getSymmetries(
-      Subgroup<TetrahedralSymmetry> s) {
-    return sym.subgroupTable.get(s);
+  public String getName() {
+    return "Tetrahedral Symmetry";
+  }
+
+  @Override
+  public Subgroup<TetrahedralSymmetry> getSubgroupByName(final String subgroup) {
+    return Subgroups.valueOf(subgroup);
   }
 
 }
