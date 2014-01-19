@@ -15,7 +15,7 @@ package pointGroups.geometry;
  *            The dimension of the fundamental domain
  * 
  */
-public class KownFundamental<PS extends Point, PF extends Point> implements
+public class KnownFundamental<PS extends Point, PF extends Point> implements
 		Fundamental<PS, PF> {
 
 	/**
@@ -31,7 +31,7 @@ public class KownFundamental<PS extends Point, PF extends Point> implements
 	 */
 	private PF[] points;
 
-	public KownFundamental(PF[] points, double[][] revertMatrix, double[] affine) {
+	public KnownFundamental(PF[] points, double[][] revertMatrix, double[] affine) {
 		this.points = points.clone();
 		this.revertMatrix = revertMatrix;
 		this.affine = affine;

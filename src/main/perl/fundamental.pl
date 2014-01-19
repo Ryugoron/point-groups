@@ -10,15 +10,12 @@ my $v = new VoronoiDiagram(SITES=>$points);
 # Should be only one positioned at ~(0,0,0) otherwise error
 #
 print $v->VORONOI_VERTICES;
-print "\n";
 
 #
 # Prints the the adjacent voronoi cells.
 # For the first node
 #
 my $adj = $v->DUAL_GRAPH->ADJACENCY->adjacent_nodes(0);
-print $adj;
-print "\n";
 
 #
 # Computes the rays of the voronoi cell,
@@ -43,10 +40,3 @@ my $p3 = $s3 + $s1;
 my $poly = new Polytope(POINTS=>[$p1,$p2,$p3,[2,0,0,0]]);
 print "----------\n";
 print $poly->VERTICES;
-print "---------\n";
-print $poly->FACETS;
-print "---------\n";
-
-my $schlegel = $poly->SCHLEGEL_DIAGRAM(FACET=>4);
-
-print $schlegel->VERTICES;
