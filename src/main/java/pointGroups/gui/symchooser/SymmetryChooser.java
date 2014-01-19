@@ -3,13 +3,13 @@ package pointGroups.gui.symchooser;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 
 
 public class SymmetryChooser
-  extends JTabbedPane
+  extends JPanel
 {
 
   private static final long serialVersionUID = -4774655588276858307L;
@@ -17,21 +17,18 @@ public class SymmetryChooser
   public SymmetryChooser() {
     super();
 
-    Dimension dim = new Dimension(250, 0);
-    setMinimumSize(dim);
-    setPreferredSize(dim);
+    setLayout(new BorderLayout());
 
-    JButton button1 = new JButton("Generate");
-    JPanel panel1 = new JPanel();
-    panel1.setLayout(new BorderLayout());
-    panel1.add(button1, BorderLayout.PAGE_END);
+    final SubgroupPanel subgroupChoose = new SubgroupPanel();
+    final SymmetryPanel symChoose = new SymmetryPanel(subgroupChoose);
+    final JSeparator separator = new JSeparator(SwingConstants.VERTICAL);
 
-    JButton button2 = new JButton("Generate2");
-    JPanel panel2 = new JPanel();
-    panel2.setLayout(new BorderLayout());
-    panel2.add(button2, BorderLayout.PAGE_END);
+    Dimension d = separator.getPreferredSize();
+    d.height = symChoose.getPreferredSize().height;
+    separator.setPreferredSize(d);
 
-    add("Panel 1", panel1);
-    add("Panel 2", panel2);
+    this.add(symChoose, BorderLayout.WEST);
+    this.add(separator);
+    this.add(subgroupChoose, BorderLayout.EAST);
   }
 }
