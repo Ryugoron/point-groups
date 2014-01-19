@@ -1,4 +1,4 @@
-package pointGroups.gui;
+package pointGroups.gui.symchooser;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
