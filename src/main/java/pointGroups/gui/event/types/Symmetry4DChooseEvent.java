@@ -2,6 +2,7 @@ package pointGroups.gui.event.types;
 
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Symmetry;
+import pointGroups.geometry.Symmetry.Subgroup;
 import pointGroups.gui.event.Event;
 
 
@@ -17,19 +18,23 @@ public class Symmetry4DChooseEvent
 {
   protected final Symmetry<Point4D, ?> symmetry;
   protected final String subgroup;
-  
+
   /**
    * The type of the corresponding {@link Symmetry4DChooseHandler}.
    */
   public final static Class<Symmetry4DChooseHandler> TYPE =
-		  Symmetry4DChooseHandler.class;
+      Symmetry4DChooseHandler.class;
 
   /**
    * Creates a new {@link Symmetry4DChooseEvent} with given {@link Symmetry}.
+   * The subgroup parameter must be set to a valid subgroup of the concrete
+   * Symmetry symmetry.
    * 
-   * @param symmetry The symmtry chosen
+   * @param symmetry The symmetry chosen
+   * @param subgroup The subgroup of the symmetry
    */
-  public Symmetry4DChooseEvent(final Symmetry<Point4D, ?> symmetry, final String subgroup) {
+  public Symmetry4DChooseEvent(final Symmetry<Point4D, ?> symmetry,
+      final String subgroup) {
     this.symmetry = symmetry;
     this.subgroup = subgroup;
   }
@@ -42,14 +47,16 @@ public class Symmetry4DChooseEvent
   public Symmetry<Point4D, ?> getSymmetry4D() {
     return symmetry;
   }
-  
+
   /**
    * The chosen subgroup of the event's associated {@link Symmetry}
    * 
    * @return The chosen symmetry.
    */
-  public Symmetry.Subgroup<Symmetry<Point4D,?>>  getSubgroup() {
-    return null;
+  @SuppressWarnings("unchecked")
+  public Symmetry.Subgroup<Symmetry<Point4D, ?>> getSubgroup() {
+    // cast is 'safe' if constructor is called correctly
+    return (Subgroup<Symmetry<Point4D, ?>>) symmetry.getSubgroupByName(this.subgroup);
   }
 
   @Override
