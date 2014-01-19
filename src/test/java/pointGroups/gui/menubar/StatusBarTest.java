@@ -1,3 +1,18 @@
+package pointGroups.gui.menubar;
+
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+
+import pointGroups.gui.StatusBar;
+import pointGroups.gui.event.EventDispatcher;
+import pointGroups.gui.event.types.ChangeCoordinateEvent;
+import pointGroups.gui.event.types.RunEvent;
+import pointGroups.gui.event.types.ShowFundamentalDomainEvent;
+
 public class StatusBarTest{
 public static void main(String[] args){
     final EventDispatcher dispatcher = new EventDispatcher();
