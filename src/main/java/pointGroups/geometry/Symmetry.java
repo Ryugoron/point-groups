@@ -81,6 +81,8 @@ public interface Symmetry<P extends Point, E extends Symmetry<P, E>>
    */
   public String getName();
 
+  public Class<P> getType();
+
   /**
    * Returns the subgroup associated to subgroup, if existing.
    * 

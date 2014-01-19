@@ -213,4 +213,9 @@ public class OctahedralSymmetry
     return sym.subgroupTable.keySet();
   }
 
+  @Override
+  public Class<Point3D> getType() {
+    return Point3D.class;
+  }
+
 }
