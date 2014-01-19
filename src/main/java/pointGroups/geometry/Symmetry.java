@@ -59,6 +59,14 @@ public interface Symmetry<P extends Point, E extends Symmetry<P, E>>
   public Collection<P> images(P p, Subgroup<E> s);
 
   /**
+   * Returns a {@link Collection} that contains all {@link Subgroup} elements of
+   * the underlying symmetry.
+   * 
+   * @return Set of subgroups
+   */
+  public Collection<Subgroup<E>> getSubgroups();
+
+  /**
    * The order of the specified subgroup.
    * 
    * @param s The subgroup under consideration

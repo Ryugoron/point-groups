@@ -172,4 +172,9 @@ public class TetrahedralSymmetry
     return Subgroups.valueOf(subgroup);
   }
 
+  @Override
+  public Collection<Subgroup<TetrahedralSymmetry>> getSubgroups() {
+    return sym.subgroupTable.keySet();
+  }
+
 }

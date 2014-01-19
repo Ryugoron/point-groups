@@ -131,4 +131,9 @@ public class IcosahedralSymmetry
     return Subgroups.valueOf(subgroup);
   }
 
+  @Override
+  public Collection<Subgroup<IcosahedralSymmetry>> getSubgroups() {
+    return sym.subgroupTable.keySet();
+  }
+
 }

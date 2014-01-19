@@ -208,4 +208,9 @@ public class OctahedralSymmetry
     return Subgroups.valueOf(subgroup);
   }
 
+  @Override
+  public Collection<Subgroup<OctahedralSymmetry>> getSubgroups() {
+    return sym.subgroupTable.keySet();
+  }
+
 }
