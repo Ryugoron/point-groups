@@ -13,16 +13,21 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import pointGroups.gui.event.EventDispatcher;
+import pointGroups.gui.symchooser.SymmetryChooser;
+
 
 public class Frame
   extends JFrame
 {
-  protected JMenuBar menuBar = new JMenuBar();
+  protected JMenuBar menuBar;
   protected JPanel schlegelView = new JPanel();
   protected JPanel pointPicker = new JPanel();
-  protected JPanel symmetryChooser = new JPanel();
+  protected JPanel symmetryChooser;
   protected JPanel coordinates = new JPanel();
-  protected JPanel statusBar = new JPanel();
+  protected JPanel statusBar;
+  
+  protected EventDispatcher dispatcher = EventDispatcher.get();
 
   /**
    * 
@@ -48,8 +53,10 @@ public class Frame
     mainSplitPane.setOneTouchExpandable(true);
     mainSplitPane.setBorder(BorderFactory.createEmptyBorder());
     
-    
-    add(menuBar);
+    menuBar = new Menubar(dispatcher);
+    statusBar = new StatusBar(dispatcher);
+
+    add(menuBar, BorderLayout.NORTH);
     add(mainSplitPane, BorderLayout.CENTER);
     add(statusBar, BorderLayout.SOUTH);
     setTitle("Point groups");
@@ -65,7 +72,7 @@ public class Frame
 
   private Component setUpLeftPanel() {
     
-    symmetryChooser.setBackground(Color.RED);
+    symmetryChooser = new SymmetryChooser();
     pointPicker.setBackground(Color.YELLOW);
     coordinates.setBackground(Color.GREEN);
     
