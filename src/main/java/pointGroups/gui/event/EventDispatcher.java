@@ -18,6 +18,16 @@ import java.util.Map;
  */
 public class EventDispatcher
 {
+  protected final static EventDispatcher dispatcher = new EventDispatcher();
+
+  /**
+   * Return a singleton instance of {@link EventDispatcher}
+   * 
+   * @return The dispatcher singleton
+   */
+  public static EventDispatcher get() {
+    return dispatcher;
+  }
 
   public Map<Class<? extends EventHandler>, Collection<? extends EventHandler>> eventTypeHandlerMap =
       new HashMap<>();

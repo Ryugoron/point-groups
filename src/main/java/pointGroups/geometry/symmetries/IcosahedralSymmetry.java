@@ -1,6 +1,7 @@
 package pointGroups.geometry.symmetries;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,6 +32,11 @@ public class IcosahedralSymmetry
    */
   private final Map<Subgroup<IcosahedralSymmetry>, Collection<UnitQuaternion>> subgroupTable;
 
+  /**
+   * identity rotation
+   */
+  final static UnitQuaternion id;
+
   {
     subgroupTable =
         new HashMap<Subgroup<IcosahedralSymmetry>, Collection<UnitQuaternion>>();
@@ -39,7 +45,17 @@ public class IcosahedralSymmetry
   static {
     sym = new IcosahedralSymmetry();
 
+    id = new UnitQuaternion(1, 0, 0, 0);
     // ...list symmetries
+  }
+
+  /*
+   * Initialize subgroup relations
+   */
+  static {
+    sym.subgroupTable.put(Subgroups.Id, Collections.singleton(id));
+    // todo...
+    sym.subgroupTable.put(Subgroups.Full, Collections.singleton(id));
   }
 
 
@@ -53,7 +69,23 @@ public class IcosahedralSymmetry
    */
   public enum Subgroups
     implements Subgroup<IcosahedralSymmetry> {
-    Id, Full;
+    Id("Trivial group"), Full("Full icosahedral symmetry");
+
+    private final String name;
+
+    Subgroups(final String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String getName() {
+      return this.name;
+    }
+
+    @Override
+    public int order() {
+      return sym.order(this);
+    }
   }
 
   /**
@@ -73,7 +105,8 @@ public class IcosahedralSymmetry
   }
 
   @Override
-  public Collection<Point3D> images(Point3D p, Subgroup<IcosahedralSymmetry> s) {
+  public Collection<Point3D> images(final Point3D p,
+      final Subgroup<IcosahedralSymmetry> s) {
     Set<Point3D> res = new HashSet<Point3D>(24);
 
     for (UnitQuaternion q : subgroupTable.get(s)) {
@@ -84,15 +117,27 @@ public class IcosahedralSymmetry
   }
 
   @Override
-  public int order(Subgroup<IcosahedralSymmetry> s) {
+  public int order(final Subgroup<IcosahedralSymmetry> s) {
     return sym.subgroupTable.get(s).size();
   }
 
   @Override
-  public Collection<UnitQuaternion> getSymmetries(
-      pointGroups.geometry.Symmetry.Subgroup<IcosahedralSymmetry> s) {
-    // TODO Auto-generated method stub
-    return null;
+  public String getName() {
+    return "Icosahedral Symmetry";
   }
 
+  @Override
+  public Subgroup<IcosahedralSymmetry> getSubgroupByName(final String subgroup) {
+    return Subgroups.valueOf(subgroup);
+  }
+
+  @Override
+  public Collection<Subgroup<IcosahedralSymmetry>> getSubgroups() {
+    return sym.subgroupTable.keySet();
+  }
+
+  @Override
+  public Class<Point3D> getType() {
+    return Point3D.class;
+  }
 }

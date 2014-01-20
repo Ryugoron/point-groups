@@ -7,6 +7,8 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
+import pointGroups.gui.symchooser.SymmetryChooser;
+
 
 public class MainFrame
   extends JFrame

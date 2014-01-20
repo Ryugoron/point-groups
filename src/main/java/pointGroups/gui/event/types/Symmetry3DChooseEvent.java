@@ -2,6 +2,7 @@ package pointGroups.gui.event.types;
 
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Symmetry;
+import pointGroups.geometry.Symmetry.Subgroup;
 import pointGroups.gui.event.Event;
 
 
@@ -15,7 +16,9 @@ import pointGroups.gui.event.Event;
 public class Symmetry3DChooseEvent
   extends Event<Symmetry3DChooseHandler>
 {
-  protected final Symmetry<Point3D, ?> symmetry;
+  private final Symmetry<Point3D, ?> symmetry;
+  private final String subgroup;
+
   /**
    * The type of the corresponding {@link Symmetry3DChooseHandler}.
    */
@@ -25,10 +28,13 @@ public class Symmetry3DChooseEvent
   /**
    * Creates a new {@link Symmetry3DChooseEvent} with given {@link Symmetry}.
    * 
-   * @param symmetry The symmtry chosen
+   * @param symmetry The symmetry chosen
+   * @param subgroup the subgroup's string representation
    */
-  public Symmetry3DChooseEvent(final Symmetry<Point3D, ?> symmetry) {
+  public Symmetry3DChooseEvent(final Symmetry<Point3D, ?> symmetry,
+      final String subgroup) {
     this.symmetry = symmetry;
+    this.subgroup = subgroup;
   }
 
   /**
@@ -38,6 +44,17 @@ public class Symmetry3DChooseEvent
    */
   public Symmetry<Point3D, ?> getSymmetry3D() {
     return symmetry;
+  }
+
+  /**
+   * The chosen subgroup of the event's associated {@link Symmetry}
+   * 
+   * @return The chosen symmetry.
+   */
+  @SuppressWarnings("unchecked")
+  public Symmetry.Subgroup<Symmetry<Point3D, ?>> getSubgroup() {
+    // cast is 'safe' is constructor was called correctly
+    return (Subgroup<Symmetry<Point3D, ?>>) symmetry.getSubgroupByName(this.subgroup);
   }
 
   @Override
