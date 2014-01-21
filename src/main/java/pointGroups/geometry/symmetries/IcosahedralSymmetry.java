@@ -37,6 +37,31 @@ public class IcosahedralSymmetry
    */
   final static UnitQuaternion id;
 
+  /**
+   * rotation about a height going through an corner of the tetrahedron and the
+   * center of the opposite face by an angle of 120°, 240° (4 axes)
+   */
+  final static UnitQuaternion diagonalAxis1_120, diagonalAxis1_240,
+      diagonalAxis2_120, diagonalAxis2_240, diagonalAxis3_120,
+      diagonalAxis3_240, diagonalAxis4_120, diagonalAxis4_240;
+
+  /**
+   * rotation about an axis from the center of an edge to the center of the
+   * opposite edge by an angle of 180° (3 axis)
+   */
+  final static UnitQuaternion edgeAxis_1, edgeAxis_2, edgeAxis_3;
+
+  final static UnitQuaternion snubAxis_1, snubAxis_2, snubAxis_3, snubAxis_4,
+      snubAxis_5, snubAxis_6, snubAxis_7, snubAxis_8, snubAxis_9, snubAxis_10,
+      snubAxis_11, snubAxis_12, snubAxis_13, snubAxis_14, snubAxis_15,
+      snubAxis_16, snubAxis_17, snubAxis_18, snubAxis_19, snubAxis_20,
+      snubAxis_21, snubAxis_22, snubAxis_23, snubAxis_24, snubAxis_25,
+      snubAxis_26, snubAxis_27, snubAxis_28, snubAxis_29, snubAxis_30,
+      snubAxis_31, snubAxis_32, snubAxis_33, snubAxis_34, snubAxis_35,
+      snubAxis_36, snubAxis_37, snubAxis_38, snubAxis_39, snubAxis_40,
+      snubAxis_41, snubAxis_42, snubAxis_43, snubAxis_44, snubAxis_45,
+      snubAxis_46, snubAxis_47, snubAxis_48;
+
   {
     subgroupTable =
         new HashMap<Subgroup<IcosahedralSymmetry>, Collection<UnitQuaternion>>();
@@ -44,9 +69,109 @@ public class IcosahedralSymmetry
 
   static {
     sym = new IcosahedralSymmetry();
-
+    // Symmetries taken from http://en.wikipedia.org/wiki/600-cell#Coordinates
     id = new UnitQuaternion(1, 0, 0, 0);
-    // ...list symmetries
+
+    edgeAxis_1 = new UnitQuaternion(0, 1, 0, 0);
+    edgeAxis_2 = new UnitQuaternion(0, 0, 1, 0);
+    edgeAxis_3 = new UnitQuaternion(0, 0, 0, 1);
+
+    diagonalAxis1_120 = new UnitQuaternion(0.5d, 0.5d, 0.5d, 0.5d);
+    diagonalAxis1_240 = new UnitQuaternion(0.5d, -0.5d, -0.5d, -0.5d);
+    diagonalAxis2_120 = new UnitQuaternion(0.5d, -0.5d, 0.5d, 0.5d);
+    diagonalAxis2_240 = new UnitQuaternion(0.5d, 0.5d, -0.5d, -0.5d);
+    diagonalAxis3_120 = new UnitQuaternion(0.5d, -0.5d, -0.5d, 0.5d);
+    diagonalAxis3_240 = new UnitQuaternion(0.5d, 0.5d, 0.5d, -0.5d);
+    diagonalAxis4_120 = new UnitQuaternion(0.5d, 0.5d, -0.5d, 0.5d);
+    diagonalAxis4_240 = new UnitQuaternion(0.5d, -0.5d, 0.5d, -0.5d);
+    // even permutations of {1,2,3,4} are
+    // {1,2,3,4} itself and
+    // {1,3,4,2}, {1,4,2,3}, {2,1,4,3}, {2,3,1,4}, {2,4,3,1}, {3,1,2,4},
+    // {3,2,4,1}, {3,4,1,2}, {4,1,3,2}, {4,2,1,3}, {4,3,2,1}
+    // based on
+    // ½(±φ,±1,±1/φ,0).
+    // the four (of eight, since -p = p) needed permutations of this are:
+    // (1) ½(φ,1,1/φ,0)
+    // (2) ½(φ,1,-1/φ,0)
+    // (3) ½(φ,-1,1/φ,0)
+    // (4) ½(φ,-1,-1/φ,0)
+    //
+    // all even permutations of a 4-element set calculated by
+    //
+    // type Tuple4 = (String, String, String, String)
+    // evenPerm4 :: Tuple4 -> [Tuple4]
+    // evenPerm4 (a,b,c,d) = [(a,b,c,d),(a,c,d,b), (a,d,b,c), (b,a,d,c),
+    // (b,c,a,d), (b,d,c,a), (c,a,b,d),(c,b,d,a), (c,d,a,b), (d,a,c,b),
+    // (d,b,a,c), (d,c,b,a)]
+    //
+    // and then printed to java code by
+    //
+    // java :: [Tuple4] -> IO ()
+    // java = mapM_ (\(a,b,c,d) -> putStrLn ("new UnitQuaternion(" ++ a ++ ","
+    // ++ b ++"," ++ c ++","++d ++");"))
+    //
+    final double phiHalf = (1d + Math.sqrt(5d)) / 4d;
+    final double phiInvertHalf = 1d + Math.sqrt(5d);
+
+    snubAxis_1 = new UnitQuaternion(phiHalf, 0.5d, phiInvertHalf, 0); // (1)
+    // all even permutations of (1) by
+    // java $ tail $ evenPerm4 ("phiHalf", "0.5d", "phiInvertHalf", "0")
+    snubAxis_2 = new UnitQuaternion(phiHalf, phiInvertHalf, 0, 0.5d);
+    snubAxis_3 = new UnitQuaternion(phiHalf, 0, 0.5d, phiInvertHalf);
+    snubAxis_4 = new UnitQuaternion(0.5d, phiHalf, 0, phiInvertHalf);
+    snubAxis_5 = new UnitQuaternion(0.5d, phiInvertHalf, phiHalf, 0);
+    snubAxis_6 = new UnitQuaternion(0.5d, 0, phiInvertHalf, phiHalf);
+    snubAxis_7 = new UnitQuaternion(phiInvertHalf, phiHalf, 0.5d, 0);
+    snubAxis_8 = new UnitQuaternion(phiInvertHalf, 0.5d, 0, phiHalf);
+    snubAxis_9 = new UnitQuaternion(phiInvertHalf, 0, phiHalf, 0.5d);
+    snubAxis_10 = new UnitQuaternion(0, phiHalf, phiInvertHalf, 0.5d);
+    snubAxis_11 = new UnitQuaternion(0, 0.5d, phiHalf, phiInvertHalf);
+    snubAxis_12 = new UnitQuaternion(0, phiInvertHalf, 0.5d, phiHalf);
+
+    snubAxis_13 = new UnitQuaternion(phiHalf, 0.5d, -phiInvertHalf, 0); // (2)
+    // all even permutations of (2) by
+    // java $ tail $ evenPerm4 ("phiHalf", "0.5d", "-phiInvertHalf", "0")
+    snubAxis_14 = new UnitQuaternion(phiHalf, -phiInvertHalf, 0, 0.5d);
+    snubAxis_15 = new UnitQuaternion(phiHalf, 0, 0.5d, -phiInvertHalf);
+    snubAxis_16 = new UnitQuaternion(0.5d, phiHalf, 0, -phiInvertHalf);
+    snubAxis_17 = new UnitQuaternion(0.5d, -phiInvertHalf, phiHalf, 0);
+    snubAxis_18 = new UnitQuaternion(0.5d, 0, -phiInvertHalf, phiHalf);
+    snubAxis_19 = new UnitQuaternion(-phiInvertHalf, phiHalf, 0.5d, 0);
+    snubAxis_20 = new UnitQuaternion(-phiInvertHalf, 0.5d, 0, phiHalf);
+    snubAxis_21 = new UnitQuaternion(-phiInvertHalf, 0, phiHalf, 0.5d);
+    snubAxis_22 = new UnitQuaternion(0, phiHalf, -phiInvertHalf, 0.5d);
+    snubAxis_23 = new UnitQuaternion(0, 0.5d, phiHalf, -phiInvertHalf);
+    snubAxis_24 = new UnitQuaternion(0, -phiInvertHalf, 0.5d, phiHalf);
+
+    snubAxis_25 = new UnitQuaternion(phiHalf, -0.5d, phiInvertHalf, 0); // (3)
+    // all even permutations of (3) by
+    // java $ tail $ evenPerm4 ("phiHalf", "-0.5d", "phiInvertHalf", "0")
+    snubAxis_26 = new UnitQuaternion(phiHalf, phiInvertHalf, 0, -0.5d);
+    snubAxis_27 = new UnitQuaternion(phiHalf, 0, -0.5d, phiInvertHalf);
+    snubAxis_28 = new UnitQuaternion(-0.5d, phiHalf, 0, phiInvertHalf);
+    snubAxis_29 = new UnitQuaternion(-0.5d, phiInvertHalf, phiHalf, 0);
+    snubAxis_30 = new UnitQuaternion(-0.5d, 0, phiInvertHalf, phiHalf);
+    snubAxis_31 = new UnitQuaternion(phiInvertHalf, phiHalf, -0.5d, 0);
+    snubAxis_32 = new UnitQuaternion(phiInvertHalf, -0.5d, 0, phiHalf);
+    snubAxis_33 = new UnitQuaternion(phiInvertHalf, 0, phiHalf, -0.5d);
+    snubAxis_34 = new UnitQuaternion(0, phiHalf, phiInvertHalf, -0.5d);
+    snubAxis_35 = new UnitQuaternion(0, -0.5d, phiHalf, phiInvertHalf);
+    snubAxis_36 = new UnitQuaternion(0, phiInvertHalf, -0.5d, phiHalf);
+
+    snubAxis_37 = new UnitQuaternion(phiHalf, -0.5d, -phiInvertHalf, 0); // (4)
+    // all even permutations of (4) by
+    // java $ tail $ evenPerm4 ("phiHalf", "-0.5d", "-phiInvertHalf", "0")
+    snubAxis_38 = new UnitQuaternion(phiHalf, -phiInvertHalf, 0, -0.5d);
+    snubAxis_39 = new UnitQuaternion(phiHalf, 0, -0.5d, -phiInvertHalf);
+    snubAxis_40 = new UnitQuaternion(-0.5d, phiHalf, 0, -phiInvertHalf);
+    snubAxis_41 = new UnitQuaternion(-0.5d, -phiInvertHalf, phiHalf, 0);
+    snubAxis_42 = new UnitQuaternion(-0.5d, 0, -phiInvertHalf, phiHalf);
+    snubAxis_43 = new UnitQuaternion(-phiInvertHalf, phiHalf, -0.5d, 0);
+    snubAxis_44 = new UnitQuaternion(-phiInvertHalf, -0.5d, 0, phiHalf);
+    snubAxis_45 = new UnitQuaternion(-phiInvertHalf, 0, phiHalf, -0.5d);
+    snubAxis_46 = new UnitQuaternion(0, phiHalf, -phiInvertHalf, -0.5d);
+    snubAxis_47 = new UnitQuaternion(0, -0.5d, phiHalf, -phiInvertHalf);
+    snubAxis_48 = new UnitQuaternion(0, -phiInvertHalf, -0.5d, phiHalf);
   }
 
   /*
