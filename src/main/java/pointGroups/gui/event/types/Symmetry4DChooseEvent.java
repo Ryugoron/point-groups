@@ -2,7 +2,6 @@ package pointGroups.gui.event.types;
 
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Symmetry;
-import pointGroups.geometry.Symmetry.Subgroup;
 import pointGroups.gui.event.Event;
 
 
@@ -53,10 +52,8 @@ public class Symmetry4DChooseEvent
    * 
    * @return The chosen symmetry.
    */
-  @SuppressWarnings("unchecked")
-  public Symmetry.Subgroup<Symmetry<Point4D, ?>> getSubgroup() {
-    // cast is 'safe' if constructor is called correctly
-    return (Subgroup<Symmetry<Point4D, ?>>) symmetry.getSubgroupByName(this.subgroup);
+  public String getSubgroup() {
+    return this.subgroup;
   }
 
   @Override

@@ -2,7 +2,6 @@ package pointGroups.gui.event.types;
 
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Symmetry;
-import pointGroups.geometry.Symmetry.Subgroup;
 import pointGroups.gui.event.Event;
 
 
@@ -51,10 +50,8 @@ public class Symmetry3DChooseEvent
    * 
    * @return The chosen symmetry.
    */
-  @SuppressWarnings("unchecked")
-  public Symmetry.Subgroup<Symmetry<Point3D, ?>> getSubgroup() {
-    // cast is 'safe' is constructor was called correctly
-    return (Subgroup<Symmetry<Point3D, ?>>) symmetry.getSubgroupByName(this.subgroup);
+  public String getSubgroup() {
+    return this.subgroup;
   }
 
   @Override
