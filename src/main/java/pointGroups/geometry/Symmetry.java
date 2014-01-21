@@ -59,6 +59,19 @@ public interface Symmetry<P extends Point, E extends Symmetry<P, E>>
   public Collection<P> images(P p, Subgroup<E> s);
 
   /**
+   * Returns a {@link Collection} of points which are the images of applying the
+   * symmetries of the specific point group. It is possible to create only the
+   * images with respect to certain subgroups.
+   * 
+   * @param p The {@link Point} which images are to be calculated
+   * @param s the {@link Subgroup} of the specific {@link Symmetry} under which
+   *          images are to be calculated given as canonical String
+   *          representation {@link Symmetry.Subgroup#toString()}.
+   * @return All points in the image of the symmetry
+   */
+  public Collection<P> images(P p, String s);
+
+  /**
    * Returns a {@link Collection} that contains all {@link Subgroup} elements of
    * the underlying symmetry.
    * 

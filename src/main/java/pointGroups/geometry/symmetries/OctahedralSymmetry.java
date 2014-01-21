@@ -194,6 +194,11 @@ public class OctahedralSymmetry
   }
 
   @Override
+  public Collection<Point3D> images(final Point3D p, final String s) {
+    return images(p, this.getSubgroupByName(s));
+  }
+
+  @Override
   public int order(final Subgroup<OctahedralSymmetry> s) {
     return sym.subgroupTable.get(s).size();
   }
