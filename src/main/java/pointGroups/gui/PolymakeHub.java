@@ -6,6 +6,7 @@ import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Symmetry;
+import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.RunEvent;
 import pointGroups.gui.event.types.RunHandler;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
@@ -20,6 +21,7 @@ public class PolymakeHub
   implements Symmetry3DChooseHandler, Symmetry4DChooseHandler, RunHandler
 {
   protected final PolymakeWrapper pmWrapper;
+  protected final EventDispatcher dispatcher = EventDispatcher.get();
   private Symmetry<Point3D, ?> last3DSymmetry;
   private Symmetry<Point4D, ?> last4DSymmetry;
   private String lastSubgroup;
@@ -27,6 +29,10 @@ public class PolymakeHub
   public PolymakeHub(final String polyCmd, final String polyDriver) {
     this.pmWrapper = new PolymakeWrapper(polyCmd, polyDriver);
     this.pmWrapper.start();
+
+    dispatcher.addHandler(Symmetry3DChooseHandler.class, this);
+    dispatcher.addHandler(Symmetry4DChooseHandler.class, this);
+    dispatcher.addHandler(RunHandler.class, this);
   }
 
   @Override
@@ -51,6 +57,7 @@ public class PolymakeHub
     if (images != null) {
       SchlegelTransformer st = new SchlegelTransformer(images);
       pmWrapper.sendRequest(st);
+      // what to do now?
     }
   }
 
