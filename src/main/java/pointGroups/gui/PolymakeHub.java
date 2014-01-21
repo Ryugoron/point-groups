@@ -9,6 +9,7 @@ import pointGroups.geometry.Symmetry;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.RunEvent;
 import pointGroups.gui.event.types.RunHandler;
+import pointGroups.gui.event.types.SchlegelResultEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseHandler;
 import pointGroups.gui.event.types.Symmetry4DChooseEvent;
@@ -17,6 +18,15 @@ import pointGroups.util.polymake.SchlegelTransformer;
 import pointGroups.util.polymake.wrapper.PolymakeWrapper;
 
 
+/**
+ * Coordination object in the gui that listens to certain events that contribute
+ * to the next calculation. If a {@link RunEvent} is received, a calculation
+ * request will be sent to the {@link PolymakeWrapper}. Finally, for each
+ * calculation request, a {@link SchlegelResultEvent} that contains the request
+ * is fired.
+ * 
+ * @author Alex
+ */
 public class PolymakeHub
   implements Symmetry3DChooseHandler, Symmetry4DChooseHandler, RunHandler
 {
@@ -57,18 +67,18 @@ public class PolymakeHub
     if (images != null) {
       SchlegelTransformer st = new SchlegelTransformer(images);
       pmWrapper.sendRequest(st);
-      // what to do now?
+      dispatcher.fireEvent(new SchlegelResultEvent(st));
     }
   }
 
   @Override
-  public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
+  public void onSymmetry4DChooseEvent(final Symmetry4DChooseEvent event) {
     this.last4DSymmetry = event.getSymmetry4D();
     this.lastSubgroup = event.getSubgroup();
   }
 
   @Override
-  public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
+  public void onSymmetry3DChooseEvent(final Symmetry3DChooseEvent event) {
     this.last3DSymmetry = event.getSymmetry3D();
     this.lastSubgroup = event.getSubgroup();
   }
