@@ -44,7 +44,7 @@ public class SymmetryPanel
     this.symmetries4DPanel =
         new SymmetryList<Point4D>(this.symmetries4D, subgroupPanel);
 
-    Dimension dim = new Dimension(250, 0);
+    Dimension dim = new Dimension(150, 0);
     setMinimumSize(dim);
     setPreferredSize(dim);
 
@@ -74,7 +74,7 @@ public class SymmetryPanel
             logger.warning("SymmetryChoosePanel: Unknown Tab index selected");
             break;
           }
-
+          subgroupPanel.choose(null);
           dispatcher.fireEvent(new DimensionSwitchEvent(pointType));
         }
       }
