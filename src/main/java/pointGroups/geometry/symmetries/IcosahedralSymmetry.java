@@ -180,7 +180,68 @@ public class IcosahedralSymmetry
   static {
     sym.subgroupTable.put(Subgroups.Id, Collections.singleton(id));
     // todo...
-    sym.subgroupTable.put(Subgroups.Full, Collections.singleton(id));
+
+    // temporal
+    Collection<UnitQuaternion> full = new HashSet<UnitQuaternion>();
+    full.add(id);
+    full.add(edgeAxis_1);
+    full.add(edgeAxis_2);
+    full.add(edgeAxis_3);
+    full.add(diagonalAxis1_120);
+    full.add(diagonalAxis1_240);
+    full.add(diagonalAxis2_120);
+    full.add(diagonalAxis2_240);
+    full.add(diagonalAxis3_120);
+    full.add(diagonalAxis3_240);
+    full.add(snubAxis_1);
+    full.add(snubAxis_2);
+    full.add(snubAxis_3);
+    full.add(snubAxis_4);
+    full.add(snubAxis_5);
+    full.add(snubAxis_6);
+    full.add(snubAxis_7);
+    full.add(snubAxis_8);
+    full.add(snubAxis_9);
+    full.add(snubAxis_10);
+    full.add(snubAxis_11);
+    full.add(snubAxis_12);
+    full.add(snubAxis_13);
+    full.add(snubAxis_14);
+    full.add(snubAxis_15);
+    full.add(snubAxis_16);
+    full.add(snubAxis_17);
+    full.add(snubAxis_18);
+    full.add(snubAxis_19);
+    full.add(snubAxis_20);
+    full.add(snubAxis_21);
+    full.add(snubAxis_22);
+    full.add(snubAxis_23);
+    full.add(snubAxis_24);
+    full.add(snubAxis_25);
+    full.add(snubAxis_26);
+    full.add(snubAxis_27);
+    full.add(snubAxis_28);
+    full.add(snubAxis_29);
+    full.add(snubAxis_30);
+    full.add(snubAxis_31);
+    full.add(snubAxis_32);
+    full.add(snubAxis_33);
+    full.add(snubAxis_34);
+    full.add(snubAxis_35);
+    full.add(snubAxis_36);
+    full.add(snubAxis_37);
+    full.add(snubAxis_38);
+    full.add(snubAxis_39);
+    full.add(snubAxis_40);
+    full.add(snubAxis_41);
+    full.add(snubAxis_42);
+    full.add(snubAxis_43);
+    full.add(snubAxis_44);
+    full.add(snubAxis_45);
+    full.add(snubAxis_46);
+    full.add(snubAxis_47);
+    full.add(snubAxis_48);
+    sym.subgroupTable.put(Subgroups.Full, full);
   }
 
 
