@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -50,12 +52,8 @@ public class StatusBar extends JPanel implements ChangeCoordinateHandler, RunHan
     statusLabel.setBorder(BorderFactory.createLoweredBevelBorder());
     statusLabel.setForeground(Color.black);
     add(BorderLayout.CENTER, statusLabel);
-    JLabel dummyLabel = new JLabel(" ");
-    dummyLabel.setBorder(BorderFactory.createLoweredBevelBorder());
-    add(BorderLayout.EAST, dummyLabel);
     
     // register events
-    //TODO: correct?!
     dispatcher.addHandler(ChangeCoordinateEvent.TYPE, this);
     dispatcher.addHandler(RunEvent.TYPE, this);
     dispatcher.addHandler(ShowCoordinateEvent.TYPE, this);
@@ -68,7 +66,10 @@ public class StatusBar extends JPanel implements ChangeCoordinateHandler, RunHan
   }
   
   public void setStatus(String status){
-    statusLabel.setText(status);
+    Calendar now = Calendar.getInstance();
+    int hour = now.get(Calendar.HOUR_OF_DAY);
+    int minute = now.get(Calendar.MINUTE);
+    statusLabel.setText(hour+": "+minute+" "+status);
   }
   
   public void removeStatusmessage(){
@@ -127,7 +128,7 @@ public class StatusBar extends JPanel implements ChangeCoordinateHandler, RunHan
       setStatus("Show Fundamental domain");
     }
     else{
-      setStatus("Fundamental domain is not visible");
+      setStatus("Fundamental domain is hidden");
     }
   }
 
@@ -137,7 +138,7 @@ public class StatusBar extends JPanel implements ChangeCoordinateHandler, RunHan
       setStatus("Show coordinatesystem");
     }
     else{
-      setStatus("Coordinatesystem is not visible");
+      setStatus("Coordinatesystem is hidden");
     }
   }  
 }

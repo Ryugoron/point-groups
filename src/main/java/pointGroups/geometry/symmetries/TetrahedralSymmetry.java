@@ -158,6 +158,11 @@ public class TetrahedralSymmetry
   }
 
   @Override
+  public Collection<Point3D> images(final Point3D p, final String s) {
+    return images(p, this.getSubgroupByName(s));
+  }
+
+  @Override
   public int order(final Subgroup<TetrahedralSymmetry> s) {
     return sym.subgroupTable.get(s).size();
   }

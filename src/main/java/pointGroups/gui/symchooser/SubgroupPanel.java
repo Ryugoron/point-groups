@@ -1,5 +1,6 @@
 package pointGroups.gui.symchooser;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.util.logging.Logger;
@@ -14,6 +15,7 @@ import pointGroups.geometry.Symmetry;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.gui.event.types.Symmetry4DChooseEvent;
+import pointGroups.gui.symchooser.elements.SubgroupListCellRenderer;
 import pointGroups.util.gui.MouseAdapter;
 
 
@@ -28,9 +30,14 @@ public class SubgroupPanel
 
   public SubgroupPanel() {
     super();
-    Dimension dim = new Dimension(250, 0);
+    Dimension dim = new Dimension(150, 0);
     setMinimumSize(dim);
     setPreferredSize(dim);
+
+    setCellRenderer(new SubgroupListCellRenderer());
+
+    setSelectionBackground(Color.BLUE);
+    setBackground(Color.WHITE);
 
     addMouseListener(new MouseAdapter() {
       @SuppressWarnings("unchecked")
@@ -40,17 +47,20 @@ public class SubgroupPanel
         final int index = list.locationToIndex(e.getPoint());
         list.setSelectedIndex(index);
         Symmetry.Subgroup<?> subgroup = list.getSelectedValue();
-        logger.info("SubgroupPanel: Symmetry chosen: " +
-            lastChosenSymmetry.getName() + ", Subgroup: " + subgroup.getName());
+        if (subgroup != null) {
+          logger.info("SubgroupPanel: Symmetry chosen: " +
+              lastChosenSymmetry.getName() + ", Subgroup: " +
+              subgroup.getName());
 
-        Class<?> type = lastChosenSymmetry.getType();
-        if (type == Point3D.class) {
-          dispatcher.fireEvent(new Symmetry3DChooseEvent(
-              (Symmetry<Point3D, ?>) lastChosenSymmetry, subgroup.toString()));
-        }
-        else if (type == Point4D.class) {
-          dispatcher.fireEvent(new Symmetry4DChooseEvent(
-              (Symmetry<Point4D, ?>) lastChosenSymmetry, subgroup.toString()));
+          Class<?> type = lastChosenSymmetry.getType();
+          if (type == Point3D.class) {
+            dispatcher.fireEvent(new Symmetry3DChooseEvent(
+                (Symmetry<Point3D, ?>) lastChosenSymmetry, subgroup.toString()));
+          }
+          else if (type == Point4D.class) {
+            dispatcher.fireEvent(new Symmetry4DChooseEvent(
+                (Symmetry<Point4D, ?>) lastChosenSymmetry, subgroup.toString()));
+          }
         }
       }
     });
@@ -58,12 +68,22 @@ public class SubgroupPanel
 
   private static final long serialVersionUID = 7253276154708286652L;
 
+  /**
+   * The previously chosen "top level" symmetry <code>symmetry</code> is used
+   * for enumerating all of its subgroups in the underlying
+   * {@link SubgroupPanel}. If <code>symmetry</code> is <code>null</code>, the
+   * panels gets emptied.
+   * 
+   * @param symmetry the symmetry
+   */
   public <P extends Point> void choose(final Symmetry<P, ?> symmetry) {
     this.lastChosenSymmetry = symmetry;
 
     DefaultListModel<Symmetry.Subgroup<?>> neu = new DefaultListModel<>();
-    for (Symmetry.Subgroup<?> subgroup : symmetry.getSubgroups()) {
-      neu.addElement(subgroup);
+    if (symmetry != null) {
+      for (Symmetry.Subgroup<?> subgroup : symmetry.getSubgroups()) {
+        neu.addElement(subgroup);
+      }
     }
     this.setModel(neu);
 

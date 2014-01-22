@@ -21,6 +21,8 @@ public class SymmetryList<P extends Point>
       final SubgroupPanel subgroupPanel) {
     super(symmetries3d);
 
+    this.setCellRenderer(new SymmetryListCellRenderer());
+
     this.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
