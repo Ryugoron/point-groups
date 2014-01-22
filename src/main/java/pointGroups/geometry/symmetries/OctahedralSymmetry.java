@@ -146,7 +146,23 @@ public class OctahedralSymmetry
    */
   public enum Subgroups
     implements Subgroup<OctahedralSymmetry> {
-    Id, Full;
+    Id("Trivial group"), Full("Full octahedral symmetry");
+
+    private final String name;
+
+    Subgroups(final String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String getName() {
+      return this.name;
+    }
+
+    @Override
+    public int order() {
+      return sym.order(this);
+    }
   }
 
   /**
@@ -166,7 +182,8 @@ public class OctahedralSymmetry
   }
 
   @Override
-  public Collection<Point3D> images(Point3D p, Subgroup<OctahedralSymmetry> s) {
+  public Collection<Point3D> images(final Point3D p,
+      final Subgroup<OctahedralSymmetry> s) {
     Set<Point3D> res = new HashSet<Point3D>(24);
 
     for (UnitQuaternion q : subgroupTable.get(s)) {
@@ -177,14 +194,33 @@ public class OctahedralSymmetry
   }
 
   @Override
-  public int order(Subgroup<OctahedralSymmetry> s) {
+  public Collection<Point3D> images(final Point3D p, final String s) {
+    return images(p, this.getSubgroupByName(s));
+  }
+
+  @Override
+  public int order(final Subgroup<OctahedralSymmetry> s) {
     return sym.subgroupTable.get(s).size();
   }
 
   @Override
-  public Collection<UnitQuaternion>
-      getSymmetries(Subgroup<OctahedralSymmetry> s) {
-    return sym.subgroupTable.get(s);
+  public String getName() {
+    return "Octahedral Symmetry";
+  }
+
+  @Override
+  public Subgroup<OctahedralSymmetry> getSubgroupByName(final String subgroup) {
+    return Subgroups.valueOf(subgroup);
+  }
+
+  @Override
+  public Collection<Subgroup<OctahedralSymmetry>> getSubgroups() {
+    return sym.subgroupTable.keySet();
+  }
+
+  @Override
+  public Class<Point3D> getType() {
+    return Point3D.class;
   }
 
 }
