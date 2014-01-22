@@ -6,8 +6,6 @@ import java.util.logging.Logger;
 import pointGroups.geometry.Fundamental;
 import pointGroups.geometry.KnownFundamental;
 import pointGroups.geometry.Point;
-import pointGroups.geometry.Point2D;
-import pointGroups.geometry.Point3D;
 import pointGroups.util.AbstractTransformer;
 
 /**
@@ -18,8 +16,8 @@ import pointGroups.util.AbstractTransformer;
  * @author Max
  * 
  */
-public class FundamentalTransformer<PS extends Point, PF extends Point> extends
-		AbstractTransformer<Fundamental<PS, PF>> {
+public class FundamentalTransformer<PS extends Point> extends
+		AbstractTransformer<Fundamental<PS>> {
 
 	// TODO maybe long is better?
 	public static int count = 0;
@@ -84,9 +82,8 @@ public class FundamentalTransformer<PS extends Point, PF extends Point> extends
 		return this.script;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected Fundamental<PS, PF> transformResultString() {
+	protected Fundamental<PS> transformResultString() {
 		StringBuilder regex = new StringBuilder();
 		// minimum one 3D point followed by...
 		regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+|");
@@ -138,22 +135,14 @@ public class FundamentalTransformer<PS extends Point, PF extends Point> extends
 		// the
 		// goal dimension
 		//
-		PF[] boundary;
-		if (points.length - 2 == 2) {
-			boundary = (PF[]) new Point2D[points.length - 2];
-		} else {
-			boundary = (PF[]) new Point3D[points.length - 2];
-		}
+		double[][] boundary;
+		boundary = new double[points.length - 2][points[2].length];
 
 		for (int i = 0; i < boundary.length; i++) {
-			if (boundary.length == 2) {
-				boundary[i] = (PF) new Point2D(points[i + 2]);
-			} else {
-				boundary[i] = (PF) new Point3D(points[i + 2]);
-			}
+			boundary[i] = points[i + 2];
 		}
 
-		return new KnownFundamental<PS, PF>(boundary, transpose(mat), aff);
+		return new KnownFundamental<PS>(boundary, transpose(mat), aff);
 	}
 
 	private double[][] transpose(double[][] m1) {

@@ -1,7 +1,7 @@
 package pointGroups.geometry;
 
-public class UnknownFundamental<PS extends Point, PF extends Point> implements
-		Fundamental<PS, PF> {
+public class UnknownFundamental<PS extends Point> implements
+		Fundamental<PS> {
 
 	/**
 	 * If this class is instanciated the fundamental domain should not be known.
@@ -15,7 +15,7 @@ public class UnknownFundamental<PS extends Point, PF extends Point> implements
 	 * As the interface says, an unknown domain has no boundary points.
 	 */
 	@Override
-	public PF[] getVertices() {
+	public double[][] getVertices() {
 		return null;
 	}
 
@@ -25,8 +25,8 @@ public class UnknownFundamental<PS extends Point, PF extends Point> implements
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public PS revertPoint(PF point) {
-		double[] p = point.getComponents();
+	public PS revertPoint(double[] point) {
+		double[] p = point;
 		double[] lift = new double[p.length + 1];
 		for (int i = 0; i < p.length; i++) {
 			lift[i] = p[i];

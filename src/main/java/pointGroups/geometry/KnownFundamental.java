@@ -15,8 +15,8 @@ package pointGroups.geometry;
  *            The dimension of the fundamental domain
  * 
  */
-public class KnownFundamental<PS extends Point, PF extends Point> implements
-		Fundamental<PS, PF> {
+public class KnownFundamental<PS extends Point> implements
+		Fundamental<PS> {
 
 	/**
 	 * Stores the inverted projection matrix from the PS dimension to the PF
@@ -29,9 +29,9 @@ public class KnownFundamental<PS extends Point, PF extends Point> implements
 	/**
 	 * V-Polytope of the fundamental domain.
 	 */
-	private PF[] points;
+	private double[][] points;
 
-	public KnownFundamental(PF[] points, double[][] revertMatrix, double[] affine) {
+	public KnownFundamental(double[][] points, double[][] revertMatrix, double[] affine) {
 		this.points = points.clone();
 		this.revertMatrix = revertMatrix;
 		this.affine = affine;
@@ -50,7 +50,7 @@ public class KnownFundamental<PS extends Point, PF extends Point> implements
 	 * 
 	 * @return All vertices on the convex hull of the V-Polytope
 	 */
-	public PF[] getVertices() {
+	public double[][] getVertices() {
 		return this.points.clone();
 	}
 
@@ -64,8 +64,8 @@ public class KnownFundamental<PS extends Point, PF extends Point> implements
 	 * @return the point reprojected to the unit ball
 	 */
 	@SuppressWarnings("unchecked")
-	public PS revertPoint(PF point) {
-		double[] p = applyMatrix(revertMatrix, point.getComponents());
+	public PS revertPoint(double[] point) {
+		double[] p = applyMatrix(revertMatrix, point);
 		p = addAffine(p);
 		p = normalize(p);
 		// TODO Wie kann man das hier schön verpacken...
