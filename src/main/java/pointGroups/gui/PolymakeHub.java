@@ -44,8 +44,8 @@ public class PolymakeHub
   private Symmetry<Point4D, ?> last4DSymmetry;
   private String lastSubgroup;
 
-  public PolymakeHub(final String polyCmd, final String polyDriver) {
-    this.pmWrapper = new PolymakeWrapper(polyCmd, polyDriver);
+  public PolymakeHub(final PolymakeWrapper pmWrapper) {
+    this.pmWrapper = pmWrapper;
     this.pmWrapper.start();
 
     this.resConsumer.start();
