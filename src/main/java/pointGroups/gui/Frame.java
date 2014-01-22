@@ -24,7 +24,7 @@ public class Frame
   protected JPanel schlegelView = new JPanel();
   protected JPanel pointPicker = new JPanel();
   protected JPanel symmetryChooser;
-  protected JPanel coordinates = new JPanel();
+  protected JPanel coordinates;
   protected JPanel statusBar;
   
   protected EventDispatcher dispatcher = EventDispatcher.get();
@@ -49,7 +49,7 @@ public class Frame
     JSplitPane mainSplitPane =
         new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
     mainSplitPane.setResizeWeight(0);
-    mainSplitPane.setDividerLocation(250);
+    mainSplitPane.setDividerLocation(320);
     mainSplitPane.setOneTouchExpandable(true);
     mainSplitPane.setBorder(BorderFactory.createEmptyBorder());
     
@@ -60,7 +60,7 @@ public class Frame
     add(mainSplitPane, BorderLayout.CENTER);
     add(statusBar, BorderLayout.SOUTH);
     setTitle("Point groups");
-    setSize(1000, 650);
+    setSize(1000, 800);
     setLocationRelativeTo(null); // center window
     setVisible(true);
   }
@@ -74,17 +74,17 @@ public class Frame
     
     symmetryChooser = new SymmetryChooser();
     pointPicker.setBackground(Color.YELLOW);
-    coordinates.setBackground(Color.GREEN);
+    coordinates = new CoordinateView(3,dispatcher);
     
     JSplitPane leftTopComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, symmetryChooser, pointPicker);
     JSplitPane leftComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, coordinates);
     leftComponent.setBorder(BorderFactory.createEmptyBorder());
     leftTopComponent.setBorder(BorderFactory.createEmptyBorder());
-    leftTopComponent.setOneTouchExpandable(true);
     leftComponent.setOneTouchExpandable(true);
+    leftTopComponent.setOneTouchExpandable(true);
     
-    leftComponent.setDividerLocation(550);
-    leftTopComponent.setDividerLocation(300);
+    leftComponent.setDividerLocation(600);
+    leftTopComponent.setDividerLocation(500);
     
     
     return leftComponent;
