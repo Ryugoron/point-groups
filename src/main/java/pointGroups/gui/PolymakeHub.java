@@ -18,6 +18,7 @@ import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseHandler;
 import pointGroups.gui.event.types.Symmetry4DChooseEvent;
 import pointGroups.gui.event.types.Symmetry4DChooseHandler;
+import pointGroups.util.ExternalCalculationWrapper;
 import pointGroups.util.polymake.SchlegelTransformer;
 import pointGroups.util.polymake.wrapper.PolymakeWrapper;
 
@@ -35,7 +36,7 @@ public class PolymakeHub
   implements Symmetry3DChooseHandler, Symmetry4DChooseHandler, RunHandler
 {
   protected final EventDispatcher dispatcher = EventDispatcher.get();
-  protected final PolymakeWrapper pmWrapper;
+  protected final ExternalCalculationWrapper pmWrapper;
 
   private final BlockingQueue<Schlegel> buf = new LinkedBlockingQueue<>();
   private final ResultProducer resProducer = new ResultProducer();
@@ -44,8 +45,8 @@ public class PolymakeHub
   private Symmetry<Point4D, ?> last4DSymmetry;
   private String lastSubgroup;
 
-  public PolymakeHub(final PolymakeWrapper pmWrapper) {
-    this.pmWrapper = pmWrapper;
+  public PolymakeHub(final ExternalCalculationWrapper wrapper) {
+    this.pmWrapper = wrapper;
     this.pmWrapper.start();
 
     this.resConsumer.start();
@@ -93,6 +94,14 @@ public class PolymakeHub
   public void onSymmetry3DChooseEvent(final Symmetry3DChooseEvent event) {
     this.last3DSymmetry = event.getSymmetry3D();
     this.lastSubgroup = event.getSubgroup();
+  }
+
+  public Symmetry<Point3D, ?> getLast3DSymmetry() {
+    return this.last3DSymmetry;
+  }
+
+  public Symmetry<Point4D, ?> getLast4DSymmetry() {
+    return this.last4DSymmetry;
   }
 
 
