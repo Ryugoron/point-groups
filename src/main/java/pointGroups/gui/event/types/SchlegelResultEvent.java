@@ -1,14 +1,14 @@
 package pointGroups.gui.event.types;
 
+import pointGroups.geometry.Schlegel;
 import pointGroups.gui.PolymakeHub;
 import pointGroups.gui.event.Event;
-import pointGroups.util.polymake.SchlegelTransformer;
 
 
 /**
  * This {@link Event} is fired if a calculation for a previously selected
- * symmetry and point is supposed to be started. This event is ordinarily fired
- * by the {@link PolymakeHub}.
+ * symmetry and point is was finished. This event is ordinarily fired by the
+ * {@link PolymakeHub}.
  * 
  * @author Alex
  */
@@ -18,28 +18,25 @@ public class SchlegelResultEvent
   public final static Class<SchlegelResultHandler> TYPE =
       SchlegelResultHandler.class;
 
-  private final SchlegelTransformer st;
+  private final Schlegel s;
 
   /**
-   * Create a new {@link SchlegelResultEvent} with given
-   * {@link SchlegelTransformer}. The actual calculation may not be finished at
-   * the time of arrival. {@link SchlegelTransformer#get()} can be used to get
-   * the desired result itself.
+   * Creates a new {@link SchlegelResultEvent} with given {@link Schlegel}
+   * object.
    * 
-   * @param st the schlegel transformer
+   * @param st the schlegel result
    */
-  public SchlegelResultEvent(final SchlegelTransformer st) {
-    this.st = st;
+  public SchlegelResultEvent(final Schlegel s) {
+    this.s = s;
   }
 
   /**
-   * Returns the {@link SchlegelTransformer} that has been submitted for
-   * calculation to polymake.
+   * Returns the {@link Schlegel} object that was calculated by polymake.
    * 
-   * @return the schlegel transformer
+   * @return the schlegel result
    */
-  public SchlegelTransformer getSchlegelTransformer() {
-    return st;
+  public Schlegel getResult() {
+    return s;
   }
 
   @Override
