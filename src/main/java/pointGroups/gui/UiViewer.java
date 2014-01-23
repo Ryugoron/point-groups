@@ -1,6 +1,7 @@
 package pointGroups.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.util.concurrent.ExecutionException;
@@ -15,6 +16,12 @@ import de.jreality.scene.Appearance;
 import de.jreality.scene.Geometry;
 import de.jreality.scene.SceneGraphComponent;
 import de.jreality.scene.Viewer;
+import de.jreality.shader.DefaultGeometryShader;
+import de.jreality.shader.DefaultLineShader;
+import de.jreality.shader.DefaultPointShader;
+import de.jreality.shader.DefaultPolygonShader;
+import de.jreality.shader.RenderingHintsShader;
+import de.jreality.shader.ShaderUtility;
 import de.jreality.softviewer.SoftViewer;
 import de.jreality.tools.ClickWheelCameraZoomTool;
 
@@ -65,7 +72,7 @@ public class UiViewer
 
   protected final Container component;
   protected final SceneGraphComponent sceneRoot = new SceneGraphComponent();
-  protected final Appearance appearanceRoot = new Appearance();
+  protected final Appearance appearanceRoot = setupAppearance(new Appearance());
   protected final ContentTools contentTools = new ContentTools();
 
   /**
@@ -181,5 +188,56 @@ public class UiViewer
 
     v.startupLocal();
     return v;
+  }
+
+  private static Appearance setupAppearance(Appearance ap) {
+    DefaultGeometryShader dgs;
+    DefaultPolygonShader dps;
+    DefaultLineShader dls;
+    DefaultPointShader dpts;
+    RenderingHintsShader rhs;
+
+    // ap.setAttribute(CommonAttributes.POLYGON_SHADER + "." +
+    // CommonAttributes.DIFFUSE_COLOR, Color.yellow);
+    //
+    // ap.setAttribute(CommonAttributes.POINT_SHADER + "." +
+    // CommonAttributes.DIFFUSE_COLOR, Color.red);
+    //
+    // ap.setAttribute(CommonAttributes.VERTEX_SHADER + "." +
+    // CommonAttributes.DIFFUSE_COLOR, Color.red);
+    //
+    // ap.setAttribute(CommonAttributes.POINT_RADIUS, 15d);
+    //
+    // ap.setAttribute(POLYGON_SHADER, TwoSidePolygonShader.class);
+    // ap.setAttribute(POLYGON_SHADER + ".front." + DIFFUSE_COLOR, new Color(0,
+    // 204, 204));
+    // ap.setAttribute(POLYGON_SHADER + ".back." + DIFFUSE_COLOR, new Color(204,
+    // 204, 0));
+    // ap.setAttribute(LINE_SHADER + "." + DIFFUSE_COLOR, WHITE);
+    // ap.setAttribute(POINT_SHADER + "." + DIFFUSE_COLOR, RED);
+    // ap.setAttribute(POINT_SHADER + "." + POINT_RADIUS, 2 *
+    // POINT_RADIUS_DEFAULT);
+
+    dgs = ShaderUtility.createDefaultGeometryShader(ap, true);
+    dgs.setShowFaces(true);
+    dgs.setShowLines(true);
+    dgs.setShowPoints(true);
+    dps = (DefaultPolygonShader) dgs.createPolygonShader("default");
+    dps.setDiffuseColor(Color.cyan);
+
+    dls = (DefaultLineShader) dgs.createLineShader("default");
+    dls.setDiffuseColor(Color.yellow);
+    dls.setTubeRadius(.03);
+
+    dpts = (DefaultPointShader) dgs.createPointShader("default");
+    dpts.setDiffuseColor(Color.red);
+    dpts.setPointRadius(.05);
+
+    rhs = ShaderUtility.createDefaultRenderingHintsShader(ap, true);
+    rhs.setTransparencyEnabled(true);
+    rhs.setOpaqueTubesAndSpheres(true);
+    dps.setTransparency(.5);
+
+    return ap;
   }
 }
