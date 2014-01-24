@@ -227,15 +227,22 @@ public class UiViewer
 
     dls = (DefaultLineShader) dgs.createLineShader("default");
     dls.setDiffuseColor(Color.yellow);
-    dls.setTubeRadius(.03);
+    dls.setLineWidth(1.0);
+    dls.setTubeRadius(0.01);
+    dls.setTubeDraw(true);
+    dls.setLineStipple(true);
+    dls.setLineLighting(true);
 
     dpts = (DefaultPointShader) dgs.createPointShader("default");
     dpts.setDiffuseColor(Color.red);
-    dpts.setPointRadius(.05);
+    dpts.setSpheresDraw(true);
+    dpts.setPointSize(0.011);
+    dpts.setPointRadius(0.011);
 
     rhs = ShaderUtility.createDefaultRenderingHintsShader(ap, true);
     rhs.setTransparencyEnabled(true);
     rhs.setOpaqueTubesAndSpheres(true);
+
     dps.setTransparency(.5);
 
     return ap;
