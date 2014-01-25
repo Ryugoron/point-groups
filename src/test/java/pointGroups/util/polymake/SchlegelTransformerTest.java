@@ -107,6 +107,14 @@ public class SchlegelTransformerTest
     assertEquals(desiredScript, script);
   }
 
+  @Test
+  public void testExecutionOnPolymake()
+    throws IOException, InterruptedException, ExecutionException {
+
+    Schlegel schlegel = PolymakeTestExecutor.execute(st);
+    assert2DResults(schlegel);
+  }
+
   public void assert2DResults(Schlegel schlegel) {
     assertEquals(1.613228378, schlegel.points[0].i, 0);
     assertEquals(2.147844766, schlegel.points[0].j, 0);
