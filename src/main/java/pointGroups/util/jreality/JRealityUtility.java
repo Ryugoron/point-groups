@@ -51,4 +51,16 @@ public class JRealityUtility
     return ifsf.getGeometry();
   }
 
+  
+  public static Geometry generateCompleteGraph(double[][] points){
+	  // Enumerate all edges
+	  int[][] edges = new int[points.length*(points.length-1) / 2][2];
+	  int at = 0;
+	  for(int i = 0; i < points.length; i++){
+		  for(int j = (i+1); j < points.length; j++){
+			  edges[at++] = new int[] {i, j};
+		  }
+	  }
+	  return generateGraph(points,edges);
+  }
 }

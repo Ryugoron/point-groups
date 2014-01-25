@@ -25,7 +25,7 @@ public class MainFrame
 
   protected JMenuBar menuBar;
   protected JPanel schlegelView = new SchlegelView();
-  protected JPanel pointPicker = new JPanel();
+  protected JPanel pointPicker = new PointPicker();
   protected JPanel symmetryChooser;
   protected JPanel coordinates;
   protected JPanel statusBar;
