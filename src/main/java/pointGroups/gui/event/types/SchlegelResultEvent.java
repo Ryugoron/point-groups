@@ -1,14 +1,14 @@
 package pointGroups.gui.event.types;
 
 import pointGroups.geometry.Schlegel;
-import pointGroups.gui.PolymakeHub;
+import pointGroups.gui.ExternalCalculationEventHub;
 import pointGroups.gui.event.Event;
 
 
 /**
  * This {@link Event} is fired if a calculation for a previously selected
  * symmetry and point is was finished. This event is ordinarily fired by the
- * {@link PolymakeHub}.
+ * {@link ExternalCalculationEventHub}.
  * 
  * @author Alex
  */

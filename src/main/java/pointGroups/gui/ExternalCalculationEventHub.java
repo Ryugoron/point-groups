@@ -37,7 +37,7 @@ import pointGroups.util.polymake.SchlegelTransformer;
  * 
  * @author Alex
  */
-public class PolymakeHub
+public class ExternalCalculationEventHub
   implements Symmetry3DChooseHandler, Symmetry4DChooseHandler, RunHandler
 {
   /**
@@ -63,7 +63,7 @@ public class PolymakeHub
   private Symmetry<Point4D, ?> last4DSymmetry;
   private String lastSubgroup;
 
-  public PolymakeHub(final ExternalCalculationWrapper wrapper) {
+  public ExternalCalculationEventHub(final ExternalCalculationWrapper wrapper) {
     // To log properly, we need to set the logger as child of the global logger
     logger.setParent(Logger.getGlobal());
 
