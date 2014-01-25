@@ -157,7 +157,7 @@ public class SchlegelTransformerTest
   public void testToString() {
     String script = st.toScript();
     String desiredScript =
-        "use application \"polytope\";my $mat=new Matrix<Rational>([[1,0.0,0.0,0.0],[1,1.1,0.0,0.0],[1,0.0,-1.23,1.0]]);my $p = new Polytope(POINTS=>$mat);my $schlegelverts = $p->SCHLEGEL_DIAGRAM->VERTICES;my $edges = $p->GRAPH->EDGES;my $v = \"$schlegelverts\";my $e = \"$edges\";print $v.$e";
+        "use application \"polytope\";my $mat=new Matrix<Rational>([[1,0.0,0.0,0.0],[1,1.1,0.0,0.0],[1,0.0,-1.23,1.0]]);my $p = new Polytope(POINTS=>$mat);my $schlegelverts = $p->SCHLEGEL_DIAGRAM->VERTICES;my $edges = $p->GRAPH->EDGES;my $v = \"$schlegelverts\";my $e = \"$edges\";print $v.\"$\".$e";
     Assert.assertTrue(script.equals(desiredScript));
   }
 
