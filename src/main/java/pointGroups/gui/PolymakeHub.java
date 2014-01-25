@@ -1,60 +1,103 @@
 package pointGroups.gui;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Logger;
 
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Schlegel;
 import pointGroups.geometry.Symmetry;
+import pointGroups.gui.event.Event;
 import pointGroups.gui.event.EventDispatcher;
+import pointGroups.gui.event.EventHandler;
 import pointGroups.gui.event.types.RunEvent;
 import pointGroups.gui.event.types.RunHandler;
 import pointGroups.gui.event.types.SchlegelResultEvent;
+import pointGroups.gui.event.types.SchlegelResultHandler;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseHandler;
 import pointGroups.gui.event.types.Symmetry4DChooseEvent;
 import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.util.ExternalCalculationWrapper;
+import pointGroups.util.Transformer;
 import pointGroups.util.polymake.SchlegelTransformer;
-import pointGroups.util.polymake.wrapper.PolymakeWrapper;
 
 
 /**
  * Coordination object in the gui that listens to certain events that contribute
  * to the next calculation. If a {@link RunEvent} is received, a calculation
- * request will be sent to the {@link PolymakeWrapper}. Finally, for each
- * calculation request, a {@link SchlegelResultEvent} that contains the request
- * is fired.
+ * request will be sent to the {@link ExternalCalculationWrapper}. Finally, for
+ * each calculation request, a {@link Event} that contains the result, is fired.
  * 
  * @author Alex
  */
 public class PolymakeHub
   implements Symmetry3DChooseHandler, Symmetry4DChooseHandler, RunHandler
 {
+  /**
+   * An instance of the {@link EventDispatcher}.
+   */
   protected final EventDispatcher dispatcher = EventDispatcher.get();
-  protected final ExternalCalculationWrapper pmWrapper;
+  /**
+   * The wrapped external process.
+   */
+  protected final ExternalCalculationWrapper wrapper;
+  protected final Logger logger = Logger.getLogger(this.getClass().getName());
 
-  private final BlockingQueue<Schlegel> buf = new LinkedBlockingQueue<>();
+  private final Map<Class<? extends Transformer<?>>, Class<? extends EventHandler>> transformerToEventType =
+      new HashMap<>();
+
+  // Producer-Consumer-Patterh for asynchronous external calculation tasks
+  private final BlockingQueue<Transformer<?>> buf = new LinkedBlockingQueue<>();
   private final ResultProducer resProducer = new ResultProducer();
   private final ResultConsumer resConsumer = new ResultConsumer();
+
+  // Additional fields for events registered to
   private Symmetry<Point3D, ?> last3DSymmetry;
   private Symmetry<Point4D, ?> last4DSymmetry;
   private String lastSubgroup;
 
   public PolymakeHub(final ExternalCalculationWrapper wrapper) {
-    this.pmWrapper = wrapper;
-    this.pmWrapper.start();
+    // To log properly, we need to set the logger as child of the global logger
+    logger.setParent(Logger.getGlobal());
 
-    this.resConsumer.start();
-    this.resProducer.start();
+    fillEventMap();
+    this.wrapper = wrapper;
+    this.wrapper.start();
 
+    resProducer.start();
+    resConsumer.start();
+
+    // Add other handlers of interest here! If you add a handler for some
+    // kind of result, you need to add it to the transformerToEventType map in
+    // fillEventMap().
+    // Additionally, a construction in the ResultEventFactory has to be added
+    // (at the end of this class).
     dispatcher.addHandler(Symmetry3DChooseHandler.class, this);
     dispatcher.addHandler(Symmetry4DChooseHandler.class, this);
     dispatcher.addHandler(RunHandler.class, this);
+  }
+
+  // Put the event Type of each event that is fired for the result of a
+  // corresponding transformer type
+  private void fillEventMap() {
+    this.transformerToEventType.put(SchlegelTransformer.class,
+        SchlegelResultHandler.class);
+  }
+
+  /**
+   * Start asynchronous calculation of the given {@link Transformer}.
+   * 
+   * @param t The transformer
+   */
+  private void submit(final Transformer<?> t) {
+    this.resProducer.submit(t);
   }
 
   @Override
@@ -77,10 +120,7 @@ public class PolymakeHub
     }
 
     if (images != null) {
-      SchlegelTransformer st = new SchlegelTransformer(images);
-      pmWrapper.sendRequest(st);
-      resProducer.submit(st);
-      // dispatcher.fireEvent(new SchlegelResultEvent(st));
+      submit(new SchlegelTransformer(images));
     }
   }
 
@@ -96,39 +136,36 @@ public class PolymakeHub
     this.lastSubgroup = event.getSubgroup();
   }
 
-  public Symmetry<Point3D, ?> getLast3DSymmetry() {
-    return this.last3DSymmetry;
-  }
-
-  public Symmetry<Point4D, ?> getLast4DSymmetry() {
-    return this.last4DSymmetry;
-  }
-
 
   protected class ResultProducer
     extends Thread
   {
-    private final BlockingQueue<SchlegelTransformer> pending =
+    private final BlockingQueue<Transformer<?>> pending =
         new LinkedBlockingQueue<>();
 
-    protected void submit(final SchlegelTransformer st) {
-      this.pending.add(st);
+    protected void submit(final Transformer<?> t) {
+      wrapper.sendRequest(t);
+      this.pending.add(t);
     }
 
     @Override
     public void run() {
-      // TODO: Termination
-      SchlegelTransformer st;
-      while (true) {
+      Transformer<?> t;
+      while (wrapper.isRunning()) {
         try {
-          st = pending.take();
-          buf.add(st.get());
+          t = pending.take();
+          t.get();
+          buf.add(t);
         }
-        catch (InterruptedException e) {
-          // Handle termination
-        }
-        catch (ExecutionException e) {
-          e.printStackTrace();
+        catch (InterruptedException | ExecutionException e) {
+          if (wrapper.isRunning()) {
+            logger.warning("");
+          }
+          else {
+            // If wrapper is not running anymore,
+            // the thread can terminate
+            break;
+          }
         }
       }
     }
@@ -138,19 +175,41 @@ public class PolymakeHub
   protected class ResultConsumer
     extends Thread
   {
-
     @Override
     public void run() {
-      // TODO: Termination
-      while (true) {
+      while (wrapper.isRunning()) {
         try {
-          dispatcher.fireEvent(new SchlegelResultEvent(buf.take()));
+          Transformer<?> t = buf.take();
+          dispatcher.fireEvent(ResultEventFactory.newEvent(
+              transformerToEventType.get(t), t.get()));
         }
-        catch (InterruptedException e) {
-          // TODO: Termination
+        catch (InterruptedException | ExecutionException e) {
+          // handle
         }
       }
     }
   }
 
+
+  protected static class ResultEventFactory
+  {
+    @SuppressWarnings("unchecked")
+    protected static <H extends EventHandler> Event<? extends H> newEvent(
+        final Class<H> eventType, final Object result) {
+      try {
+        if (eventType == SchlegelResultHandler.class) {
+          SchlegelResultEvent sre = new SchlegelResultEvent((Schlegel) result);
+          // cast is safe, we check the type
+          return (Event<? extends H>) sre;
+        }
+
+      }
+      catch (ClassCastException e) {
+        // Logging!
+      }
+      // If no case matched, something went terribly wrong!
+      // Log as severe!
+      return null;
+    }
+  }
 }
