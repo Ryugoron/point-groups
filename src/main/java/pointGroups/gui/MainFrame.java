@@ -24,27 +24,36 @@ public class MainFrame
   private static final long serialVersionUID = 1886397100814345247L;
 
   protected JMenuBar menuBar;
-  protected JPanel schlegelView = new SchlegelView();
+  protected JPanel schlegelView;
   protected JPanel pointPicker = new JPanel();
   protected JPanel symmetryChooser;
   protected JPanel coordinates;
   protected JPanel statusBar;
   
+  protected JSplitPane mainSplitPane;
+  protected JSplitPane leftTopComponent;
+  protected JSplitPane leftComponent;
+  
   protected EventDispatcher dispatcher = EventDispatcher.get();
 
   public MainFrame() {
- // setting up main split pane
     
-    Component leftPanel = setUpLeftPanel();
-    Component rightPanel = setUpRightPanel();    
+    setTitle("Point groups");
+    setSize(1000, 800);
+    setLocationRelativeTo(null); // center window
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+    // setting up main split pane
+    schlegelView = new SchlegelView();
+    Component leftPanel = setUpLeftPanel();   
     
     // ensures to drag the divider all the way to both sides
     Dimension minimumSize = new Dimension(0,0);
     leftPanel.setMinimumSize(minimumSize);
-    rightPanel.setMinimumSize(minimumSize);
+    schlegelView.setMinimumSize(minimumSize);
     
-    JSplitPane mainSplitPane =
-        new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
+    mainSplitPane =
+        new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, schlegelView);
     mainSplitPane.setResizeWeight(0);
     mainSplitPane.setDividerLocation(320);
     mainSplitPane.setOneTouchExpandable(true);
@@ -57,16 +66,7 @@ public class MainFrame
     add(mainSplitPane, BorderLayout.CENTER);
     add(statusBar, BorderLayout.SOUTH);
     
-    setTitle("Point groups");
-    setSize(1000, 800);
-    setLocationRelativeTo(null); // center window
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setVisible(true);
-  }
-  
-  private JPanel setUpRightPanel() {
-    schlegelView.setBackground(Color.CYAN);
-    return schlegelView;
   }
 
   private Component setUpLeftPanel() {
@@ -75,8 +75,8 @@ public class MainFrame
     pointPicker.setBackground(Color.YELLOW);
     coordinates = new CoordinateView(3,dispatcher);
     
-    JSplitPane leftTopComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, symmetryChooser, pointPicker);
-    JSplitPane leftComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, coordinates);
+    leftTopComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, symmetryChooser, pointPicker);
+    leftComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, coordinates);
     leftComponent.setBorder(BorderFactory.createEmptyBorder());
     leftTopComponent.setBorder(BorderFactory.createEmptyBorder());
     leftComponent.setOneTouchExpandable(true);
