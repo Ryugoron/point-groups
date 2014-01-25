@@ -39,4 +39,22 @@ public class PointGroupsUtility
 
     return prop;
   }
+
+  /**
+   * @deprecated This needs to be changed to a maven resource project path.
+   * @return
+   */
+  @Deprecated
+  public static String getPolymakeDriverPath() {
+    return "src/main/perl/pmDriver.pl";
+  }
+
+  /**
+   * @deprecated This needs to be changed to a maven resource project path.
+   * @return
+   */
+  @Deprecated
+  public static String getDefaultPolymakePath() {
+    return "/usr/bin/polymake";
+  }
 }
