@@ -1,5 +1,6 @@
 package pointGroups.util.polymake;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
@@ -107,31 +108,33 @@ public class SchlegelTransformerTest
   }
 
   public void assert2DResults(Schlegel schlegel) {
-    assertEquals(schlegel.points[0].i, 0.4321, 0);
-    assertEquals(schlegel.points[0].j, -0.1234, 0);
-    assertEquals(schlegel.points[1].i, 1, 0);
-    assertEquals(schlegel.points[1].j, 3, 0);
-    assertEquals(schlegel.points[2].i, 4, 0);
-    assertEquals(schlegel.points[2].j, 5.5, 0);
-    assertEquals(schlegel.edgesViaPoints[0].left, schlegel.points[1]);
-    assertEquals(schlegel.edgesViaPoints[0].right, schlegel.points[0]);
-    assertEquals(schlegel.edgesViaPoints[1].left, schlegel.points[1]);
-    assertEquals(schlegel.edgesViaPoints[1].right, schlegel.points[2]);
-    assertEquals(schlegel.edgesViaPoints[2].left, schlegel.points[0]);
-    assertEquals(schlegel.edgesViaPoints[2].right, schlegel.points[2]);
-    assertEquals(schlegel.edgesViaIndices[0].left, 1, 0);
-    assertEquals(schlegel.edgesViaIndices[0].right, 0, 0);
-    assertEquals(schlegel.edgesViaIndices[1].left, 1, 0);
-    assertEquals(schlegel.edgesViaIndices[1].right, 2, 0);
-    assertEquals(schlegel.edgesViaIndices[2].left, 0, 0);
-    assertEquals(schlegel.edgesViaIndices[2].right, 2, 0);
+    assertEquals(0.4321, schlegel.points[0].i, 0);
+    assertEquals(-0.1234, schlegel.points[0].j, 0);
+    assertEquals(1, schlegel.points[1].i, 0);
+    assertEquals(3, schlegel.points[1].j, 0);
+    assertEquals(4, schlegel.points[2].i, 0);
+    assertEquals(5.5, schlegel.points[2].j, 0);
+
+    assertEquals(schlegel.points[1], schlegel.edgesViaPoints[0].left);
+    assertEquals(schlegel.points[0], schlegel.edgesViaPoints[0].right);
+    assertEquals(schlegel.points[1], schlegel.edgesViaPoints[1].left);
+    assertEquals(schlegel.points[2], schlegel.edgesViaPoints[1].right);
+    assertEquals(schlegel.points[0], schlegel.edgesViaPoints[2].left);
+    assertEquals(schlegel.points[2], schlegel.edgesViaPoints[2].right);
+
+    assertEquals((Integer) 1, schlegel.edgesViaIndices[0].left);
+    assertEquals((Integer) 0, schlegel.edgesViaIndices[0].right);
+    assertEquals((Integer) 1, schlegel.edgesViaIndices[1].left);
+    assertEquals((Integer) 2, schlegel.edgesViaIndices[1].right);
+    assertEquals((Integer) 0, schlegel.edgesViaIndices[2].left);
+    assertEquals((Integer) 2, schlegel.edgesViaIndices[2].right);
   }
 
   public void assert3DResults(Schlegel schlegel) {
     assert2DResults(schlegel);
 
-    assertEquals(schlegel.points[0].k, 0, 0);
-    assertEquals(schlegel.points[1].k, 5, 0);
-    assertEquals(schlegel.points[2].k, -2, 0);
+    assertEquals(0, schlegel.points[0].k, 0);
+    assertEquals(5, schlegel.points[1].k, 0);
+    assertEquals(-2, schlegel.points[2].k, 0);
   }
 }
