@@ -159,7 +159,8 @@ public class ExternalCalculationEventHub
         }
         catch (InterruptedException | ExecutionException e) {
           if (wrapper.isRunning()) {
-            logger.warning("");
+            logger.warning("ExternalCalculationEventHub: Interrupted/Aborted"
+                + "while waiting of future value; Transformer skipped.");
           }
           else {
             // If wrapper is not running anymore,
@@ -177,24 +178,29 @@ public class ExternalCalculationEventHub
   {
     @Override
     public void run() {
+      Transformer<?> t;
       while (wrapper.isRunning()) {
         try {
-          Transformer<?> t = buf.take();
-          dispatcher.fireEvent(ResultEventFactory.newEvent(
-              transformerToEventType.get(t), t.get()));
+          t = buf.take();
+          dispatcher.fireEvent(createEvent(transformerToEventType.get(t),
+              t.get()));
         }
         catch (InterruptedException | ExecutionException e) {
-          // handle
+          if (wrapper.isRunning()) {
+            logger.info("ExternalCalculationEventHub: Interrupted while"
+                + "waiting on transformer buffer.");
+          }
+          else {
+            // If wrapper is not running anymore,
+            // the thread can terminate
+            break;
+          }
         }
       }
     }
-  }
 
-
-  protected static class ResultEventFactory
-  {
     @SuppressWarnings("unchecked")
-    protected static <H extends EventHandler> Event<? extends H> newEvent(
+    protected <H extends EventHandler> Event<? extends H> createEvent(
         final Class<H> eventType, final Object result) {
       try {
         if (eventType == SchlegelResultHandler.class) {
@@ -205,11 +211,15 @@ public class ExternalCalculationEventHub
 
       }
       catch (ClassCastException e) {
-        // Logging!
+        logger.severe("ExternalCalculationEventHub: A result objects did not match the"
+            + "expected class for the appropriate result event.");
       }
       // If no case matched, something went terribly wrong!
-      // Log as severe!
+      logger.severe("ExternalCalculationEventHub: Consumer-Thread could not create"
+          + "appropriate result event. Maybe an if-else-clause for that result"
+          + "event was forgotten?");
       return null;
     }
   }
+
 }
