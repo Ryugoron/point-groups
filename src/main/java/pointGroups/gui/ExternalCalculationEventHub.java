@@ -22,6 +22,7 @@ import pointGroups.gui.event.types.Symmetry4DChooseEvent;
 import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.util.ExternalCalculationWrapper;
 import pointGroups.util.Transformer;
+import pointGroups.util.polymake.PolymakeOutputException;
 import pointGroups.util.polymake.SchlegelTransformer;
 
 
@@ -158,6 +159,9 @@ public class ExternalCalculationEventHub
             // the thread can terminate
             break;
           }
+        }
+        catch (PolymakeOutputException e) {
+          logger.severe(e.getMessage());
         }
       }
     }
