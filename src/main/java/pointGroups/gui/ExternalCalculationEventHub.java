@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Logger;
 
+import pointGroups.geometry.Fundamental;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
@@ -13,6 +14,7 @@ import pointGroups.geometry.Schlegel;
 import pointGroups.geometry.Symmetry;
 import pointGroups.gui.event.Event;
 import pointGroups.gui.event.EventDispatcher;
+import pointGroups.gui.event.types.FundamentalResultEvent;
 import pointGroups.gui.event.types.RunEvent;
 import pointGroups.gui.event.types.RunHandler;
 import pointGroups.gui.event.types.SchlegelResultEvent;
@@ -22,6 +24,7 @@ import pointGroups.gui.event.types.Symmetry4DChooseEvent;
 import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.util.ExternalCalculationWrapper;
 import pointGroups.util.Transformer;
+import pointGroups.util.polymake.FundamentalTransformer;
 import pointGroups.util.polymake.SchlegelTransformer;
 
 
@@ -112,12 +115,19 @@ public class ExternalCalculationEventHub
   public void onSymmetry4DChooseEvent(final Symmetry4DChooseEvent event) {
     this.last4DSymmetry = event.getSymmetry4D();
     this.lastSubgroup = event.getSubgroup();
+    
+    Point4D p = this.last4DSymmetry.getNormalPoint();
+    submit(new FundamentalTransformer(this.last4DSymmetry.images(p, this.lastSubgroup.toString())));
   }
+ 
 
   @Override
   public void onSymmetry3DChooseEvent(final Symmetry3DChooseEvent event) {
     this.last3DSymmetry = event.getSymmetry3D();
     this.lastSubgroup = event.getSubgroup();
+    
+    Point3D p = this.last3DSymmetry.getNormalPoint();
+    submit(new FundamentalTransformer(this.last3DSymmetry.images(p, this.lastSubgroup.toString())));
   }
 
 
@@ -196,6 +206,8 @@ public class ExternalCalculationEventHub
         if (transformerType == SchlegelTransformer.class) {
           // cast is safe if properly called.
           return new SchlegelResultEvent((Schlegel) result);
+        } else if (transformerType == FundamentalTransformer.class) {
+        	return new FundamentalResultEvent((Fundamental) result);
         }
         // add further cases here...
 

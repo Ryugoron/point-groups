@@ -19,9 +19,9 @@ public class FundamentalTransformer extends
 		AbstractTransformer<Fundamental> {
 
 	private String script = null;
-	private Collection<Point> points;
+	private Collection<? extends Point> points;
 
-	public FundamentalTransformer(Collection<Point> points) {
+	public FundamentalTransformer(Collection<? extends Point> points) {
 		this.points = points;
 	}
 
