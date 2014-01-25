@@ -11,6 +11,7 @@ import java.util.Queue;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
+import pointGroups.util.ExternalCalculationWrapper;
 import pointGroups.util.Transformer;
 import pointGroups.util.polymake.PolymakeException;
 
@@ -25,6 +26,7 @@ import pointGroups.util.polymake.PolymakeException;
  * @see PolymakeTransformer
  */
 public class PolymakeWrapper
+  implements ExternalCalculationWrapper
 {
   final Logger logger = Logger.getLogger(PolymakeWrapper.class.getName());
   final String polymakePath;
@@ -73,6 +75,7 @@ public class PolymakeWrapper
    * @throws PolymakeException This exception is thrown at runtime if the
    *           creation of the polymake process did not succeed.
    */
+  @Override
   public void start() {
     try {
       if (!isRunning) {
@@ -97,7 +100,7 @@ public class PolymakeWrapper
   }
 
   // Waits for the first output of polymake, that is, the port polymake is
-  // listening on. If the port was reveiced, a socket is opened via
+  // listening on. If the port was received, a socket is opened via
   // #openConnection.
   private void fetchInitialOutput() {
     BufferedReader polymakeStdOut =
@@ -126,7 +129,7 @@ public class PolymakeWrapper
 
   // Creates a socket connection to polymake and starts the asynchronous result
   // handler as a new thread.
-  private void openConnection(int port) {
+  private void openConnection(final int port) {
     try {
       this.polymakeSocket = new Socket("localhost", port);
       logger.info("Connection established with Polymake on port " + port);
@@ -145,11 +148,12 @@ public class PolymakeWrapper
   }
 
   /**
-   * Attempts to shut down the wrapped polymake proceess as well as to close the
-   * existing stream from and to the process. If some error occurrs during the
+   * Attempts to shut down the wrapped polymake process as well as to close the
+   * existing stream from and to the process. If some error occurs during the
    * shutdown procedure, the process is forcefully destroyed. Any errors will be
    * logged as warning to {@link #logger}.
    */
+  @Override
   public void stop() {
     if (isRunning) {
       try {
@@ -186,20 +190,22 @@ public class PolymakeWrapper
    * @return false if {@link #stop()} was invoked or {@link #start()} was never
    *         invoked.
    */
+  @Override
   public boolean isRunning() {
     return this.isRunning;
   }
 
   /**
-   * Submits the request represented by {@link PolymakeTransformer}
-   * <code>req</code> to the wrapped polymake process. The result of this
-   * request will be asynchronously bound to <code>req</code>. See
-   * {@link Future} or {@link PolymakeTransformer} for further information.
+   * Submits the request represented by {@link Transformer} <code>req</code> to
+   * the wrapped polymake process. The result of this request will be
+   * asynchronously bound to <code>req</code>. See {@link Future} or
+   * {@link Transformer} for further information.
    * 
-   * @param req The {@link PolymakeTransformer} to be submitted.
-   * @see PolymakeTransformer
+   * @param req The {@link Transformer} to be submitted.
+   * @see Transformer
    */
-  public void sendRequest(Transformer<?> req) {
+  @Override
+  public void sendRequest(final Transformer<?> req) {
     if (isRunning) {
       send(req.toScript().replaceAll("\n", ""));
       this.pending.add(req);
@@ -211,14 +217,13 @@ public class PolymakeWrapper
   }
 
   /**
-   * This method is to be invoked when a response to a
-   * {@link PolymakeTransformer} request, which was sent by
-   * {@link #sendRequest(PolymakeTransformer)}, was received. The response is
-   * then bound to according the {@link PolymakeTransformer}.
+   * This method is to be invoked when a response to a {@link Transformer}
+   * request, which was sent by {@link #sendRequest(Transformer)}, was received.
+   * The response is then bound to according the {@link Transformer}.
    * 
    * @param msg The response received by polymake
    */
-  void onMessageReceived(String msg) {
+  void onMessageReceived(final String msg) {
     logger.info("Got answer from polymake");
     Transformer<?> pt = this.pending.poll();
     if (pt != null) {
@@ -229,7 +234,7 @@ public class PolymakeWrapper
     }
   }
 
-  protected void send(String msg) {
+  protected void send(final String msg) {
     final String finalMsg = msg + "\n";
     try {
       this.toPolymake.write(finalMsg);

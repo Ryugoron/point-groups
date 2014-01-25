@@ -1,12 +1,19 @@
 package pointGroups.gui;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
+import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.symchooser.SymmetryChooser;
 
 
@@ -16,61 +23,70 @@ public class MainFrame
 
   private static final long serialVersionUID = 1886397100814345247L;
 
-  protected SymmetryChooser symmetryChooser = new SymmetryChooser();
-  protected SchlegelView schlegelView = new SchlegelView();
-  protected PointPicker pointPicker = new PointPicker();
+  protected JMenuBar menuBar;
+  protected JPanel schlegelView = new SchlegelView();
+  protected JPanel pointPicker = new JPanel();
+  protected JPanel symmetryChooser;
+  protected JPanel coordinates;
+  protected JPanel statusBar;
+  
+  protected EventDispatcher dispatcher = EventDispatcher.get();
 
   public MainFrame() {
-    // Layout the main window.
-    setLayout(new GridBagLayout());
-    GridBagConstraints c = new GridBagConstraints();
+ // setting up main split pane
+    
+    Component leftPanel = setUpLeftPanel();
+    Component rightPanel = setUpRightPanel();    
+    
+    // ensures to drag the divider all the way to both sides
+    Dimension minimumSize = new Dimension(0,0);
+    leftPanel.setMinimumSize(minimumSize);
+    rightPanel.setMinimumSize(minimumSize);
+    
+    JSplitPane mainSplitPane =
+        new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
+    mainSplitPane.setResizeWeight(0);
+    mainSplitPane.setDividerLocation(320);
+    mainSplitPane.setOneTouchExpandable(true);
+    mainSplitPane.setBorder(BorderFactory.createEmptyBorder());
+    
+    menuBar = new Menubar(dispatcher);
+    statusBar = new StatusBar(dispatcher);
 
-    c.fill = GridBagConstraints.BOTH;
-    c.weightx = 0;
-    c.weighty = 1;
-    c.gridx = 0;
-    c.gridy = 0;
-    add(symmetryChooser, c);
-
-    c.weightx = 0.5;
-    c.gridx = 1;
-    add(schlegelView, c);
-
-    c.gridx = 2;
-    add(pointPicker, c);
-
+    add(menuBar, BorderLayout.NORTH);
+    add(mainSplitPane, BorderLayout.CENTER);
+    add(statusBar, BorderLayout.SOUTH);
+    
     setTitle("Point groups");
-    setSize(1000, 650);
+    setSize(1000, 800);
     setLocationRelativeTo(null); // center window
-
-    addWindowListener(new WindowAdapter() {
-      public void windowClosing(WindowEvent e) {
-        shutdown();
-      }
-    });
-
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setVisible(true);
   }
+  
+  private JPanel setUpRightPanel() {
+    schlegelView.setBackground(Color.CYAN);
+    return schlegelView;
+  }
 
-  protected void shutdown() {
-
-    // dispose will block until it gets the resources, but if we block on the
-    // current EventDispatchThread it will result in a dead-lock, because the
-    // resources will also be created on the EventDispatchThread. So to break
-    // this cycle, we will call the dispose functions in a own thread.
-    //
-    // Note:
-    // This edge case should only occur in the startup phase, if we try to close
-    // the window before it is completely initialized.
-    new Thread(new Runnable() {
-
-      @Override
-      public void run() {
-        schlegelView.dispose();
-        pointPicker.dispose();
-        System.exit(0);
-      }
-    }).start();
+  private Component setUpLeftPanel() {
+    
+    symmetryChooser = new SymmetryChooser();
+    pointPicker.setBackground(Color.YELLOW);
+    coordinates = new CoordinateView(3,dispatcher);
+    
+    JSplitPane leftTopComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, symmetryChooser, pointPicker);
+    JSplitPane leftComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, coordinates);
+    leftComponent.setBorder(BorderFactory.createEmptyBorder());
+    leftTopComponent.setBorder(BorderFactory.createEmptyBorder());
+    leftComponent.setOneTouchExpandable(true);
+    leftTopComponent.setOneTouchExpandable(true);
+    
+    leftComponent.setDividerLocation(600);
+    leftTopComponent.setDividerLocation(500);
+    
+    
+    return leftComponent;
   }
 
   public static void main(String args[]) {
