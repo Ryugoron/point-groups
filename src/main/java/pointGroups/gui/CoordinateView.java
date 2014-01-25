@@ -188,8 +188,10 @@ public class CoordinateView
       coordField.removePropertyChangeListener("value", listener);
     }
 
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-      coordField.addPropertyChangeListener("value", listener);
+      if (coordField != null)
+        coordField.addPropertyChangeListener("value", listener);
     }
 
   }
