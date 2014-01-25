@@ -1,8 +1,6 @@
 package pointGroups.gui;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -15,11 +13,9 @@ import pointGroups.geometry.Schlegel;
 import pointGroups.geometry.Symmetry;
 import pointGroups.gui.event.Event;
 import pointGroups.gui.event.EventDispatcher;
-import pointGroups.gui.event.EventHandler;
 import pointGroups.gui.event.types.RunEvent;
 import pointGroups.gui.event.types.RunHandler;
 import pointGroups.gui.event.types.SchlegelResultEvent;
-import pointGroups.gui.event.types.SchlegelResultHandler;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseHandler;
 import pointGroups.gui.event.types.Symmetry4DChooseEvent;
@@ -50,10 +46,7 @@ public class ExternalCalculationEventHub
   protected final ExternalCalculationWrapper wrapper;
   protected final Logger logger = Logger.getLogger(this.getClass().getName());
 
-  private final Map<Class<? extends Transformer<?>>, Class<? extends EventHandler>> transformerToEventType =
-      new HashMap<>();
-
-  // Producer-Consumer-Patterh for asynchronous external calculation tasks
+  // Producer-Consumer-Pattern for asynchronous external calculation tasks
   private final BlockingQueue<Transformer<?>> buf = new LinkedBlockingQueue<>();
   private final ResultProducer resProducer = new ResultProducer();
   private final ResultConsumer resConsumer = new ResultConsumer();
@@ -67,7 +60,6 @@ public class ExternalCalculationEventHub
     // To log properly, we need to set the logger as child of the global logger
     logger.setParent(Logger.getGlobal());
 
-    fillEventMap();
     this.wrapper = wrapper;
     this.wrapper.start();
 
@@ -75,20 +67,12 @@ public class ExternalCalculationEventHub
     resConsumer.start();
 
     // Add other handlers of interest here! If you add a handler for some
-    // kind of result, you need to add it to the transformerToEventType map in
-    // fillEventMap().
-    // Additionally, a construction in the ResultEventFactory has to be added
+    // kind of result, you need to add a construction in the Consumer-Thread
+    // createEventFor method.
     // (at the end of this class).
     dispatcher.addHandler(Symmetry3DChooseHandler.class, this);
     dispatcher.addHandler(Symmetry4DChooseHandler.class, this);
     dispatcher.addHandler(RunHandler.class, this);
-  }
-
-  // Put the event Type of each event that is fired for the result of a
-  // corresponding transformer type
-  private void fillEventMap() {
-    this.transformerToEventType.put(SchlegelTransformer.class,
-        SchlegelResultHandler.class);
   }
 
   /**
@@ -143,6 +127,13 @@ public class ExternalCalculationEventHub
     private final BlockingQueue<Transformer<?>> pending =
         new LinkedBlockingQueue<>();
 
+    /**
+     * Offer transformer for calculation. The transformer is passed to the
+     * {@link ExternalCalculationWrapper} after which the {@link ResultConsumer}
+     * will fire an event if the calculation is finished.
+     * 
+     * @param t The transformer to be calculated
+     */
     protected void submit(final Transformer<?> t) {
       wrapper.sendRequest(t);
       this.pending.add(t);
@@ -182,8 +173,7 @@ public class ExternalCalculationEventHub
       while (wrapper.isRunning()) {
         try {
           t = buf.take();
-          dispatcher.fireEvent(createEvent(transformerToEventType.get(t),
-              t.get()));
+          dispatcher.fireEvent(createEventFor(t.getClass(), t.get()));
         }
         catch (InterruptedException | ExecutionException e) {
           if (wrapper.isRunning()) {
@@ -199,15 +189,15 @@ public class ExternalCalculationEventHub
       }
     }
 
-    @SuppressWarnings("unchecked")
-    protected <H extends EventHandler> Event<? extends H> createEvent(
-        final Class<H> eventType, final Object result) {
+    // factory for events associated to calculation results
+    protected <H extends Transformer<?>> Event<?> createEventFor(
+        final Class<H> transformerType, final Object result) {
       try {
-        if (eventType == SchlegelResultHandler.class) {
-          SchlegelResultEvent sre = new SchlegelResultEvent((Schlegel) result);
-          // cast is safe, we check the type
-          return (Event<? extends H>) sre;
+        if (transformerType == SchlegelTransformer.class) {
+          // cast is safe if properly called.
+          return new SchlegelResultEvent((Schlegel) result);
         }
+        // add further cases here...
 
       }
       catch (ClassCastException e) {
