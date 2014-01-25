@@ -1,7 +1,6 @@
 package pointGroups.util.polymake;
 
 import java.util.Collection;
-import java.util.logging.Logger;
 
 import pointGroups.geometry.Fundamental;
 import pointGroups.geometry.KnownFundamental;
@@ -16,20 +15,13 @@ import pointGroups.util.AbstractTransformer;
  * @author Max
  * 
  */
-public class FundamentalTransformer<PS extends Point> extends
-		AbstractTransformer<Fundamental<PS>> {
-
-	// TODO maybe long is better?
-	public static int count = 0;
-	public final int id = count++;
-	// TODO is it a good idea to name the logger this way?
-	final protected Logger logger = Logger.getLogger(this.getClass().getName()
-			+ "(id: " + id + ")");
+public class FundamentalTransformer extends
+		AbstractTransformer<Fundamental> {
 
 	private String script = null;
-	private Collection<PS> points;
+	private Collection<Point> points;
 
-	public FundamentalTransformer(Collection<PS> points) {
+	public FundamentalTransformer(Collection<Point> points) {
 		this.points = points;
 	}
 
@@ -83,7 +75,7 @@ public class FundamentalTransformer<PS extends Point> extends
 	}
 
 	@Override
-	protected Fundamental<PS> transformResultString() {
+	protected Fundamental transformResultString() {
 		StringBuilder regex = new StringBuilder();
 		// minimum one 3D point followed by...
 		regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+|");
@@ -142,7 +134,7 @@ public class FundamentalTransformer<PS extends Point> extends
 			boundary[i] = points[i + 2];
 		}
 
-		return new KnownFundamental<PS>(boundary, transpose(mat), aff);
+		return new KnownFundamental(boundary, transpose(mat), aff);
 	}
 
 	private double[][] transpose(double[][] m1) {

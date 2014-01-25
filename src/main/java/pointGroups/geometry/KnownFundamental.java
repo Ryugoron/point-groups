@@ -15,8 +15,8 @@ package pointGroups.geometry;
  *            The dimension of the fundamental domain
  * 
  */
-public class KnownFundamental<PS extends Point> implements
-		Fundamental<PS> {
+public class KnownFundamental implements
+		Fundamental{
 
 	/**
 	 * Stores the inverted projection matrix from the PS dimension to the PF
@@ -63,19 +63,12 @@ public class KnownFundamental<PS extends Point> implements
 	 *            in the projected fundamental domain
 	 * @return the point reprojected to the unit ball
 	 */
-	@SuppressWarnings("unchecked")
-	public PS revertPoint(double[] point) {
+	public double[] revertPoint(double[] point) {
 		double[] p = applyMatrix(revertMatrix, point);
 		p = addAffine(p);
 		p = normalize(p);
 		// TODO Wie kann man das hier schön verpacken...
-		switch (p.length) {
-		case 3:
-			return (PS) new Point3D(p[0], p[1], p[2]);
-		case 4:
-			return (PS) new Point4D(p[0], p[1], p[2], p[3]);
-		}
-		return null;
+		return p;
 	}
 
 	/*

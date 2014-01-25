@@ -3,16 +3,12 @@ package pointGroups.geometry;
 /**
  * 
  * Interface to the Fundamental Domain. It supports the translation of a point
- * in the Domain PF to the symmetry domain PS.
+ * in the Domain to the symmetry domain, because on event level we operate on
+ * double[][] we only use these ones here.
  * 
- * @author max<3
- * 
- * @param <PS>
- *            Points of the Dimension of the Symmetry
- * @param <PF>
- *            Points of the Dimension fo the Fundamental Domain
+ * @author max
  */
-public interface Fundamental<PS extends Point> {
+public interface Fundamental {
 
 	/**
 	 * This flag differenciates between known and unknown fundamental domain.
@@ -41,6 +37,6 @@ public interface Fundamental<PS extends Point> {
 	 *            in the fundemental domain.
 	 * @return the represented point in the fundamental domain.
 	 */
-	public PS revertPoint(double[] point);
+	public double[] revertPoint(double[] point);
 
 }

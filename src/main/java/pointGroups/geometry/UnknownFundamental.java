@@ -1,7 +1,7 @@
 package pointGroups.geometry;
 
-public class UnknownFundamental<PS extends Point> implements
-		Fundamental<PS> {
+public class UnknownFundamental implements
+		Fundamental {
 
 	/**
 	 * If this class is instanciated the fundamental domain should not be known.
@@ -23,9 +23,8 @@ public class UnknownFundamental<PS extends Point> implements
 	 * Lifts the point to the unit sphere, upper half.
 	 * It is assumed, that the points lies inside the unit sphere of dimension PF.
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public PS revertPoint(double[] point) {
+	public double[] revertPoint(double[] point) {
 		double[] p = point;
 		double[] lift = new double[p.length + 1];
 		for (int i = 0; i < p.length; i++) {
@@ -36,13 +35,8 @@ public class UnknownFundamental<PS extends Point> implements
 		lift[p.length] = Math.sqrt(lift[p.length]);
 		// Nur zur sicherheit
 		p = normalize(p);
-		switch (p.length) {
-		case 3:
-			return (PS) new Point3D(p[0], p[1], p[2]);
-		case 4:
-			return (PS) new Point4D(p[0], p[1], p[2], p[3]);
-		}
-		return null;
+
+		return p;
 	}
 
 	private double[] normalize(double[] points) {
