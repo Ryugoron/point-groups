@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import pointGroups.util.point.PointUtil;
+
 
 /**
  * Representation for the fundamental domain of a {@link Symmetry}. The
@@ -48,14 +50,7 @@ public class KnownFundamental
       double[] affine) {
 
     // Punkte kopieren
-    finPoints = new double[points.length][];
-
-    for (int i = 0; i < points.length; i++) {
-      finPoints[i] = new double[points[i].length];
-      for (int j = 0; j < points[i].length; j++) {
-        finPoints[i][j] = points[i][j];
-      }
-    }
+    finPoints = PointUtil.copyPoints(points);
 
     this.revertMatrix = revertMatrix;
     this.affine = affine;
@@ -79,14 +74,7 @@ public class KnownFundamental
   @Override
   public double[][] getVertices() {
     // Resgegebene Punkte noch kopieren
-    double[][] res = new double[finPoints.length][];
-    for (int i = 0; i < res.length; i++) {
-      res[i] = new double[finPoints[i].length];
-      for (int j = 0; j < finPoints[i].length; j++) {
-        res[i][j] = finPoints[i][j];
-      }
-    }
-    return res;
+    return PointUtil.copyPoints(finPoints);
   }
 
   /**
@@ -95,8 +83,8 @@ public class KnownFundamental
   @Override
   public boolean inFundamental(double[] point) {
     for (double[][] hp : this.hPolytope) {
-      if (this.stScalarProd(this.subtract(point, hp[0]), hp[1]) < -1 * EPSILON)
-        return false;
+      if (PointUtil.stScalarProd(PointUtil.subtract(point, hp[0]), hp[1]) < -1 *
+          EPSILON) return false;
     }
     return true;
   }
@@ -127,9 +115,8 @@ public class KnownFundamental
         double[] tVec = points[tV];
         tVec[0] = tVec[0] - points[i][0];
         tVec[1] = tVec[1] - points[i][1];
-        if (stScalarProd(tVec, n) < 0) {
-          n[0] *= -1;
-          n[1] *= -1;
+        if (PointUtil.stScalarProd(tVec, n) < 0) {
+          n = PointUtil.mult(-1, n);
         }
         a[1] = n;
         erg.add(a);
@@ -137,37 +124,6 @@ public class KnownFundamental
     }
 
     return erg;
-  }
-
-  /**
-   * Vectorprodukt in 3 Dimensions
-   * 
-   * @param a first Vector
-   * @param b second Vector
-   * @return a x b
-   */
-  private double[] vProd(double[] a, double[] b) {
-    if (a.length != 3 || b.length != 3)
-      throw new IllegalArgumentException("Got one vector, not of dimension 3");
-    double[] erg = new double[a.length];
-
-    erg[0] = a[1] * b[2] - a[2] * b[1];
-    erg[1] = a[2] * b[0] - a[0] * b[2];
-    erg[2] = a[0] * b[1] - a[1] * b[0];
-
-    return erg;
-  }
-
-  private double stScalarProd(double[] a, double[] b) {
-    if (a.length != b.length)
-      throw new IllegalArgumentException(
-          "Multiplied two Vectors of different length.");
-
-    double sum = 0;
-    for (int i = 0; i < a.length; i++) {
-      sum += a[i] * b[i];
-    }
-    return sum;
   }
 
   /**
@@ -185,9 +141,9 @@ public class KnownFundamental
           double[] x = points[i];
           double[] y = points[j];
           double[] z = points[w];
-          y = subtract(y, x);
-          z = subtract(z, x);
-          double[] n = vProd(y, z);
+          y = PointUtil.subtract(y, x);
+          z = PointUtil.subtract(z, x);
+          double[] n = PointUtil.vecProd(y, z);
 
           // Test if it is the right side
           int tV;
@@ -196,26 +152,13 @@ public class KnownFundamental
           else if (i != 2 && j != 2 && w != 2) tV = 2;
           else tV = 3;
 
-          if (stScalarProd(points[tV], n) < 0) {
-            n[0] *= -1;
-            n[1] *= -1;
-            n[2] *= -1;
-          }
+          if (PointUtil.stScalarProd(points[tV], n) < 0)
+            n = PointUtil.mult(-1, n);
           toAdd[0] = x;
           toAdd[1] = n;
           erg.add(toAdd);
         }
       }
-    }
-    return erg;
-  }
-
-  private double[] subtract(double[] a, double[] b) {
-    if (a.length != b.length)
-      throw new IllegalArgumentException("Subtracted two not matching Vectors.");
-    double[] erg = new double[a.length];
-    for (int i = 0; i < a.length; i++) {
-      erg[i] = a[i] - b[i];
     }
     return erg;
   }
@@ -229,47 +172,11 @@ public class KnownFundamental
    */
   @Override
   public double[] revertPoint(double[] point) {
-    double[] p = applyMatrix(revertMatrix, point);
-    p = addAffine(p);
-    p = normalize(p);
-    if (Math.abs(length(p) - 1) > 0.01) {
+    double[] p = PointUtil.applyMatrix(revertMatrix, point);
+    p = PointUtil.add(p, this.affine);
+    p = PointUtil.normalize(p);
+    if (Math.abs(PointUtil.length(p) - 1) > 0.01) {
       logger.info("A reverted point is not on the unit sphere.");
-    }
-    return p;
-  }
-
-  private double length(double[] point) {
-    return Math.sqrt(stScalarProd(point, point));
-  }
-
-  /*
-   * TODO Doch in Polymake???
-   */
-  private double[] normalize(double[] points) {
-    double length = length(points);
-    for (int i = 0; i < points.length; i++) {
-      points[i] = points[i] / length;
-    }
-    return points;
-  }
-
-  private double[] applyMatrix(double[][] mat, double[] point) {
-    // TODO Eigene Exception schreiben
-    double[] erg = new double[mat.length];
-    if (mat[0].length != point.length)
-      throw new RuntimeException("Dimension does not match.");
-    for (int i = 0; i < mat.length; i++) {
-      erg[i] = 0;
-      for (int j = 0; j < mat[i].length; j++) {
-        erg[i] += mat[i][j] * point[j];
-      }
-    }
-    return erg;
-  }
-
-  private double[] addAffine(double[] p) {
-    for (int i = 0; i < p.length; i++) {
-      p[i] += this.affine[i];
     }
     return p;
   }

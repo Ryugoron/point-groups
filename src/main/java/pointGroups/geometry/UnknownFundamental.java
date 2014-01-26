@@ -1,5 +1,8 @@
 package pointGroups.geometry;
 
+import pointGroups.util.point.PointUtil;
+
+
 public class UnknownFundamental
   implements Fundamental
 {
@@ -37,31 +40,14 @@ public class UnknownFundamental
     lift[p.length] += 1;
     lift[p.length] = Math.sqrt(lift[p.length]);
     // Nur zur sicherheit
-    p = normalize(p);
+    p = PointUtil.normalize(p);
 
     return p;
   }
 
-  private double length(double[] point) {
-    double sum = 0;
-    for (int i = 0; i < point.length; i++) {
-      sum += point[i] * point[i];
-    }
-    sum = Math.sqrt(sum);
-    return sum;
-  }
-
-  private double[] normalize(double[] points) {
-    double length = length(points);
-    for (int i = 0; i < points.length; i++) {
-      points[i] = points[i] / length;
-    }
-    return points;
-  }
-
   @Override
   public boolean inFundamental(double[] point) {
-    return length(point) < 1 + EPSILON;
+    return PointUtil.length(point) <= 1 + EPSILON;
   }
 
 }
