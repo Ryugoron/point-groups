@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import pointGroups.geometry.Fundamental;
+import pointGroups.geometry.KnownFundamental;
 import pointGroups.geometry.Point3D;
 
 
@@ -50,6 +51,24 @@ public class FundamentalTransformerTest
   @Test
   public void testScript() {
     assertEquals(POLYMAKE_SCRIPT, fT.toScript());
+  }
+
+  @Test
+  public void testAffine() {
+    fT.setResultString(POLYMAKE_RESULT);
+    assertAffine(fT.transformResultString());
+  }
+
+  public void assertAffine(Fundamental fund) {
+    KnownFundamental f1 = (KnownFundamental) fund;
+    assertEquals(1.0, f1.affine[0]);
+    assertEquals(0.0, f1.affine[1]);
+    assertEquals(0.0, f1.affine[2]);
+
+    double[] p = fund.revertPoint(new double[] { 0.0, 0.0 });
+    assertEquals(1.0, p[0]);
+    assertEquals(0.0, p[1]);
+    assertEquals(0.0, p[2]);
   }
 
   public void assertResult(Fundamental fund) {
