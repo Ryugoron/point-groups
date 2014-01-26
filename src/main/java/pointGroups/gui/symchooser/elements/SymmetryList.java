@@ -1,5 +1,6 @@
 package pointGroups.gui.symchooser.elements;
 
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JList;
@@ -22,6 +23,9 @@ public class SymmetryList<P extends Point>
     super(symmetries3d);
 
     this.setCellRenderer(new SymmetryListCellRenderer());
+
+    setSelectionBackground(Color.BLUE);
+    setBackground(Color.WHITE);
 
     this.addMouseListener(new MouseAdapter() {
       @Override
