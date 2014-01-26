@@ -25,6 +25,8 @@ public class FundamentalTransformerTest
   Collection<Point3D> points;
   FundamentalTransformer fT;
   double[] testCoordinate;
+  double[] outside;
+  double[] inside;
 
   @Override
   public void setUp() {
@@ -40,6 +42,8 @@ public class FundamentalTransformerTest
     fT = new FundamentalTransformer(points);
 
     testCoordinate = new double[] { 0.25, 0.25 };
+    inside = new double[] { 0.2, 0.2 };
+    outside = new double[] { 1.5, 1.2 };
   }
 
   @Test
@@ -59,7 +63,18 @@ public class FundamentalTransformerTest
     assertAffine(fT.transformResultString());
   }
 
+  @Test
+  public void testInFundamental() {
+    fT.setResultString(POLYMAKE_RESULT);
+    Fundamental fund = fT.transformResultString();
+
+    assertTrue(fund.isKnown());
+    assertTrue(fund.inFundamental(inside));
+    assertFalse(fund.inFundamental(outside));
+  }
+
   public void assertAffine(Fundamental fund) {
+    assertTrue(fund.isKnown());
     KnownFundamental f1 = (KnownFundamental) fund;
     assertEquals(1.0, f1.affine[0]);
     assertEquals(0.0, f1.affine[1]);
@@ -78,15 +93,12 @@ public class FundamentalTransformerTest
     assertEquals(3, p.length);
     assertEquals(1.0, p[0][0]);
     assertEquals(0.0, p[0][1]);
-    assertEquals(0.0, p[0][2]);
 
     assertEquals(0.0, p[1][0]);
     assertEquals(1.0, p[1][1]);
-    assertEquals(0.0, p[1][2]);
 
     assertEquals(0.0, p[2][0]);
     assertEquals(0.0, p[2][1]);
-    assertEquals(1.0, p[2][2]);
 
     assertEquals(3, fund.revertPoint(testCoordinate).length);
   }
