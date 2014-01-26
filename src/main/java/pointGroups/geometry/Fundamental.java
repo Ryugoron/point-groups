@@ -36,4 +36,14 @@ public interface Fundamental
    */
   public double[] revertPoint(double[] point);
 
+  /**
+   * This method allows a check wether a point with the dimension of the
+   * fundamental domain lies in the fundamental domain represented by this
+   * class.
+   * 
+   * @param point that should be checked (dim of fundamental domain)
+   * @return true if it lies in the fundamental domain
+   */
+  public boolean inFundamental(double[] point);
+
 }

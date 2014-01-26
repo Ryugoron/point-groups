@@ -98,6 +98,7 @@ public class FundamentalTransformer
     }
     catch (Exception e) {
       logger.info("Could not transform Fundamental Result String, given trivial Fundamental instead.");
+
       res = new UnknownFundamental();
     }
     return res;
@@ -185,13 +186,23 @@ public class FundamentalTransformer
     // goal dimension
     //
     double[][] boundary;
-    boundary = new double[points.length - 2][points[2].length];
+    boundary = new double[points.length - 2][points[2].length - 1];
 
     for (int i = 0; i < boundary.length; i++) {
-      boundary[i] = unit(i, points[2].length);// points[i + 2];
+      boundary[i] = unit(i, points[2].length - 1);// points[i + 2];
+      // System.out.println((showPoint(boundary[i])));
     }
 
     return new KnownFundamental(boundary, transpose(mat), aff);
+  }
+
+  public static String showPoint(double[] p) {
+    String erg = "(" + p[0];
+    for (int i = 1; i < p.length; i++) {
+      erg += "," + p[i];
+    }
+    erg += ")";
+    return erg;
   }
 
 }

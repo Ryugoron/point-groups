@@ -4,6 +4,8 @@ public class UnknownFundamental
   implements Fundamental
 {
 
+  private static final double EPSILON = 0.001;
+
   /**
    * If this class is instanciated the fundamental domain should not be known.
    */
@@ -40,16 +42,26 @@ public class UnknownFundamental
     return p;
   }
 
-  private double[] normalize(double[] points) {
+  private double length(double[] point) {
     double sum = 0;
-    for (int i = 0; i < points.length; i++) {
-      sum += points[i] * points[i];
+    for (int i = 0; i < point.length; i++) {
+      sum += point[i] * point[i];
     }
     sum = Math.sqrt(sum);
+    return sum;
+  }
+
+  private double[] normalize(double[] points) {
+    double length = length(points);
     for (int i = 0; i < points.length; i++) {
-      points[i] = points[i] / sum;
+      points[i] = points[i] / length;
     }
     return points;
+  }
+
+  @Override
+  public boolean inFundamental(double[] point) {
+    return length(point) < 1 + EPSILON;
   }
 
 }
