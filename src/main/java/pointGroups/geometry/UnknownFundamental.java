@@ -22,7 +22,7 @@ public class UnknownFundamental
 
   /**
    * Lifts the point to the unit sphere, upper half. It is assumed, that the
-   * points lies inside the unit sphere of dimension PF.
+   * points lies inside the unit sphere of dimension one less then the symmetry.
    */
   @Override
   public double[] revertPoint(double[] point) {

@@ -2,11 +2,14 @@ package pointGroups.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
 import pointGroups.geometry.Fundamental;
+import pointGroups.geometry.Point3D;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ChangeCoordinateEvent;
 import pointGroups.gui.event.types.ChangeCoordinateHandler;
@@ -15,6 +18,7 @@ import pointGroups.gui.event.types.DimensionSwitchHandler;
 import pointGroups.gui.event.types.FundamentalResultEvent;
 import pointGroups.gui.event.types.FundamentalResultHandler;
 import pointGroups.util.jreality.JRealityUtility;
+import pointGroups.util.polymake.FundamentalTransformer;
 import de.jreality.geometry.Primitives;
 import de.jreality.scene.Appearance;
 import de.jreality.scene.Geometry;
@@ -51,13 +55,30 @@ public class PointPicker
     public final Appearance pointAppearance = new Appearance();
     public final SceneGraphComponent fundamental = new SceneGraphComponent();
 
+    public void testShow() {
+      Collection<Point3D> points = new ArrayList<Point3D>();
+      points.add(new Point3D(1, 1, 1));
+      points.add(new Point3D(1, 1, -1));
+      points.add(new Point3D(1, -1, 1));
+      points.add(new Point3D(-1, 1, 1));
+      points.add(new Point3D(1, -1, -1));
+      points.add(new Point3D(-1, 1, -1));
+      points.add(new Point3D(-1, -1, 1));
+      points.add(new Point3D(-1, -1, -1));
+      FundamentalTransformer fT = new FundamentalTransformer(points);
+      fT.setResultString("1 0 0 0\n&\n1 1 0 0\n1 0 0 1\n1 0 1 0\n1 0 0 0\n");
+      dispatcher.fireEvent(new FundamentalResultEvent(
+          fT.transformResultString()));
+    }
+
     @Override
     public void onInitialized() {
       SceneGraphComponent root = getSceneRoot();
 
+      // Test for Fundamental
+      testShow();
+
       // fundamental.setGeometry(Primitives.cylinder(15));
-      uiViewer.setGeometry(JRealityUtility.generateCompleteGraph(new double[][] {
-          new double[] { 0, 0 }, new double[] { 1, 0 }, new double[] { 0, 1 } }));
       point.setGeometry(Primitives.point(new double[] { 0, 0, 0 }, "Take me :)"));
 
       setPointAppearance(pointAppearance);
@@ -107,6 +128,7 @@ public class PointPicker
       });
 
       point.addTool(dragTool);
+
     }
 
     private void setPointAppearance(Appearance ap) {
@@ -150,7 +172,7 @@ public class PointPicker
      */
 
     this.isSet = false;
-    this.dim = 0;
+    this.dim = 2;
     this.dispatcher = EventDispatcher.get();
 
     // Register PointPicker on Events
@@ -194,7 +216,7 @@ public class PointPicker
     // show it, if possible
 
     // For start test just show the point
-    uiViewer.setGeometry(Primitives.point(new double[] { 0.5, 0.5 }));
+    // uiViewer.setGeometry(Primitives.point(new double[] { 0.5, 0.5 }));
 
     return;
   }
@@ -202,41 +224,40 @@ public class PointPicker
   // Method to fire coordinate Changed Event, should be executed by click inside
   // the fundamental domain.
   protected void selectPoint(double[] point) {
-    logger.info("Selected Point (" + point[0] + "," + point[1] + "," +
-        point[2] + (this.dim == 3 ? point[2] : "") + ")");
+    if (!isSet || (this.dim != 2 && this.dim != 3)) {
+      logger.info("Point was picked with no useable Fundamental Region.");
+      return;
+    }
+    logger.info("Selected Point (" + point[0] + "," + point[1] +
+        (this.dim == 3 ? "," + point[2] : "") + ")");
     if (!isSet) return;
     // Maybe the view is translated or smt
     // point = Rotate * point - translation
 
     // Recalculate to Unitsphere on dim+1 dimensions
-    double[] p = this.fundamental.revertPoint(point);
+    // Only take the first dim components
+    double[] selComp = new double[this.dim];
+    for (int i = 0; i < this.dim; i++)
+      selComp[i] = point[i];
+    double[] resP = this.fundamental.revertPoint(selComp);
 
-    logger.info("Point Picker calculated Point (" + point[0] + "," + point[1] +
-        "," + point[2] + "," + point[3] + "," +
-        (this.dim == 3 ? point[4] : "") + ")");
+    logger.info("Point Picker calculated Point (" + resP[0] + "," + resP[1] +
+        "," + resP[2] + (this.dim == 3 ? "," + resP[3] : "") + ")");
 
     // Fire Event, that the coordinate changed
-    this.dispatcher.fireEvent(new ChangeCoordinateEvent(p));
+    this.dispatcher.fireEvent(new ChangeCoordinateEvent(resP));
   }
 
   protected void showFundamental() {
-    if (!isSet || (this.dim != 2 && this.dim != 3)) {
-      logger.info("Point was picked with no useable Fundamental Region.");
-      return;
-    }
-
+    logger.info("Showing new Fundamental Domain.");
     Geometry g;
     // Calculate the new fundamental
     if (this.fundamental.isKnown()) {
       g = JRealityUtility.generateCompleteGraph(this.fundamental.getVertices());
     }
     else {
-      if (this.dim == 2)
-      // This should rather be a cylinder with no depth
-      g = Primitives.sphere(20);
-      else {
-        g = Primitives.sphere(20);
-      }
+      if (this.dim == 2) g = Primitives.sphere(20);
+      else g = Primitives.sphere(20);
     }
     // Reset tools (3D rotation, 2D no Rotation)
     logger.fine("A new Fundamental Region is shown.");

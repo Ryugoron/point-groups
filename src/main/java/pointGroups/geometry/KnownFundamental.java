@@ -1,18 +1,25 @@
 package pointGroups.geometry;
 
+import java.util.logging.Logger;
+
+
 /**
  * Representation for the fundamental domain of a {@link Symmetry}. The
  * fundamental domain is the quotient of the {@link Symmetry} to all unit points
  * {@link http://en.wikipedia.org/wiki/Fundamental_domain} The fundamental
- * domain is projected from dimension PS to dimension PF.
+ * domain is projected from dimension of the symmetry to one less dimension.
  * 
  * @author Max
- * @param <PS> The dimension of the symmetry group
- * @param <PF> The dimension of the fundamental domain
  */
 public class KnownFundamental
   implements Fundamental
 {
+
+  public static int count = 0;
+  public final int id = count++;
+  // TODO is it a good idea to name the logger this way?
+  final protected Logger logger = Logger.getLogger(this.getClass().getName() +
+      "(id: " + id + ")");
 
   /**
    * Stores the inverted projection matrix from the PS dimension to the PF
@@ -20,7 +27,7 @@ public class KnownFundamental
    * In extra, the affine point for the matrix is given.
    */
   private final double[][] revertMatrix;
-  private final double[] affine;
+  public final double[] affine;
 
   /**
    * V-Polytope of the fundamental domain.
@@ -64,22 +71,27 @@ public class KnownFundamental
     double[] p = applyMatrix(revertMatrix, point);
     p = addAffine(p);
     p = normalize(p);
-
-    // TODO Wie kann man das hier schön verpacken...
+    if (Math.abs(length(p) - 1) > 0.01) {
+      logger.info("A reverted point is not on the unit sphere.");
+    }
     return p;
+  }
+
+  private double length(double[] point) {
+    double l = 0;
+    for (int i = 0; i < points.length; i++) {
+      l += point[i] * point[i];
+    }
+    return Math.sqrt(l);
   }
 
   /*
    * TODO Doch in Polymake???
    */
   private double[] normalize(double[] points) {
-    double sum = 0;
+    double length = length(points);
     for (int i = 0; i < points.length; i++) {
-      sum += points[i] * points[i];
-    }
-    sum = Math.sqrt(sum);
-    for (int i = 0; i < points.length; i++) {
-      points[i] = points[i] / sum;
+      points[i] = points[i] / length;
     }
     return points;
   }

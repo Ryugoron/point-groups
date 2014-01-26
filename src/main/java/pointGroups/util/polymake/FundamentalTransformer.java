@@ -5,6 +5,7 @@ import java.util.Collection;
 import pointGroups.geometry.Fundamental;
 import pointGroups.geometry.KnownFundamental;
 import pointGroups.geometry.Point;
+import pointGroups.geometry.UnknownFundamental;
 import pointGroups.util.AbstractTransformer;
 
 
@@ -76,8 +77,8 @@ public class FundamentalTransformer
   }
 
   @Override
-  protected Fundamental transformResultString() {
-    StringBuilder regex = new StringBuilder();
+  public Fundamental transformResultString() {
+    // StringBuilder regex = new StringBuilder();
     // minimum one 3D point followed by...
     // regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+|");
     // or one 4D point
@@ -90,7 +91,51 @@ public class FundamentalTransformer
     // "String set by setResultString() does not match defined format for fundamental domain.");
     // }
 
-    // Extracting the points from the result
+    Fundamental res;
+    try {
+      // Tries to transform a Fundamental Region.
+      res = transformHelper();
+    }
+    catch (Exception e) {
+      logger.info("Could not transform Fundamental Result String, given trivial Fundamental instead.");
+      res = new UnknownFundamental();
+    }
+    return res;
+  }
+
+  private double[] unit(int i, int dim) {
+    double[] p = new double[dim];
+    for (int j = 0; j < dim; j++) {
+      p[j] = i == j ? 1 : 0;
+    }
+    return p;
+  }
+
+  private double[][] transpose(double[][] m1) {
+    if (m1.length == 0)
+      throw new IllegalArgumentException(
+          "The matrix cannot not be empty at this point.");
+    double[][] m2 = new double[m1[0].length][m1.length];
+    for (int i = 0; i < m1.length; i++) {
+      for (int j = 0; j < m1[0].length; j++) {
+        m2[j][i] = m1[i][j];
+      }
+    }
+    return m2;
+  }
+
+  private double[] subtract(double[] p1, double[] p2) {
+    if (p1.length != p2.length)
+      throw new IllegalArgumentException(
+          "Subtract two vectors of different size.");
+    double[] p3 = new double[p1.length];
+    for (int i = 0; i < p2.length; i++) {
+      p3[i] = p1[i] - p2[i];
+    }
+    return p3;
+  }
+
+  private Fundamental transformHelper() {
     String[] pointString = this.resultString.split("\n");
     double[][] points = new double[pointString.length - 1][];
 
@@ -147,38 +192,6 @@ public class FundamentalTransformer
     }
 
     return new KnownFundamental(boundary, transpose(mat), aff);
-  }
-
-  private double[] unit(int i, int dim) {
-    double[] p = new double[dim];
-    for (int j = 0; j < dim; j++) {
-      p[j] = i == j ? 1 : 0;
-    }
-    return p;
-  }
-
-  private double[][] transpose(double[][] m1) {
-    if (m1.length == 0)
-      throw new IllegalArgumentException(
-          "The matrix cannot not be empty at this point.");
-    double[][] m2 = new double[m1[0].length][m1.length];
-    for (int i = 0; i < m1.length; i++) {
-      for (int j = 0; j < m1[0].length; j++) {
-        m2[j][i] = m1[i][j];
-      }
-    }
-    return m2;
-  }
-
-  private double[] subtract(double[] p1, double[] p2) {
-    if (p1.length != p2.length)
-      throw new IllegalArgumentException(
-          "Subtract two vectors of different size.");
-    double[] p3 = new double[p1.length];
-    for (int i = 0; i < p2.length; i++) {
-      p3[i] = p1[i] - p2[i];
-    }
-    return p3;
   }
 
 }

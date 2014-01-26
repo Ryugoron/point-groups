@@ -135,6 +135,7 @@ public class ExternalCalculationEventHub
     this.lastSubgroup = event.getSubgroup();
 
     Point3D p = this.last3DSymmetry.getNormalPoint();
+    logger.info("Calculating new Fundamental Domain");
     submit(new FundamentalTransformer(this.last3DSymmetry.images(p,
         this.lastSubgroup.toString())));
   }
@@ -143,6 +144,7 @@ public class ExternalCalculationEventHub
   public void onPoint4DPickedEvent(final Point4DPickedEvent event) {
     this.last4DSymmetry = event.getSymmetry4D();
     this.lastSubgroup = event.getSubgroup();
+    logger.info("Calculating new Fundamental Domain");
     onRunEvent(new RunEvent(event.getPickedPoint().getComponents()));
   }
 
