@@ -18,6 +18,9 @@ public class FundamentalTransformerTest
   public static final String POLYMAKE_RESULT =
       "1 0 0 0\n&\n1 1 0 0\n1 0 0 1\n1 0 1 0\n1 0 0 0\n";
 
+  public static final String POLYMAKE_SCRIPT =
+      "my $points = new Matrix<Rational>([[1.0, 1.0, 1.0, 1.0],[1.0, 1.0, 1.0, -1.0],[1.0, 1.0, -1.0, 1.0],[1.0, -1.0, 1.0, 1.0],[1.0, 1.0, -1.0, -1.0],[1.0, -1.0, 1.0, -1.0],[1.0, -1.0, -1.0, 1.0],[1.0, -1.0, -1.0, -1.0]]);my $v = new VoronoiDiagram(SITES=>$points);print $v->VORONOI_VERTICES->[0];print \"\\n\";my $adj = $v->DUAL_GRAPH->ADJACENCY->adjacent_nodes(0);my $s1 = $points->[$adj->[0]];my $s2 = $points->[$adj->[1]];my $s3 = $points->[$adj->[2]];my $p1 = $s1 + $s2;my $p2 = $s2 + $s3;my $p3 = $s3 + $s1;my $poly = new Polytope(POINTS=>[$p1,$p2,$p3,[2,0,0,0]]);print \"&\\n\";print $poly->VERTICES;";
+
   Collection<Point3D> points;
   FundamentalTransformer fT;
   double[] testCoordinate;
@@ -42,6 +45,11 @@ public class FundamentalTransformerTest
   public void testTransformResult() {
     fT.setResultString(POLYMAKE_RESULT);
     assertResult(fT.transformResultString());
+  }
+
+  @Test
+  public void testScript() {
+    assertEquals(POLYMAKE_SCRIPT, fT.toScript());
   }
 
   public void assertResult(Fundamental fund) {

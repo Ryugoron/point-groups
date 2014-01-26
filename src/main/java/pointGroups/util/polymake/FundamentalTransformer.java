@@ -31,7 +31,7 @@ public class FundamentalTransformer
     int size = 0;
     // The more points the larger the scirpt
     StringBuilder sb = new StringBuilder(1000);
-    sb.append("my points = new Matrix<Rational>([");
+    sb.append("my $points = new Matrix<Rational>([");
     boolean first = true;
     for (Point point : this.points) {
       if (!first) {
@@ -41,7 +41,7 @@ public class FundamentalTransformer
       else {
         first = false;
       }
-      sb.append("[1,");
+      sb.append("[1.0");
       for (double comp : point.getComponents()) {
         sb.append(", " + comp);
       }
@@ -49,16 +49,17 @@ public class FundamentalTransformer
     }
     sb.append("]);");
     sb.append("my $v = new VoronoiDiagram(SITES=>$points);");
-    sb.append("print $v->VORONOI_VERTICES;");
-    sb.append("my $adj = $v->DUAL_GRAPH->ADJACENCY->adjacent_nodes[0];");
+    sb.append("print $v->VORONOI_VERTICES->[0];");
+    sb.append("print \"\\n\";");
+    sb.append("my $adj = $v->DUAL_GRAPH->ADJACENCY->adjacent_nodes(0);");
     sb.append("my $s1 = $points->[$adj->[0]];");
     sb.append("my $s2 = $points->[$adj->[1]];");
     sb.append("my $s3 = $points->[$adj->[2]];");
     if (size == 4) sb.append("my $s4 = $points->[$adj->[3]];");
 
-    sb.append("$p1 = $s1 + $s2;");
-    sb.append("$p2 = $s2 + $s3;");
-    sb.append("$p3 = $s3 + $s4;");
+    sb.append("my $p1 = $s1 + $s2;");
+    sb.append("my $p2 = $s2 + $s3;");
+    sb.append("my $p3 = $s3 + $s1;");
     if (size == 4) // TODO check this one. does not seem quite right
       sb.append("$p4 = $s4 + $s1;");
     sb.append("my $poly = new Polytope(POINTS=>[$p1,$p2,$p3,");
@@ -68,8 +69,8 @@ public class FundamentalTransformer
     else {
       sb.append("[2,0,0,0]]);");
     }
-    sb.append("--------\n");
-    sb.append("print $poly-VERTICES;");
+    sb.append("print \"&\\n\";");
+    sb.append("print $poly->VERTICES;");
     this.script = sb.toString();
     return this.script;
   }
