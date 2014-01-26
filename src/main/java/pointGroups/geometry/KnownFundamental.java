@@ -64,6 +64,7 @@ public class KnownFundamental
     double[] p = applyMatrix(revertMatrix, point);
     p = addAffine(p);
     p = normalize(p);
+
     // TODO Wie kann man das hier schön verpacken...
     return p;
   }
@@ -90,7 +91,7 @@ public class KnownFundamental
       throw new RuntimeException("Dimension does not match.");
     for (int i = 0; i < mat.length; i++) {
       erg[i] = 0;
-      for (int j = 0; j < mat[i].length; i++) {
+      for (int j = 0; j < mat[i].length; j++) {
         erg[i] += mat[i][j] * point[j];
       }
     }

@@ -78,22 +78,32 @@ public class FundamentalTransformer
   protected Fundamental transformResultString() {
     StringBuilder regex = new StringBuilder();
     // minimum one 3D point followed by...
-    regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+|");
+    // regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+|");
     // or one 4D point
-    regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+)");
+    // regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+)");
 
     // TODO Should be extended to the following matrix
 
-    if (!resultString.matches(regex.toString())) { throw new PolymakeOutputException(
-        "String set by setResultString() does not match defined format for fundamental domain."); }
+    // if (!resultString.matches(regex.toString())) { throw new
+    // PolymakeOutputException(
+    // "String set by setResultString() does not match defined format for fundamental domain.");
+    // }
 
     // Extracting the points from the result
     String[] pointString = this.resultString.split("\n");
-    double[][] points =
-        new double[pointString.length - 1][pointString[0].length() - 1];
-    for (int i = 0; i < pointString.length; i++) {
-      if (i == 1) continue; // Die Leerzeile überspringen
-      String[] cords = pointString[i].split(" ");
+    double[][] points = new double[pointString.length - 1][];
+
+    // First point
+    String[] coords = pointString[0].split(" ");
+    points[0] = new double[coords.length - 1];
+    for (int j = 1; j < coords.length; j++) {
+      points[0][j - 1] = Double.parseDouble(coords[j]);
+    }
+
+    // The next points
+    for (int i = 1; i < points.length; i++) {
+      String[] cords = pointString[i + 1].split(" ");
+      points[i] = new double[cords.length - 1];
       // Drop first coordinate for it is only one
       for (int j = 1; j < cords.length; j++) {
         points[i][j - 1] = Double.parseDouble(cords[j]);
@@ -112,10 +122,14 @@ public class FundamentalTransformer
     double[] aff = points[1];
 
     //
-    // The Matrix is build of the last n-2 points
+    // The Matrix is build of the last n-3 points
+    // The first one is the voronoi vertex
+    // the second one is the affine translation
+    // the last one is a point at infinity
     //
-    double[][] mat = new double[points.length - 2][points[2].length];
-    for (int i = 2; i < points.length; i++) {
+    double[][] mat = new double[points.length - 3][];
+    for (int i = 2; i < points.length - 1; i++) {
+      mat[i - 2] = new double[points[i].length];
       mat[i - 2] = subtract(points[i], aff);
     }
 
@@ -128,10 +142,18 @@ public class FundamentalTransformer
     boundary = new double[points.length - 2][points[2].length];
 
     for (int i = 0; i < boundary.length; i++) {
-      boundary[i] = points[i + 2];
+      boundary[i] = unit(i, points[2].length);// points[i + 2];
     }
 
     return new KnownFundamental(boundary, transpose(mat), aff);
+  }
+
+  private double[] unit(int i, int dim) {
+    double[] p = new double[dim];
+    for (int j = 0; j < dim; j++) {
+      p[j] = i == j ? 1 : 0;
+    }
+    return p;
   }
 
   private double[][] transpose(double[][] m1) {

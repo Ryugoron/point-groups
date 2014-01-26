@@ -9,7 +9,9 @@ my $v = new VoronoiDiagram(SITES=>$points);
 #
 # Should be only one positioned at ~(0,0,0) otherwise error
 #
-print $v->VORONOI_VERTICES;
+print $v->VORONOI_VERTICES->[0];
+
+print "\n";
 
 #
 # Prints the the adjacent voronoi cells.
@@ -38,5 +40,5 @@ my $p3 = $s3 + $s1;
 # and print them.
 #
 my $poly = new Polytope(POINTS=>[$p1,$p2,$p3,[2,0,0,0]]);
-print "----------\n";
+print "&\n";
 print $poly->VERTICES;
