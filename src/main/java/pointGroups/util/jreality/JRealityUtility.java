@@ -1,13 +1,41 @@
 package pointGroups.util.jreality;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import pointGroups.geometry.Edge;
 import pointGroups.geometry.Point;
+import pointGroups.geometry.Point2D;
+import pointGroups.geometry.Point3D;
 import de.jreality.geometry.IndexedFaceSetFactory;
 import de.jreality.scene.Geometry;
 
 
 public class JRealityUtility
 {
+  private static String printPoint(double[] ds) {
+    List<Double> list = new ArrayList<Double>(ds.length);
+    for (double d : ds) {
+      list.add(d);
+    }
+    return list.toString();
+  }
+
+  public static Point2D asPoint2D(double[] point) {
+    if (point == null || point.length != 2)
+      throw new RuntimeException("could not convert the given point(" +
+          printPoint(point) + ") into a Point2D");
+
+    return new Point2D(point[0], point[1]);
+  }
+
+  public static Point3D asPoint3D(double[] point) {
+    if (point == null || point.length != 3)
+      throw new RuntimeException("could not convert the given point(" +
+          printPoint(point) + ") into a Point3D");
+
+    return new Point3D(point[0], point[1], point[2]);
+  }
 
   public static double[][] convertPoints(Point[] points) {
     double[][] points_ = new double[points.length][];

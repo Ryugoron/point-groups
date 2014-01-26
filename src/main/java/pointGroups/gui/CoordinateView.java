@@ -19,9 +19,18 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import pointGroups.geometry.Point2D;
+import pointGroups.geometry.Point3D;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ChangeCoordinateEvent;
+import pointGroups.gui.event.types.Point3DPickedEvent;
+import pointGroups.gui.event.types.Point4DPickedEvent;
 import pointGroups.gui.event.types.RunEvent;
+import pointGroups.gui.event.types.Symmetry3DChooseEvent;
+import pointGroups.gui.event.types.Symmetry3DChooseHandler;
+import pointGroups.gui.event.types.Symmetry4DChooseEvent;
+import pointGroups.gui.event.types.Symmetry4DChooseHandler;
+import pointGroups.util.jreality.JRealityUtility;
 
 
 /**
@@ -29,16 +38,19 @@ import pointGroups.gui.event.types.RunEvent;
  */
 public class CoordinateView
   extends JPanel
-  implements ActionListener
+  implements ActionListener, Symmetry3DChooseHandler, Symmetry4DChooseHandler
 {
   /**
 	 * 
 	 */
   private static final long serialVersionUID = -3113107578779994265L;
-  private DimensioninputField inputField;
-  private JButton run;
-  private JButton randomCoord;
+  private final DimensioninputField inputField;
+  private final JButton run;
+  private final JButton randomCoord;
   protected final EventDispatcher dispatcher;
+
+  private Symmetry3DChooseEvent lastSymmetry3DChooseEvent;
+  private Symmetry4DChooseEvent lastSymmetry4DChooseEvent;
 
   public CoordinateView(int dimension, EventDispatcher dispatcher) {
     this.setLayout(new FlowLayout());
@@ -51,14 +63,58 @@ public class CoordinateView
     this.add(run);
     this.add(randomCoord);
 
+    dispatcher.addHandler(Symmetry3DChooseHandler.class, this);
+    dispatcher.addHandler(Symmetry4DChooseHandler.class, this);
+
     run.addActionListener(this);
     randomCoord.addActionListener(this);
+  }
+
+  @Override
+  public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
+    // TODO: maybe we should not assume implicitly the change of the dimension
+    // through this event, but by the proper DimensionsSwitchEvent.
+    // This Event has to be used anyway to change the input fields for
+    // the coordinates (x,y on 2D dimensional point picker).
+    lastSymmetry3DChooseEvent = event;
+    lastSymmetry4DChooseEvent = null;
+  }
+
+  @Override
+  public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
+    lastSymmetry4DChooseEvent = event;
+    lastSymmetry3DChooseEvent = null;
+  }
+
+  protected void firePoint3DPickedEvent() {
+    if (lastSymmetry3DChooseEvent == null) return;
+
+    // TODO: currently only a fix, we should get only 2 coordinates
+    // not 3
+    double[] point = inputField.getCoords();
+    Point2D point2D = new Point2D(point[0], point[1]);
+
+    dispatcher.fireEvent(new Point3DPickedEvent(lastSymmetry3DChooseEvent,
+        point2D));
+  }
+
+  protected void firePoint4DPickedEvent() {
+    if (lastSymmetry4DChooseEvent == null) return;
+
+    double[] point = inputField.getCoords();
+    Point3D point3D = JRealityUtility.asPoint3D(point);
+
+    dispatcher.fireEvent(new Point4DPickedEvent(lastSymmetry4DChooseEvent,
+        point3D));
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == run) {
       dispatcher.fireEvent(new RunEvent(inputField.getCoords()));
+
+      firePoint3DPickedEvent();
+      firePoint4DPickedEvent();
     }
     else if (e.getSource() == randomCoord) {
       inputField.createRandomCoords();
@@ -75,7 +131,7 @@ public class CoordinateView
 	 * 
 	 */
     private static final long serialVersionUID = 8813600622648961730L;
-    private List<Dimensioninput> dimensioninputs;
+    private final List<Dimensioninput> dimensioninputs;
     int dimension;
 
     public DimensioninputField(int dim) {
@@ -184,6 +240,7 @@ public class CoordinateView
       }
     }
 
+    @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
       coordField.removePropertyChangeListener("value", listener);
     }
@@ -195,5 +252,5 @@ public class CoordinateView
     }
 
   }
-}
 
+}
