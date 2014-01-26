@@ -73,12 +73,14 @@ public class MainFrame
 
     symmetryChooser = new SymmetryChooser();
     pointPicker.setBackground(Color.YELLOW);
-    coordinates = new CoordinateView(3, dispatcher);
+
+    coordinates = new CoordinateView(2, 3, dispatcher);
 
     JSplitPane leftTopComponent =
         new JSplitPane(JSplitPane.VERTICAL_SPLIT, symmetryChooser, pointPicker);
     JSplitPane leftComponent =
         new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, coordinates);
+
     leftComponent.setBorder(BorderFactory.createEmptyBorder());
     leftTopComponent.setBorder(BorderFactory.createEmptyBorder());
     leftComponent.setOneTouchExpandable(true);
