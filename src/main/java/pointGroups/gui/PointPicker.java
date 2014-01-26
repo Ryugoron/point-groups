@@ -1,9 +1,9 @@
 package pointGroups.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.util.logging.Logger;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import pointGroups.geometry.Fundamental;
@@ -16,7 +16,18 @@ import pointGroups.gui.event.types.FundamentalResultEvent;
 import pointGroups.gui.event.types.FundamentalResultHandler;
 import pointGroups.util.jreality.JRealityUtility;
 import de.jreality.geometry.Primitives;
+import de.jreality.scene.Appearance;
 import de.jreality.scene.Geometry;
+import de.jreality.scene.PointSet;
+import de.jreality.scene.SceneGraphComponent;
+import de.jreality.scene.data.Attribute;
+import de.jreality.scene.data.StorageModel;
+import de.jreality.shader.DefaultGeometryShader;
+import de.jreality.shader.DefaultPointShader;
+import de.jreality.shader.ShaderUtility;
+import de.jreality.tools.DragEventTool;
+import de.jreality.tools.PointDragEvent;
+import de.jreality.tools.PointDragListener;
 
 
 public class PointPicker
@@ -27,13 +38,92 @@ public class PointPicker
 
   private static final long serialVersionUID = -3642299900579728806L;
 
+  private final boolean responsive = false;
+
   public static int count = 0;
   public final int id = count++;
   // TODO is it a good idea to name the logger this way?
   final protected Logger logger = Logger.getLogger(this.getClass().getName() +
       "(id: " + id + ")");
 
-  protected final UiViewer uiViewer = new UiViewer(this);
+  protected final UiViewer uiViewer = new UiViewer(this) {
+    public final SceneGraphComponent point = new SceneGraphComponent();
+    public final Appearance pointAppearance = new Appearance();
+    public final SceneGraphComponent fundamental = new SceneGraphComponent();
+
+    @Override
+    public void onInitialized() {
+      SceneGraphComponent root = getSceneRoot();
+
+      // fundamental.setGeometry(Primitives.cylinder(15));
+      uiViewer.setGeometry(JRealityUtility.generateCompleteGraph(new double[][] {
+          new double[] { 0, 0 }, new double[] { 1, 0 }, new double[] { 0, 1 } }));
+      point.setGeometry(Primitives.point(new double[] { 0, 0, 0 }, "Take me :)"));
+
+      setPointAppearance(pointAppearance);
+      point.setAppearance(pointAppearance);
+
+      root.addChild(fundamental);
+      root.addChild(point);
+
+      DragEventTool dragTool = new DragEventTool();
+      dragTool.addPointDragListener(new PointDragListener() {
+
+        @Override
+        public void pointDragStart(PointDragEvent e) {
+          logger.finest("drag start of vertex no " + e.getIndex());
+        }
+
+        @Override
+        public void pointDragged(PointDragEvent e) {
+          PointSet pointSet = e.getPointSet();
+
+          double[][] points = new double[pointSet.getNumPoints()][];
+
+          pointSet.getVertexAttributes(Attribute.COORDINATES).toDoubleArrayArray(
+              points);
+          points[e.getIndex()] = e.getPosition();
+          pointSet.setVertexAttributes(Attribute.COORDINATES,
+              StorageModel.DOUBLE_ARRAY.array(3).createReadOnly(points));
+
+          /*
+           * for (double[] point : points) {
+           * System.out.printf("[%2f, %2f, %2f]\n", point[0], point[1],
+           * point[2]); }
+           */
+          // TODO:
+          // because the point scene has only one vertex, pointSet should only
+          // contain one point; and therefore only the statements below should
+          // be sufficient for point picking.
+          double[] pickedPoint = e.getPosition();
+          if (responsive) selectPoint(pickedPoint);
+        }
+
+        @Override
+        public void pointDragEnd(PointDragEvent e) {
+          logger.finest("drag end of vertex no " + e.getIndex());
+          if (!responsive) selectPoint(e.getPosition());
+        }
+      });
+
+      point.addTool(dragTool);
+    }
+
+    private void setPointAppearance(Appearance ap) {
+      // make points a little bigger, than the default.
+      DefaultGeometryShader dgs;
+      DefaultPointShader dpts;
+
+      dgs = ShaderUtility.createDefaultGeometryShader(ap, true);
+      dgs.setShowPoints(true);
+
+      dpts = (DefaultPointShader) dgs.createPointShader("default");
+      dpts.setDiffuseColor(Color.MAGENTA);
+      dpts.setSpheresDraw(true);
+      dpts.setPointSize(0.1);
+      dpts.setPointRadius(0.1);
+    }
+  };
 
   // The current Fundamental Domain
   protected Fundamental fundamental;
@@ -43,13 +133,21 @@ public class PointPicker
 
   protected int dim;
 
-  public PointPicker() {
+  /**
+   * Creates the Point Picker, to choose a point graphically.
+   * 
+   * @param responsive - true => ChangeCoordinateEvent on Drag, False => Change
+   *          Coordinate Event on Release
+   */
+  public PointPicker(boolean responsive) {
     super();
 
     setLayout(new BorderLayout());
 
-    JButton button3 = new JButton("VIEW");
-    PointPicker.this.add(button3, BorderLayout.PAGE_END);
+    /*
+     * JButton button3 = new JButton("VIEW"); PointPicker.this.add(button3,
+     * BorderLayout.PAGE_END);
+     */
 
     this.isSet = false;
     this.dim = 0;
@@ -59,12 +157,6 @@ public class PointPicker
     this.dispatcher.addHandler(FundamentalResultEvent.TYPE, this);
     this.dispatcher.addHandler(DimensionSwitchEvent.TYPE, this);
     this.dispatcher.addHandler(ChangeCoordinateEvent.TYPE, this);
-
-    // Test initial
-    uiViewer.setGeometry(JRealityUtility.generateCompleteGraph(new double[][] {
-        new double[] { 0, 0 }, new double[] { 1, 0 }, new double[] { 0, 1 } }));
-    // uiViewer.setGeometry(Primitives.cylinder(15));
-    // uiViewer.setGeometry(Primitives.point(new double[]{0.5,0.5}));
   }
 
   public void dispose() {
@@ -107,16 +199,18 @@ public class PointPicker
     return;
   }
 
-  // Method to fire coordinate Changed Event, should be executed by click
-  // inside the fundamental domain.
+  // Method to fire coordinate Changed Event, should be executed by click inside
+  // the fundamental domain.
   protected void selectPoint(double[] point) {
+    logger.info("Selected Point (" + point[0] + "," + point[1] + "," +
+        point[2] + (this.dim == 3 ? point[2] : "") + ")");
+    if (!isSet) return;
     // Maybe the view is translated or smt
     // point = Rotate * point - translation
 
     // Recalculate to Unitsphere on dim+1 dimensions
     double[] p = this.fundamental.revertPoint(point);
-    logger.info("Point Picker got the new point (" + point[0] + "," + point[1] +
-        "," + point[2] + (this.dim == 3 ? point[2] : "") + ")");
+
     logger.info("Point Picker calculated Point (" + point[0] + "," + point[1] +
         "," + point[2] + "," + point[3] + "," +
         (this.dim == 3 ? point[4] : "") + ")");
@@ -148,5 +242,4 @@ public class PointPicker
     logger.fine("A new Fundamental Region is shown.");
     uiViewer.setGeometry(g);
   }
-
 }
