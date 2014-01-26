@@ -50,7 +50,7 @@ public class SchlegelTransformer
     script.append("my $v = \"$schlegelverts\";");
     script.append("my $e = \"$edges\";");
 
-    script.append("print $v.\"$\".$e");
+    script.append("print $v.\"\\$\\n\".$e");
     return script.toString();
   }
 

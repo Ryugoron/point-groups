@@ -29,7 +29,7 @@ public class SymmetryListCellRenderer
 
   public SymmetryListCellRenderer() {
     super(new BorderLayout(0, 0));
-    setOpaque(false);
+    setOpaque(true);
     setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
     add(icon = new JLabel(), BorderLayout.CENTER);
     add(text = new JLabel(), BorderLayout.SOUTH);
@@ -43,10 +43,19 @@ public class SymmetryListCellRenderer
 
   @Override
   public Component getListCellRendererComponent(
-      JList<? extends Symmetry<?, ?>> list, Symmetry<?, ?> value, int index,
-      boolean isSelected, boolean cellHasFocus) {
+      final JList<? extends Symmetry<?, ?>> list, final Symmetry<?, ?> value,
+      final int index, final boolean isSelected, final boolean cellHasFocus) {
     icon.setIcon(new ImageIcon(PREFIX + value.getName() + " Icon.png"));
     text.setText(value.getName());
+
+    if (isSelected) {
+      setBackground(list.getSelectionBackground());
+      // setForeground(list.getSelectionForeground());
+    }
+    else {
+      setBackground(list.getBackground());
+      // setForeground(list.getForeground());
+    }
 
     return this;
   }
