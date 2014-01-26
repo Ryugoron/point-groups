@@ -332,9 +332,9 @@ public class IcosahedralSymmetry
     return Point3D.class;
   }
 
-@Override
-public Point3D getNormalPoint() {
-	// TODO Look for a point not on the symmetry axis (normalized)
-	return new Point3D(0.8, 0.6, 0.0);
-}
+  @Override
+  public Point3D getNormalPoint() {
+    // TODO Look for a point not on the symmetry axis (normalized)
+    return new Point3D(0.8, 0.6, 0.0);
+  }
 }

@@ -1,12 +1,12 @@
 package pointGroups.util.polymake;
 
+import java.util.Collection;
+
 import pointGroups.geometry.Edge;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Schlegel;
 import pointGroups.util.AbstractTransformer;
-
-import java.util.Collection;
 
 
 /**
@@ -66,13 +66,16 @@ public class SchlegelTransformer
       for (double comp : pointComps) {
         matrix.append("," + comp);
       }
-      // for simplicity always appending a comma after each transformation of a
+      // for simplicity always appending a comma after each transformation
+      // of a
       // point
-      // afterwards the last comma will be replaced by a closing bracket ']' of
+      // afterwards the last comma will be replaced by a closing bracket
+      // ']' of
       // the matrix
       matrix.append("],");
     }
-    // replacing last comma of the for-loop with a closing bracket of the matrix
+    // replacing last comma of the for-loop with a closing bracket of the
+    // matrix
     matrix.setCharAt(matrix.length() - 1, ']');
     return matrix.toString();
   }
@@ -90,10 +93,8 @@ public class SchlegelTransformer
     regex.append("(\\{[0-9]+ [0-9]+\\}\\n)+");
 
     // test if result is formatted correct
-    if (!resultString.matches(regex.toString())) {
-      throw new PolymakeOutputException(
-          "String set by setResultString() does not match defined format for schlegel.");
-    }
+    if (!resultString.matches(regex.toString())) { throw new PolymakeOutputException(
+        "String set by setResultString() does not match defined format for schlegel."); }
     // splitting result string into two. One contains the points, the other
     // the
     // edges.
@@ -120,14 +121,16 @@ public class SchlegelTransformer
                 Double.parseDouble(compStr[1]), Double.parseDouble(compStr[2]));
       }
       else {
-        logger.severe(logger.getName() + ": point in resultString split in: " + compStr.length + "components");
+        logger.severe(logger.getName() + ": point in resultString split in: " +
+            compStr.length + "components");
         logger.fine(logger.getName() + ": resultString was: " + resultString);
       }
     }
     // Store Edges as Array von Pair<Point3D,Point3D>
     String[] splittedEdgesString = edgesString.split("\n");
     Edge<Point3D, Point3D>[] edges = new Edge[splittedEdgesString.length];
-    Edge<Integer, Integer>[] edgesindices = new Edge[splittedEdgesString.length];
+    Edge<Integer, Integer>[] edgesindices =
+        new Edge[splittedEdgesString.length];
     // start iteration with i = 1 because the first string after splitting
     // is
     // empty caused by leading \n

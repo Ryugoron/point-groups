@@ -29,63 +29,64 @@ public class MainFrame
   protected JPanel symmetryChooser;
   protected JPanel coordinates;
   protected JPanel statusBar;
-  
+
   protected EventDispatcher dispatcher = EventDispatcher.get();
 
   public MainFrame() {
- // setting up main split pane
-    
+    // setting up main split pane
+
     Component leftPanel = setUpLeftPanel();
-    Component rightPanel = setUpRightPanel();    
-    
+    Component rightPanel = setUpRightPanel();
+
     // ensures to drag the divider all the way to both sides
-    Dimension minimumSize = new Dimension(0,0);
+    Dimension minimumSize = new Dimension(0, 0);
     leftPanel.setMinimumSize(minimumSize);
     rightPanel.setMinimumSize(minimumSize);
-    
+
     JSplitPane mainSplitPane =
         new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
     mainSplitPane.setResizeWeight(0);
     mainSplitPane.setDividerLocation(320);
     mainSplitPane.setOneTouchExpandable(true);
     mainSplitPane.setBorder(BorderFactory.createEmptyBorder());
-    
+
     menuBar = new Menubar(dispatcher);
     statusBar = new StatusBar(dispatcher);
 
     add(menuBar, BorderLayout.NORTH);
     add(mainSplitPane, BorderLayout.CENTER);
     add(statusBar, BorderLayout.SOUTH);
-    
+
     setTitle("Point groups");
     setSize(1000, 800);
     setLocationRelativeTo(null); // center window
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setVisible(true);
   }
-  
+
   private JPanel setUpRightPanel() {
     schlegelView.setBackground(Color.CYAN);
     return schlegelView;
   }
 
   private Component setUpLeftPanel() {
-    
+
     symmetryChooser = new SymmetryChooser();
     pointPicker.setBackground(Color.YELLOW);
-    coordinates = new CoordinateView(3,dispatcher);
-    
-    JSplitPane leftTopComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, symmetryChooser, pointPicker);
-    JSplitPane leftComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, coordinates);
+    coordinates = new CoordinateView(3, dispatcher);
+
+    JSplitPane leftTopComponent =
+        new JSplitPane(JSplitPane.VERTICAL_SPLIT, symmetryChooser, pointPicker);
+    JSplitPane leftComponent =
+        new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, coordinates);
     leftComponent.setBorder(BorderFactory.createEmptyBorder());
     leftTopComponent.setBorder(BorderFactory.createEmptyBorder());
     leftComponent.setOneTouchExpandable(true);
     leftTopComponent.setOneTouchExpandable(true);
-    
+
     leftComponent.setDividerLocation(600);
     leftTopComponent.setDividerLocation(500);
-    
-    
+
     return leftComponent;
   }
 

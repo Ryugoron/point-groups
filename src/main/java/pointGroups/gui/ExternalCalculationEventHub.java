@@ -115,19 +115,20 @@ public class ExternalCalculationEventHub
   public void onSymmetry4DChooseEvent(final Symmetry4DChooseEvent event) {
     this.last4DSymmetry = event.getSymmetry4D();
     this.lastSubgroup = event.getSubgroup();
-    
+
     Point4D p = this.last4DSymmetry.getNormalPoint();
-    submit(new FundamentalTransformer(this.last4DSymmetry.images(p, this.lastSubgroup.toString())));
+    submit(new FundamentalTransformer(this.last4DSymmetry.images(p,
+        this.lastSubgroup.toString())));
   }
- 
 
   @Override
   public void onSymmetry3DChooseEvent(final Symmetry3DChooseEvent event) {
     this.last3DSymmetry = event.getSymmetry3D();
     this.lastSubgroup = event.getSubgroup();
-    
+
     Point3D p = this.last3DSymmetry.getNormalPoint();
-    submit(new FundamentalTransformer(this.last3DSymmetry.images(p, this.lastSubgroup.toString())));
+    submit(new FundamentalTransformer(this.last3DSymmetry.images(p,
+        this.lastSubgroup.toString())));
   }
 
 
@@ -206,9 +207,9 @@ public class ExternalCalculationEventHub
         if (transformerType == SchlegelTransformer.class) {
           // cast is safe if properly called.
           return new SchlegelResultEvent((Schlegel) result);
-        } else if (transformerType == FundamentalTransformer.class) {
-        	return new FundamentalResultEvent((Fundamental) result);
         }
+        else if (transformerType == FundamentalTransformer.class) { return new FundamentalResultEvent(
+            (Fundamental) result); }
         // add further cases here...
 
       }
