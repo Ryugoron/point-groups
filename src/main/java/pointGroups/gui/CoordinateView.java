@@ -23,6 +23,8 @@ import pointGroups.geometry.Point2D;
 import pointGroups.geometry.Point3D;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ChangeCoordinateEvent;
+import pointGroups.gui.event.types.DimensionSwitchEvent;
+import pointGroups.gui.event.types.DimensionSwitchHandler;
 import pointGroups.gui.event.types.Point3DPickedEvent;
 import pointGroups.gui.event.types.Point4DPickedEvent;
 import pointGroups.gui.event.types.RunEvent;
@@ -38,7 +40,7 @@ import pointGroups.util.jreality.JRealityUtility;
  */
 public class CoordinateView
   extends JPanel
-  implements ActionListener, Symmetry3DChooseHandler, Symmetry4DChooseHandler
+  implements ActionListener,Symmetry3DChooseHandler, Symmetry4DChooseHandler,DimensionSwitchHandler
 {
   /**
 	 * 
@@ -52,9 +54,9 @@ public class CoordinateView
   private Symmetry3DChooseEvent lastSymmetry3DChooseEvent;
   private Symmetry4DChooseEvent lastSymmetry4DChooseEvent;
 
-  public CoordinateView(int dimension, EventDispatcher dispatcher) {
+  public CoordinateView(int dimension, int maxDim, EventDispatcher dispatcher) {
     this.setLayout(new FlowLayout());
-    inputField = new DimensioninputField(dimension);
+    inputField = new DimensioninputField(dimension, maxDim);
     run = new JButton("Run");
     randomCoord = new JButton("Create random coordinate");
     this.dispatcher = dispatcher;
@@ -63,8 +65,7 @@ public class CoordinateView
     this.add(run);
     this.add(randomCoord);
 
-    dispatcher.addHandler(Symmetry3DChooseHandler.class, this);
-    dispatcher.addHandler(Symmetry4DChooseHandler.class, this);
+    dispatcher.addHandler(DimensionSwitchHandler.class, this);
 
     run.addActionListener(this);
     randomCoord.addActionListener(this);
@@ -134,9 +135,10 @@ public class CoordinateView
     private final List<Dimensioninput> dimensioninputs;
     int dimension;
 
-    public DimensioninputField(int dim) {
+    public DimensioninputField(int dim, int maxDim) {
       this.setLayout(new FlowLayout());
       dimensioninputs = new ArrayList<Dimensioninput>();
+      setDimension(maxDim);
       setDimension(dim);
     }
 
@@ -145,7 +147,7 @@ public class CoordinateView
       Random rand = new Random(System.currentTimeMillis());
       for (int i = 0; i < dimension; i++) {
         dimensioninputs.get(i).removePropertyChangeListener(this);
-        dimensioninputs.get(i).setCoord(rand.nextDouble() * 100);
+        dimensioninputs.get(i).setCoord(rand.nextDouble() * 10);
         dimensioninputs.get(i).addPropertyChangeListener(this);
       }
       dispatcher.fireEvent(new ChangeCoordinateEvent(getCoords()));
@@ -175,6 +177,7 @@ public class CoordinateView
         Dimensioninput dimInput = new Dimensioninput(dim, 0, this);
         dimensioninputs.add(dimInput);
         this.add(dimInput);
+        System.out.println("neue Dim: "+i);
       }
       // activate panels
       for (int i = 0; i < dimension; i++) {
@@ -251,6 +254,17 @@ public class CoordinateView
         coordField.addPropertyChangeListener("value", listener);
     }
 
+  }
+
+
+  @Override
+  public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
+    if (event.switchedTo3D()){
+      inputField.setDimension(2);
+    }
+    else if(event.switchedTo4D()){
+      inputField.setDimension(3);
+    }
   }
 
 }
