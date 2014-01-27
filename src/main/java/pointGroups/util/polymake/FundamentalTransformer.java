@@ -7,6 +7,7 @@ import pointGroups.geometry.KnownFundamental;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.UnknownFundamental;
 import pointGroups.util.AbstractTransformer;
+import pointGroups.util.point.PointUtil;
 
 
 /**
@@ -94,46 +95,16 @@ public class FundamentalTransformer
     Fundamental res;
     try {
       // Tries to transform a Fundamental Region.
+      System.out.println("Got result: " + this.resultString);
       res = transformHelper();
     }
     catch (Exception e) {
       logger.info("Could not transform Fundamental Result String, given trivial Fundamental instead.");
-
+      System.out.println("Script: " + this.toScript());
+      System.out.println(e.getMessage());
       res = new UnknownFundamental();
     }
     return res;
-  }
-
-  private double[] unit(int i, int dim) {
-    double[] p = new double[dim];
-    for (int j = 0; j < dim; j++) {
-      p[j] = i == j ? 1 : 0;
-    }
-    return p;
-  }
-
-  private double[][] transpose(double[][] m1) {
-    if (m1.length == 0)
-      throw new IllegalArgumentException(
-          "The matrix cannot not be empty at this point.");
-    double[][] m2 = new double[m1[0].length][m1.length];
-    for (int i = 0; i < m1.length; i++) {
-      for (int j = 0; j < m1[0].length; j++) {
-        m2[j][i] = m1[i][j];
-      }
-    }
-    return m2;
-  }
-
-  private double[] subtract(double[] p1, double[] p2) {
-    if (p1.length != p2.length)
-      throw new IllegalArgumentException(
-          "Subtract two vectors of different size.");
-    double[] p3 = new double[p1.length];
-    for (int i = 0; i < p2.length; i++) {
-      p3[i] = p1[i] - p2[i];
-    }
-    return p3;
   }
 
   private Fundamental transformHelper() {
@@ -177,7 +148,7 @@ public class FundamentalTransformer
     double[][] mat = new double[points.length - 3][];
     for (int i = 2; i < points.length - 1; i++) {
       mat[i - 2] = new double[points[i].length];
-      mat[i - 2] = subtract(points[i], aff);
+      mat[i - 2] = PointUtil.subtract(points[i], aff);
     }
 
     //
@@ -189,11 +160,11 @@ public class FundamentalTransformer
     boundary = new double[points.length - 2][points[2].length - 1];
 
     for (int i = 0; i < boundary.length; i++) {
-      boundary[i] = unit(i, points[2].length - 1);// points[i + 2];
+      boundary[i] = PointUtil.unit(i, points[2].length - 1);// points[i + 2];
       // System.out.println((showPoint(boundary[i])));
     }
 
-    return new KnownFundamental(boundary, transpose(mat), aff);
+    return new KnownFundamental(boundary, PointUtil.transpose(mat), aff);
   }
 
   public static String showPoint(double[] p) {
