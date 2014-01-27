@@ -148,4 +148,25 @@ public class PointUtil
     }
     return erg;
   }
+
+  public static double[] unit(int i, int dim) {
+    double[] p = new double[dim];
+    for (int j = 0; j < dim; j++) {
+      p[j] = i == j ? 1 : 0;
+    }
+    return p;
+  }
+
+  public static double[][] transpose(double[][] m1) {
+    if (m1.length == 0)
+      throw new IllegalArgumentException(
+          "The matrix cannot not be empty at this point.");
+    double[][] m2 = new double[m1[0].length][m1.length];
+    for (int i = 0; i < m1.length; i++) {
+      for (int j = 0; j < m1[0].length; j++) {
+        m2[j][i] = m1[i][j];
+      }
+    }
+    return m2;
+  }
 }
