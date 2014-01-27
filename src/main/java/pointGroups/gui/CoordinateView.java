@@ -70,6 +70,8 @@ public class CoordinateView
     dispatcher.addHandler(DimensionSwitchHandler.class, this);
     dispatcher.addHandler(ChangeCoordinate3DPointHandler.class, this);
     dispatcher.addHandler(ChangeCoordinate4DPointHandler.class, this);
+    dispatcher.addHandler(Symmetry3DChooseHandler.class, this);
+    dispatcher.addHandler(Symmetry4DChooseHandler.class, this);
 
 
     run.addActionListener(this);
@@ -100,7 +102,7 @@ public class CoordinateView
 
       }
       else{
-        //TODO: May be inform User
+        throw new RuntimeException("No Symmetrie was choosen");
       }
     }
     else if (e.getSource() == randomCoord) {
