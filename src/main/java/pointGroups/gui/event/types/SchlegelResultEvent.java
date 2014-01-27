@@ -1,6 +1,8 @@
 package pointGroups.gui.event.types;
 
+import pointGroups.geometry.Point;
 import pointGroups.geometry.Schlegel;
+import pointGroups.geometry.Symmetry;
 import pointGroups.gui.ExternalCalculationEventHub;
 import pointGroups.gui.event.Event;
 
@@ -19,15 +21,22 @@ public class SchlegelResultEvent
       SchlegelResultHandler.class;
 
   private final Schlegel s;
+  private final Point p;
+  private final Symmetry<?, ?> sym;
 
   /**
-   * Creates a new {@link SchlegelResultEvent} with given {@link Schlegel}
-   * object.
+   * Creates a new {@link SchlegelResultEvent} with given {@link Schlegel},
+   * {@link Point} and {@link Symmetry} objects.
    * 
-   * @param st the schlegel result
+   * @param s the schlegel result
+   * @param p the initial point
+   * @param sym the associated symmetry
    */
-  public SchlegelResultEvent(final Schlegel s) {
+  public SchlegelResultEvent(final Schlegel s, final Point p,
+      final Symmetry<?, ?> sym) {
     this.s = s;
+    this.p = p;
+    this.sym = sym;
   }
 
   /**
@@ -37,6 +46,26 @@ public class SchlegelResultEvent
    */
   public Schlegel getResult() {
     return s;
+  }
+
+  /**
+   * Returns the {@link Point} that resulted in the {@link Schlegel} diagram
+   * given by {@link #getSchlegel()}.
+   * 
+   * @return The initial point
+   */
+  public Point getPickedPoint() {
+    return p;
+  }
+
+  /**
+   * Returns the {@link Symmetry} that was used to construct the images of the
+   * {@link Point} given by {@link #getPickedPoint()}.
+   * 
+   * @return The chosen symmetry
+   */
+  public Symmetry<?, ?> getPickedSymmetry() {
+    return sym;
   }
 
   @Override

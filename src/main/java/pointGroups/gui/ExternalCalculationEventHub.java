@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import pointGroups.geometry.Fundamental;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
-import pointGroups.geometry.Schlegel;
 import pointGroups.gui.event.Event;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.FundamentalResultEvent;
@@ -28,6 +27,7 @@ import pointGroups.util.Transformer;
 import pointGroups.util.polymake.FundamentalTransformer;
 import pointGroups.util.polymake.PolymakeOutputException;
 import pointGroups.util.polymake.SchlegelTransformer;
+import pointGroups.util.polymake.SchlegelTransformer.SchlegelCompound;
 
 
 /**
@@ -89,7 +89,8 @@ public class ExternalCalculationEventHub
     Collection<Point4D> images =
         event.getSymmetry4D().images(event.getPickedPoint(),
             event.getSubgroup());
-    submit(new SchlegelTransformer(images));
+    submit(new SchlegelTransformer(images, event.getSymmetry4D(),
+        event.getPickedPoint()));
   }
 
   @Override
@@ -97,7 +98,8 @@ public class ExternalCalculationEventHub
     Collection<Point3D> images =
         event.getSymmetry3D().images(event.getPickedPoint(),
             event.getSubgroup());
-    submit(new SchlegelTransformer(images));
+    submit(new SchlegelTransformer(images, event.getSymmetry3D(),
+        event.getPickedPoint()));
   }
 
   @Override
@@ -196,7 +198,10 @@ public class ExternalCalculationEventHub
       try {
         if (transformerType == SchlegelTransformer.class) {
           // cast is safe if properly called.
-          return new SchlegelResultEvent((Schlegel) result);
+          SchlegelCompound sc = (SchlegelCompound) result;
+
+          return new SchlegelResultEvent(sc.getSchlegel(), sc.getPoint(),
+              sc.getSymmetry());
         }
         else if (transformerType == FundamentalTransformer.class) { return new FundamentalResultEvent(
             (Fundamental) result); }
