@@ -20,16 +20,9 @@ public class SchlegelTransformer
 {
 
   private final Collection<? extends Point> points;
-  private final int facet;
 
   public SchlegelTransformer(Collection<? extends Point> points) {
     this.points = points;
-    this.facet = -1;
-  }
-
-  public SchlegelTransformer(Collection<? extends Point> points, int facet) {
-    this.points = points;
-    this.facet = facet;
   }
 
   @Override
@@ -90,10 +83,8 @@ public class SchlegelTransformer
     regex.append("(\\{[0-9]+ [0-9]+\\}\\n)+");
 
     // test if result is formatted correct
-    if (!resultString.matches(regex.toString())) {
-      throw new PolymakeOutputException(
-          "String set by setResultString() does not match defined format for schlegel.");
-    }
+    if (!resultString.matches(regex.toString())) { throw new PolymakeOutputException(
+        "String set by setResultString() does not match defined format for schlegel."); }
     // splitting result string into two. One contains the points, the other
     // the
     // edges.
@@ -120,14 +111,16 @@ public class SchlegelTransformer
                 Double.parseDouble(compStr[1]), Double.parseDouble(compStr[2]));
       }
       else {
-        logger.severe(logger.getName() + ": point in resultString split in: " + compStr.length + "components");
+        logger.severe(logger.getName() + ": point in resultString split in: " +
+            compStr.length + "components");
         logger.fine(logger.getName() + ": resultString was: " + resultString);
       }
     }
     // Store Edges as Array von Pair<Point3D,Point3D>
     String[] splittedEdgesString = edgesString.split("\n");
     Edge<Point3D, Point3D>[] edges = new Edge[splittedEdgesString.length];
-    Edge<Integer, Integer>[] edgesindices = new Edge[splittedEdgesString.length];
+    Edge<Integer, Integer>[] edgesindices =
+        new Edge[splittedEdgesString.length];
     // start iteration with i = 1 because the first string after splitting
     // is
     // empty caused by leading \n
