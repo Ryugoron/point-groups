@@ -17,8 +17,6 @@ import pointGroups.gui.event.types.ChangeCoordinate3DPointEvent;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointHandler;
 import pointGroups.gui.event.types.ChangeCoordinate4DPointEvent;
 import pointGroups.gui.event.types.ChangeCoordinate4DPointHandler;
-import pointGroups.gui.event.types.ChangeCoordinateEvent;
-import pointGroups.gui.event.types.ChangeCoordinateHandler;
 import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.event.types.DimensionSwitchHandler;
 import pointGroups.gui.event.types.FundamentalResultEvent;
@@ -184,7 +182,9 @@ public class PointPicker
     // Register PointPicker on Events
     this.dispatcher.addHandler(FundamentalResultEvent.TYPE, this);
     this.dispatcher.addHandler(DimensionSwitchEvent.TYPE, this);
-    this.dispatcher.addHandler(ChangeCoordinateEvent.TYPE, this);
+    this.dispatcher.addHandler(ChangeCoordinate3DPointEvent.TYPE, this);
+    this.dispatcher.addHandler(ChangeCoordinate4DPointEvent.TYPE, this);
+
   }
 
   public void dispose() {
