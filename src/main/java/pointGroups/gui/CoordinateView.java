@@ -68,6 +68,9 @@ public class CoordinateView
     this.add(randomCoord);
 
     dispatcher.addHandler(DimensionSwitchHandler.class, this);
+    dispatcher.addHandler(ChangeCoordinate3DPointHandler.class, this);
+    dispatcher.addHandler(ChangeCoordinate4DPointHandler.class, this);
+
 
     run.addActionListener(this);
     randomCoord.addActionListener(this);
