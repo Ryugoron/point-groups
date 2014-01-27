@@ -12,6 +12,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 import pointGroups.util.ExternalCalculationWrapper;
+import pointGroups.util.LoggerFactory;
 import pointGroups.util.Transformer;
 import pointGroups.util.polymake.PolymakeException;
 
@@ -28,7 +29,7 @@ import pointGroups.util.polymake.PolymakeException;
 public class PolymakeWrapper
   implements ExternalCalculationWrapper
 {
-  final Logger logger = Logger.getLogger(PolymakeWrapper.class.getName());
+  final Logger logger = LoggerFactory.get(this.getClass());
   final String polymakePath;
   final String polymakeDriverPath;
 
