@@ -7,7 +7,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Logger;
 
 import pointGroups.geometry.Fundamental;
-import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Schlegel;
@@ -15,12 +14,10 @@ import pointGroups.geometry.Symmetry;
 import pointGroups.gui.event.Event;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.FundamentalResultEvent;
-import pointGroups.gui.event.types.Point3DPickedEvent;
-import pointGroups.gui.event.types.Point3DPickedHandler;
-import pointGroups.gui.event.types.Point4DPickedEvent;
-import pointGroups.gui.event.types.Point4DPickedHandler;
-import pointGroups.gui.event.types.RunEvent;
-import pointGroups.gui.event.types.RunHandler;
+import pointGroups.gui.event.types.Schlegel3DComputeEvent;
+import pointGroups.gui.event.types.Schlegel3DComputeHandler;
+import pointGroups.gui.event.types.Schlegel4DComputeEvent;
+import pointGroups.gui.event.types.Schlegel4DComputeHandler;
 import pointGroups.gui.event.types.SchlegelResultEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseHandler;
@@ -42,8 +39,7 @@ import pointGroups.util.polymake.SchlegelTransformer;
  * @author Alex
  */
 public class ExternalCalculationEventHub
-  implements Symmetry3DChooseHandler, Symmetry4DChooseHandler, RunHandler,
-  Point3DPickedHandler, Point4DPickedHandler
+  implements Symmetry3DChooseHandler, Symmetry4DChooseHandler, Schlegel3DComputeHandler,Schlegel4DComputeHandler
 {
   /**
    * An instance of the {@link EventDispatcher}.
@@ -81,9 +77,6 @@ public class ExternalCalculationEventHub
     // (at the end of this class).
     dispatcher.addHandler(Symmetry3DChooseHandler.class, this);
     dispatcher.addHandler(Symmetry4DChooseHandler.class, this);
-    dispatcher.addHandler(RunHandler.class, this);
-    dispatcher.addHandler(Point3DPickedHandler.class, this);
-    dispatcher.addHandler(Point4DPickedHandler.class, this);
   }
 
   /**
@@ -94,29 +87,23 @@ public class ExternalCalculationEventHub
   private void submit(final Transformer<?> t) {
     this.resProducer.submit(t);
   }
-
+  
+  
   @Override
-  public void onRunEvent(final RunEvent event) {
-    final int dimension = event.getDimension();
-    final double[] coords = event.getCoordinates();
-
-    Collection<? extends Point> images = null;
-    if (dimension == 3) {
-      if (last3DSymmetry != null) {
-        Point3D p = new Point3D(coords[0], coords[1], coords[2]);
-        images = last3DSymmetry.images(p, lastSubgroup);
-      }
-    }
-    else if (dimension == 4) {
-      if (last4DSymmetry != null) {
-        Point4D p = new Point4D(coords[0], coords[1], coords[2], coords[3]);
-        images = last4DSymmetry.images(p, lastSubgroup);
-      }
-    }
-
+  public void onSchlegel4DComputeEvent(Schlegel4DComputeEvent event) {
+    Collection<Point4D> images = event.getSymmetry4D().images(event.getPickedPoint(), event.getSubgroup());
     if (images != null) {
       submit(new SchlegelTransformer(images));
     }
+  }
+
+  @Override
+  public void onSchlegel3DComputeEvent(Schlegel3DComputeEvent event) {
+    Collection<Point3D> images = event.getSymmetry3D().images(event.getPickedPoint(), event.getSubgroup());
+    if (images != null) {
+      submit(new SchlegelTransformer(images));
+    }
+    
   }
 
   @Override
@@ -140,20 +127,7 @@ public class ExternalCalculationEventHub
         this.lastSubgroup.toString())));
   }
 
-  @Override
-  public void onPoint4DPickedEvent(final Point4DPickedEvent event) {
-    this.last4DSymmetry = event.getSymmetry4D();
-    this.lastSubgroup = event.getSubgroup();
-    logger.info("Calculating new Fundamental Domain");
-    onRunEvent(new RunEvent(event.getPickedPoint().getComponents()));
-  }
-
-  @Override
-  public void onPoint3DPickedEvent(final Point3DPickedEvent event) {
-    this.last3DSymmetry = event.getSymmetry3D();
-    this.lastSubgroup = event.getSubgroup();
-    onRunEvent(new RunEvent(event.getPickedPoint().getComponents()));
-  }
+ 
 
 
   protected class ResultProducer
@@ -251,5 +225,8 @@ public class ExternalCalculationEventHub
       return null;
     }
   }
+
+
+  
 
 }
