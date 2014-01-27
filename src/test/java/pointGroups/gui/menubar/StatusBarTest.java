@@ -9,8 +9,6 @@ import javax.swing.JFrame;
 
 import pointGroups.gui.StatusBar;
 import pointGroups.gui.event.EventDispatcher;
-import pointGroups.gui.event.types.ChangeCoordinateEvent;
-import pointGroups.gui.event.types.RunEvent;
 import pointGroups.gui.event.types.ShowFundamentalDomainEvent;
 
 public class StatusBarTest{
@@ -20,10 +18,7 @@ public static void main(String[] args){
     final double[] coord3D = {1.2, 2.4, 0.0};
     final double[] coord4D = {1.2, 2.4, 0.0,-4.5};
     
-    final ChangeCoordinateEvent change3d = new ChangeCoordinateEvent(coord3D);
-    final ChangeCoordinateEvent change4d = new ChangeCoordinateEvent(coord4D);
-    final RunEvent run3d = new RunEvent(coord3D);
-    final RunEvent run4d = new RunEvent(coord4D);
+   
     final ShowFundamentalDomainEvent visEvent = new ShowFundamentalDomainEvent(true);    
     final ShowFundamentalDomainEvent invisEvent = new ShowFundamentalDomainEvent(false);
 
