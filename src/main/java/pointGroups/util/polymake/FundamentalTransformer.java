@@ -95,13 +95,10 @@ public class FundamentalTransformer
     Fundamental res;
     try {
       // Tries to transform a Fundamental Region.
-      System.out.println("Got result: " + this.resultString);
       res = transformHelper();
     }
     catch (Exception e) {
       logger.info("Could not transform Fundamental Result String, given trivial Fundamental instead.");
-      System.out.println("Script: " + this.toScript());
-      System.out.println(e.getMessage());
       res = new UnknownFundamental();
     }
     return res;
@@ -115,7 +112,7 @@ public class FundamentalTransformer
     String[] coords = pointString[0].split(" ");
     points[0] = new double[coords.length - 1];
     for (int j = 1; j < coords.length; j++) {
-      points[0][j - 1] = Double.parseDouble(coords[j]);
+      points[0][j - 1] = this.parseCoordinate(coords[j]);
     }
 
     // The next points
@@ -124,7 +121,7 @@ public class FundamentalTransformer
       points[i] = new double[cords.length - 1];
       // Drop first coordinate for it is only one
       for (int j = 1; j < cords.length; j++) {
-        points[i][j - 1] = Double.parseDouble(cords[j]);
+        points[i][j - 1] = this.parseCoordinate(cords[j]);
       }
     }
     // The first point point can be used to check, if the Voronoi Was
@@ -167,13 +164,17 @@ public class FundamentalTransformer
     return new KnownFundamental(boundary, PointUtil.transpose(mat), aff);
   }
 
-  public static String showPoint(double[] p) {
-    String erg = "(" + p[0];
-    for (int i = 1; i < p.length; i++) {
-      erg += "," + p[i];
+  private double parseCoordinate(String s) {
+    if (s.contains("/")) {
+      String[] both = s.split("/");
+      if (both.length != 2)
+        throw new IllegalArgumentException("Tried to create a double from : " +
+            s);
+      return (Double.parseDouble(both[0]) / Double.parseDouble(both[1]));
     }
-    erg += ")";
-    return erg;
+    else {
+      return Double.parseDouble(s);
+    }
   }
 
 }

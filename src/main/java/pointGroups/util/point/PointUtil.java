@@ -169,4 +169,13 @@ public class PointUtil
     }
     return m2;
   }
+
+  public static String showPoint(double[] p) {
+    String erg = "(" + p[0];
+    for (int i = 1; i < p.length; i++) {
+      erg += "," + p[i];
+    }
+    erg += ")";
+    return erg;
+  }
 }
