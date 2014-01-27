@@ -10,18 +10,29 @@ public class ChangeCoordinate3DPointEvent
 {
   private final Symmetry3DChooseEvent symmetryEvent;
   private final Point3D pickedPoint;
+  private final Object src;
+  
 
   public final static Class<ChangeCoordinate3DPointHandler> TYPE =
       ChangeCoordinate3DPointHandler.class;
 
   public ChangeCoordinate3DPointEvent(final Symmetry3DChooseEvent symmetryEvent,
-      final Point3D pickedPoint) {
+      final Point3D pickedPoint,Object src) {
     this.symmetryEvent = symmetryEvent;
     this.pickedPoint = pickedPoint;
+    this.src = src;
   }
 
   public Point3D getPickedPoint() {
     return pickedPoint;
+  }
+  
+  public Object getSource(){
+    return src;
+  }
+  
+  public boolean isSource(Object candidate){
+    return src.equals(candidate);
   }
 
   public Symmetry<Point3D, ?> getSymmetry3D() {

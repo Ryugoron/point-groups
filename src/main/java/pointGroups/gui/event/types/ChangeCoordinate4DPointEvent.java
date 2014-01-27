@@ -10,14 +10,16 @@ public class ChangeCoordinate4DPointEvent
 {
   private final Symmetry4DChooseEvent symmetryEvent;
   private final Point4D pickedPoint;
+  private final Object src;
 
   public final static Class<ChangeCoordinate4DPointHandler> TYPE =
       ChangeCoordinate4DPointHandler.class;
 
   public ChangeCoordinate4DPointEvent(final Symmetry4DChooseEvent symmetryEvent,
-      final Point4D pickedPoint) {
+      final Point4D pickedPoint, Object src) {
     this.symmetryEvent = symmetryEvent;
     this.pickedPoint = pickedPoint;
+    this.src = src;
   }
 
   public Point4D getPickedPoint() {
@@ -31,7 +33,13 @@ public class ChangeCoordinate4DPointEvent
   public String getSubgroup() {
     return this.symmetryEvent.getSubgroup();
   }
-
+  public Object getSource(){
+    return src;
+  }
+  
+  public boolean isSource(Object candidate){
+    return src.equals(candidate);
+  }
   @Override
   public final Class<ChangeCoordinate4DPointHandler> getType() {
     return TYPE;

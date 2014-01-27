@@ -22,6 +22,8 @@ import javax.swing.JPanel;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
 import pointGroups.gui.event.EventDispatcher;
+import pointGroups.gui.event.types.ChangeCoordinate3DPointEvent;
+import pointGroups.gui.event.types.ChangeCoordinate4DPointEvent;
 import pointGroups.gui.event.types.ChangeCoordinateEvent;
 import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.event.types.DimensionSwitchHandler;
@@ -130,12 +132,25 @@ public class CoordinateView
         dimensioninputs.get(i).setCoord(rand.nextDouble() * 10);
         dimensioninputs.get(i).addPropertyChangeListener(this);
       }
-      dispatcher.fireEvent(new ChangeCoordinateEvent(getCoords()));
+      changeCoordinateEvent();
+    }
+    
+    protected void changeCoordinateEvent() {
+      double[] point = inputField.getCoords();
+      if(lastSymmetry3DChooseEvent != null){
+        Point3D point3D = JRealityUtility.asPoint3D(point);
+        dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(lastSymmetry3DChooseEvent, point3D));
+      }
+      else if(lastSymmetry4DChooseEvent != null){
+        Point4D point4D = JRealityUtility.asPoint4D(point);
+        dispatcher.fireEvent(new ChangeCoordinate4DPointEvent(lastSymmetry4DChooseEvent, point4D));
+
+      }       
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-      dispatcher.fireEvent(new ChangeCoordinateEvent(getCoords()));
+      changeCoordinateEvent();
 
     }
 
