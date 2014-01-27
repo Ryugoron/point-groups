@@ -7,6 +7,7 @@ import pointGroups.geometry.KnownFundamental;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.UnknownFundamental;
 import pointGroups.util.AbstractTransformer;
+import pointGroups.util.point.PointUtil;
 
 
 /**
@@ -98,42 +99,9 @@ public class FundamentalTransformer
     }
     catch (Exception e) {
       logger.info("Could not transform Fundamental Result String, given trivial Fundamental instead.");
-
       res = new UnknownFundamental();
     }
     return res;
-  }
-
-  private double[] unit(int i, int dim) {
-    double[] p = new double[dim];
-    for (int j = 0; j < dim; j++) {
-      p[j] = i == j ? 1 : 0;
-    }
-    return p;
-  }
-
-  private double[][] transpose(double[][] m1) {
-    if (m1.length == 0)
-      throw new IllegalArgumentException(
-          "The matrix cannot not be empty at this point.");
-    double[][] m2 = new double[m1[0].length][m1.length];
-    for (int i = 0; i < m1.length; i++) {
-      for (int j = 0; j < m1[0].length; j++) {
-        m2[j][i] = m1[i][j];
-      }
-    }
-    return m2;
-  }
-
-  private double[] subtract(double[] p1, double[] p2) {
-    if (p1.length != p2.length)
-      throw new IllegalArgumentException(
-          "Subtract two vectors of different size.");
-    double[] p3 = new double[p1.length];
-    for (int i = 0; i < p2.length; i++) {
-      p3[i] = p1[i] - p2[i];
-    }
-    return p3;
   }
 
   private Fundamental transformHelper() {
@@ -144,7 +112,7 @@ public class FundamentalTransformer
     String[] coords = pointString[0].split(" ");
     points[0] = new double[coords.length - 1];
     for (int j = 1; j < coords.length; j++) {
-      points[0][j - 1] = Double.parseDouble(coords[j]);
+      points[0][j - 1] = this.parseCoordinate(coords[j]);
     }
 
     // The next points
@@ -153,7 +121,7 @@ public class FundamentalTransformer
       points[i] = new double[cords.length - 1];
       // Drop first coordinate for it is only one
       for (int j = 1; j < cords.length; j++) {
-        points[i][j - 1] = Double.parseDouble(cords[j]);
+        points[i][j - 1] = this.parseCoordinate(cords[j]);
       }
     }
     // The first point point can be used to check, if the Voronoi Was
@@ -177,7 +145,7 @@ public class FundamentalTransformer
     double[][] mat = new double[points.length - 3][];
     for (int i = 2; i < points.length - 1; i++) {
       mat[i - 2] = new double[points[i].length];
-      mat[i - 2] = subtract(points[i], aff);
+      mat[i - 2] = PointUtil.subtract(points[i], aff);
     }
 
     //
@@ -189,20 +157,24 @@ public class FundamentalTransformer
     boundary = new double[points.length - 2][points[2].length - 1];
 
     for (int i = 0; i < boundary.length; i++) {
-      boundary[i] = unit(i, points[2].length - 1);// points[i + 2];
+      boundary[i] = PointUtil.unit(i, points[2].length - 1);// points[i + 2];
       // System.out.println((showPoint(boundary[i])));
     }
 
-    return new KnownFundamental(boundary, transpose(mat), aff);
+    return new KnownFundamental(boundary, PointUtil.transpose(mat), aff);
   }
 
-  public static String showPoint(double[] p) {
-    String erg = "(" + p[0];
-    for (int i = 1; i < p.length; i++) {
-      erg += "," + p[i];
+  private double parseCoordinate(String s) {
+    if (s.contains("/")) {
+      String[] both = s.split("/");
+      if (both.length != 2)
+        throw new IllegalArgumentException("Tried to create a double from : " +
+            s);
+      return (Double.parseDouble(both[0]) / Double.parseDouble(both[1]));
     }
-    erg += ")";
-    return erg;
+    else {
+      return Double.parseDouble(s);
+    }
   }
 
 }
