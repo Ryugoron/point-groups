@@ -10,7 +10,6 @@ import pointGroups.geometry.Fundamental;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Schlegel;
-import pointGroups.geometry.Symmetry;
 import pointGroups.gui.event.Event;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.FundamentalResultEvent;
@@ -24,6 +23,7 @@ import pointGroups.gui.event.types.Symmetry3DChooseHandler;
 import pointGroups.gui.event.types.Symmetry4DChooseEvent;
 import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.util.ExternalCalculationWrapper;
+import pointGroups.util.LoggerFactory;
 import pointGroups.util.Transformer;
 import pointGroups.util.polymake.FundamentalTransformer;
 import pointGroups.util.polymake.PolymakeOutputException;
@@ -39,7 +39,8 @@ import pointGroups.util.polymake.SchlegelTransformer;
  * @author Alex
  */
 public class ExternalCalculationEventHub
-  implements Symmetry3DChooseHandler, Symmetry4DChooseHandler, Schlegel3DComputeHandler,Schlegel4DComputeHandler
+  implements Symmetry3DChooseHandler, Symmetry4DChooseHandler,
+  Schlegel3DComputeHandler, Schlegel4DComputeHandler
 {
   /**
    * An instance of the {@link EventDispatcher}.
@@ -49,22 +50,14 @@ public class ExternalCalculationEventHub
    * The wrapped external process.
    */
   protected final ExternalCalculationWrapper wrapper;
-  protected final Logger logger = Logger.getLogger(this.getClass().getName());
+  protected final Logger logger = LoggerFactory.get(this.getClass());
 
   // Producer-Consumer-Pattern for asynchronous external calculation tasks
   private final BlockingQueue<Transformer<?>> buf = new LinkedBlockingQueue<>();
   private final ResultProducer resProducer = new ResultProducer();
   private final ResultConsumer resConsumer = new ResultConsumer();
 
-  // Additional fields for events registered to
-  private Symmetry<Point3D, ?> last3DSymmetry;
-  private Symmetry<Point4D, ?> last4DSymmetry;
-  private String lastSubgroup;
-
   public ExternalCalculationEventHub(final ExternalCalculationWrapper wrapper) {
-    // To log properly, we need to set the logger as child of the global logger
-    logger.setParent(Logger.getGlobal());
-
     this.wrapper = wrapper;
     this.wrapper.start();
 
@@ -77,6 +70,9 @@ public class ExternalCalculationEventHub
     // (at the end of this class).
     dispatcher.addHandler(Symmetry3DChooseHandler.class, this);
     dispatcher.addHandler(Symmetry4DChooseHandler.class, this);
+
+    dispatcher.addHandler(Schlegel3DComputeHandler.class, this);
+    dispatcher.addHandler(Schlegel4DComputeHandler.class, this);
   }
 
   /**
@@ -87,47 +83,37 @@ public class ExternalCalculationEventHub
   private void submit(final Transformer<?> t) {
     this.resProducer.submit(t);
   }
-  
-  
+
   @Override
-  public void onSchlegel4DComputeEvent(Schlegel4DComputeEvent event) {
-    Collection<Point4D> images = event.getSymmetry4D().images(event.getPickedPoint(), event.getSubgroup());
-    if (images != null) {
-      submit(new SchlegelTransformer(images));
-    }
+  public void onSchlegel4DComputeEvent(final Schlegel4DComputeEvent event) {
+    Collection<Point4D> images =
+        event.getSymmetry4D().images(event.getPickedPoint(),
+            event.getSubgroup());
+    submit(new SchlegelTransformer(images));
   }
 
   @Override
-  public void onSchlegel3DComputeEvent(Schlegel3DComputeEvent event) {
-    Collection<Point3D> images = event.getSymmetry3D().images(event.getPickedPoint(), event.getSubgroup());
-    if (images != null) {
-      submit(new SchlegelTransformer(images));
-    }
-    
+  public void onSchlegel3DComputeEvent(final Schlegel3DComputeEvent event) {
+    Collection<Point3D> images =
+        event.getSymmetry3D().images(event.getPickedPoint(),
+            event.getSubgroup());
+    submit(new SchlegelTransformer(images));
   }
 
   @Override
   public void onSymmetry4DChooseEvent(final Symmetry4DChooseEvent event) {
-    this.last4DSymmetry = event.getSymmetry4D();
-    this.lastSubgroup = event.getSubgroup();
-
-    Point4D p = this.last4DSymmetry.getNormalPoint();
-    submit(new FundamentalTransformer(this.last4DSymmetry.images(p,
-        this.lastSubgroup.toString())));
+    Point4D p = event.getSymmetry4D().getNormalPoint();
+    submit(new FundamentalTransformer(event.getSymmetry4D().images(p,
+        event.getSubgroup())));
   }
 
   @Override
   public void onSymmetry3DChooseEvent(final Symmetry3DChooseEvent event) {
-    this.last3DSymmetry = event.getSymmetry3D();
-    this.lastSubgroup = event.getSubgroup();
-
-    Point3D p = this.last3DSymmetry.getNormalPoint();
+    Point3D p = event.getSymmetry3D().getNormalPoint();
     logger.info("Calculating new Fundamental Domain");
-    submit(new FundamentalTransformer(this.last3DSymmetry.images(p,
-        this.lastSubgroup.toString())));
+    submit(new FundamentalTransformer(event.getSymmetry3D().images(p,
+        event.getSubgroup())));
   }
-
- 
 
 
   protected class ResultProducer
@@ -185,7 +171,10 @@ public class ExternalCalculationEventHub
       while (wrapper.isRunning()) {
         try {
           t = buf.take();
-          dispatcher.fireEvent(createEventFor(t.getClass(), t.get()));
+          Event<?> event = createEventFor(t.getClass(), t.get());
+          if (event != null) {
+            dispatcher.fireEvent(event);
+          }
         }
         catch (InterruptedException | ExecutionException e) {
           if (wrapper.isRunning()) {
@@ -225,8 +214,5 @@ public class ExternalCalculationEventHub
       return null;
     }
   }
-
-
-  
 
 }
