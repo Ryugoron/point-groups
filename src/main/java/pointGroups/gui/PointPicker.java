@@ -6,11 +6,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
+import javax.print.attribute.standard.PresentationDirection;
 import javax.swing.JPanel;
 
 import pointGroups.geometry.Fundamental;
 import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Point4D;
 import pointGroups.gui.event.EventDispatcher;
+import pointGroups.gui.event.types.ChangeCoordinate3DPointEvent;
+import pointGroups.gui.event.types.ChangeCoordinate3DPointHandler;
+import pointGroups.gui.event.types.ChangeCoordinate4DPointEvent;
+import pointGroups.gui.event.types.ChangeCoordinate4DPointHandler;
 import pointGroups.gui.event.types.ChangeCoordinateEvent;
 import pointGroups.gui.event.types.ChangeCoordinateHandler;
 import pointGroups.gui.event.types.DimensionSwitchEvent;
@@ -37,7 +43,7 @@ import de.jreality.tools.PointDragListener;
 public class PointPicker
   extends JPanel
   implements FundamentalResultHandler, DimensionSwitchHandler,
-  ChangeCoordinateHandler
+  ChangeCoordinate3DPointHandler, ChangeCoordinate4DPointHandler
 {
 
   private static final long serialVersionUID = -3642299900579728806L;
@@ -210,16 +216,7 @@ public class PointPicker
     }
   }
 
-  @Override
-  public void onChangeCoordinateEvent(ChangeCoordinateEvent event) {
-    // Calculate if the point is in the Fundamental Domain and
-    // show it, if possible
-
-    // For start test just show the point
-    // uiViewer.setGeometry(Primitives.point(new double[] { 0.5, 0.5 }));
-
-    return;
-  }
+  
 
   // Method to fire coordinate Changed Event, should be executed by click inside
   // the fundamental domain.
@@ -245,7 +242,13 @@ public class PointPicker
         "," + resP[2] + (this.dim == 3 ? "," + resP[3] : "") + ")");
 
     // Fire Event, that the coordinate changed
-    this.dispatcher.fireEvent(new ChangeCoordinateEvent(resP));
+    if(dim == 3){
+      this.dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(JRealityUtility.asPoint3D(resP), this));
+    }
+    else if(dim == 4){
+      this.dispatcher.fireEvent(new ChangeCoordinate4DPointEvent(JRealityUtility.asPoint4D(resP),this));
+
+    }
   }
 
   protected void showFundamental() {
@@ -262,5 +265,30 @@ public class PointPicker
     // Reset tools (3D rotation, 2D no Rotation)
     logger.fine("A new Fundamental Region is shown.");
     uiViewer.setGeometry(g);
+  }
+
+  @Override
+  public void
+      onChangeCoordinate4DPointEvent(ChangeCoordinate4DPointEvent event) {
+    // Calculate if the point is in the Fundamental Domain and
+    // show it, if possible
+
+    // For start test just show the point
+    // uiViewer.setGeometry(Primitives.point(new double[] { 0.5, 0.5 }));
+
+    return;
+    
+  }
+
+  @Override
+  public void
+      onChangeCoordinate3DPointEvent(ChangeCoordinate3DPointEvent event) {
+    // Calculate if the point is in the Fundamental Domain and
+    // show it, if possible
+
+    // For start test just show the point
+    // uiViewer.setGeometry(Primitives.point(new double[] { 0.5, 0.5 }));
+
+    return;
   }
 }

@@ -8,16 +8,13 @@ import pointGroups.gui.event.Event;
 public class ChangeCoordinate4DPointEvent
   extends Event<ChangeCoordinate4DPointHandler>
 {
-  private final Symmetry4DChooseEvent symmetryEvent;
   private final Point4D pickedPoint;
   private final Object src;
 
   public final static Class<ChangeCoordinate4DPointHandler> TYPE =
       ChangeCoordinate4DPointHandler.class;
 
-  public ChangeCoordinate4DPointEvent(final Symmetry4DChooseEvent symmetryEvent,
-      final Point4D pickedPoint, Object src) {
-    this.symmetryEvent = symmetryEvent;
+  public ChangeCoordinate4DPointEvent(final Point4D pickedPoint, Object src) {
     this.pickedPoint = pickedPoint;
     this.src = src;
   }
@@ -25,14 +22,7 @@ public class ChangeCoordinate4DPointEvent
   public Point4D getPickedPoint() {
     return pickedPoint;
   }
-
-  public Symmetry<Point4D, ?> getSymmetry4D() {
-    return symmetryEvent.getSymmetry4D();
-  }
-
-  public String getSubgroup() {
-    return this.symmetryEvent.getSubgroup();
-  }
+  
   public Object getSource(){
     return src;
   }

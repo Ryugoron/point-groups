@@ -141,11 +141,11 @@ public class CoordinateView
     double[] point = inputField.getCoords();
     if(lastSymmetry3DChooseEvent != null){
       Point3D point3D = JRealityUtility.asPoint3D(point);
-      dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(lastSymmetry3DChooseEvent, point3D,this));
+      dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(point3D,this));
     }
     else if(lastSymmetry4DChooseEvent != null){
       Point4D point4D = JRealityUtility.asPoint4D(point);
-      dispatcher.fireEvent(new ChangeCoordinate4DPointEvent(lastSymmetry4DChooseEvent, point4D,this));
+      dispatcher.fireEvent(new ChangeCoordinate4DPointEvent(point4D,this));
 
     }       
   }
