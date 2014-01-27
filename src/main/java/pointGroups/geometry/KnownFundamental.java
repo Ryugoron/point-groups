@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import pointGroups.util.LoggerFactory;
 import pointGroups.util.point.PointUtil;
 
 
@@ -21,11 +22,7 @@ public class KnownFundamental
 
   private static final double EPSILON = 0.01;
 
-  public static int count = 0;
-  public final int id = count++;
-  // TODO is it a good idea to name the logger this way?
-  final protected Logger logger = Logger.getLogger(this.getClass().getName() +
-      "(id: " + id + ")");
+  final protected Logger logger = LoggerFactory.get(KnownFundamental.class);
 
   /**
    * Stores the inverted projection matrix from the PS dimension to the PF

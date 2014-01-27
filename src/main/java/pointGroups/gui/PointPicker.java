@@ -6,12 +6,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import javax.print.attribute.standard.PresentationDirection;
 import javax.swing.JPanel;
 
 import pointGroups.geometry.Fundamental;
 import pointGroups.geometry.Point3D;
-import pointGroups.geometry.Point4D;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointEvent;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointHandler;
@@ -21,6 +19,7 @@ import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.event.types.DimensionSwitchHandler;
 import pointGroups.gui.event.types.FundamentalResultEvent;
 import pointGroups.gui.event.types.FundamentalResultHandler;
+import pointGroups.util.LoggerFactory;
 import pointGroups.util.jreality.JRealityUtility;
 import pointGroups.util.polymake.FundamentalTransformer;
 import de.jreality.geometry.Primitives;
@@ -48,11 +47,7 @@ public class PointPicker
 
   private final boolean responsive = false;
 
-  public static int count = 0;
-  public final int id = count++;
-  // TODO is it a good idea to name the logger this way?
-  final protected Logger logger = Logger.getLogger(this.getClass().getName() +
-      "(id: " + id + ")");
+  final protected Logger logger = LoggerFactory.getSingle(PointPicker.class);
 
   protected final UiViewer uiViewer = new UiViewer(this) {
     public final SceneGraphComponent point = new SceneGraphComponent();
@@ -216,8 +211,6 @@ public class PointPicker
     }
   }
 
-  
-
   // Method to fire coordinate Changed Event, should be executed by click inside
   // the fundamental domain.
   protected void selectPoint(double[] point) {
@@ -242,11 +235,13 @@ public class PointPicker
         "," + resP[2] + (this.dim == 3 ? "," + resP[3] : "") + ")");
 
     // Fire Event, that the coordinate changed
-    if(dim == 3){
-      this.dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(JRealityUtility.asPoint3D(resP), this));
+    if (dim == 2) {
+      this.dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(
+          JRealityUtility.asPoint3D(resP), this));
     }
-    else if(dim == 4){
-      this.dispatcher.fireEvent(new ChangeCoordinate4DPointEvent(JRealityUtility.asPoint4D(resP),this));
+    else if (dim == 3) {
+      this.dispatcher.fireEvent(new ChangeCoordinate4DPointEvent(
+          JRealityUtility.asPoint4D(resP), this));
 
     }
   }
@@ -277,7 +272,7 @@ public class PointPicker
     // uiViewer.setGeometry(Primitives.point(new double[] { 0.5, 0.5 }));
 
     return;
-    
+
   }
 
   @Override
