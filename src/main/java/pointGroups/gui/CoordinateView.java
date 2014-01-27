@@ -19,15 +19,14 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import pointGroups.geometry.Point2D;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ChangeCoordinateEvent;
 import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.event.types.DimensionSwitchHandler;
-import pointGroups.gui.event.types.Point3DPickedEvent;
-import pointGroups.gui.event.types.Point4DPickedEvent;
+import pointGroups.gui.event.types.Schlegel3DComputeEvent;
+import pointGroups.gui.event.types.Schlegel4DComputeEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseHandler;
 import pointGroups.gui.event.types.Symmetry4DChooseEvent;
@@ -81,44 +80,22 @@ public class CoordinateView
     lastSymmetry4DChooseEvent = event;
   }
 
-  protected void firePoint3DPickedEvent() {
-    if (lastSymmetry3DChooseEvent == null) return;
-
-    // TODO: currently only a fix, we should get only 2 coordinates
-    // not 3
-    double[] point = inputField.getCoords();
-    Point2D point2D = new Point2D(point[0], point[1]);
-
-    dispatcher.fireEvent(new Point3DPickedEvent(lastSymmetry3DChooseEvent,
-        point2D));
-  }
-
-  protected void firePoint4DPickedEvent() {
-    if (lastSymmetry4DChooseEvent == null) return;
-
-    double[] point = inputField.getCoords();
-    Point3D point3D = JRealityUtility.asPoint3D(point);
-
-    dispatcher.fireEvent(new Point4DPickedEvent(lastSymmetry4DChooseEvent,
-        point3D));
-  }
-
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == run) {
       double[] point = inputField.getCoords();
       if(lastSymmetry3DChooseEvent != null){
         Point3D point3D = JRealityUtility.asPoint3D(point);
+        dispatcher.fireEvent(new Schlegel3DComputeEvent(lastSymmetry3DChooseEvent, point3D));
       }
       else if(lastSymmetry4DChooseEvent != null){
         Point4D point4D = JRealityUtility.asPoint4D(point);
+        dispatcher.fireEvent(new Schlegel4DComputeEvent(lastSymmetry4DChooseEvent, point4D));
 
       }
       else{
-        
+        //TODO: May be inform User
       }
-      firePoint3DPickedEvent();
-      firePoint4DPickedEvent();
     }
     else if (e.getSource() == randomCoord) {
       inputField.createRandomCoords();
@@ -192,6 +169,18 @@ public class CoordinateView
       }
     }
   }
+  @Override
+  public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
+    if (event.switchedTo3D()){
+      inputField.setDimension(3);
+      lastSymmetry4DChooseEvent = null;
+    }
+    else if(event.switchedTo4D()){
+      inputField.setDimension(4);
+      lastSymmetry3DChooseEvent = null;
+    }
+  }
+
 
 
   class Dimensioninput
@@ -260,16 +249,5 @@ public class CoordinateView
   }
 
 
-  @Override
-  public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
-    if (event.switchedTo3D()){
-      inputField.setDimension(3);
-      lastSymmetry4DChooseEvent = null;
-    }
-    else if(event.switchedTo4D()){
-      inputField.setDimension(4);
-      lastSymmetry3DChooseEvent = null;
-    }
-  }
-
+  
 }
