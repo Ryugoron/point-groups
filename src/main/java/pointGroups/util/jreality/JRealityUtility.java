@@ -7,6 +7,7 @@ import pointGroups.geometry.Edge;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Point2D;
 import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Point4D;
 import de.jreality.geometry.IndexedFaceSetFactory;
 import de.jreality.scene.Geometry;
 
@@ -90,5 +91,13 @@ public class JRealityUtility
 		  }
 	  }
 	  return generateGraph(points,edges);
+  }
+
+  public static Point4D asPoint4D(double[] point) {
+    if (point == null || point.length != 4)
+      throw new RuntimeException("could not convert the given point(" +
+          printPoint(point) + ") into a Point4D");
+
+    return new Point4D(point[0], point[1], point[2],point[3]);
   }
 }

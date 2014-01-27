@@ -21,13 +21,13 @@ import javax.swing.JPanel;
 
 import pointGroups.geometry.Point2D;
 import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Point4D;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ChangeCoordinateEvent;
 import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.event.types.DimensionSwitchHandler;
 import pointGroups.gui.event.types.Point3DPickedEvent;
 import pointGroups.gui.event.types.Point4DPickedEvent;
-import pointGroups.gui.event.types.RunEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseHandler;
 import pointGroups.gui.event.types.Symmetry4DChooseEvent;
@@ -73,18 +73,12 @@ public class CoordinateView
 
   @Override
   public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
-    // TODO: maybe we should not assume implicitly the change of the dimension
-    // through this event, but by the proper DimensionsSwitchEvent.
-    // This Event has to be used anyway to change the input fields for
-    // the coordinates (x,y on 2D dimensional point picker).
     lastSymmetry3DChooseEvent = event;
-    lastSymmetry4DChooseEvent = null;
   }
 
   @Override
   public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
     lastSymmetry4DChooseEvent = event;
-    lastSymmetry3DChooseEvent = null;
   }
 
   protected void firePoint3DPickedEvent() {
@@ -112,8 +106,17 @@ public class CoordinateView
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == run) {
-      dispatcher.fireEvent(new RunEvent(inputField.getCoords()));
+      double[] point = inputField.getCoords();
+      if(lastSymmetry3DChooseEvent != null){
+        Point3D point3D = JRealityUtility.asPoint3D(point);
+      }
+      else if(lastSymmetry4DChooseEvent != null){
+        Point4D point4D = JRealityUtility.asPoint4D(point);
 
+      }
+      else{
+        
+      }
       firePoint3DPickedEvent();
       firePoint4DPickedEvent();
     }
@@ -260,10 +263,12 @@ public class CoordinateView
   @Override
   public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
     if (event.switchedTo3D()){
-      inputField.setDimension(2);
+      inputField.setDimension(3);
+      lastSymmetry4DChooseEvent = null;
     }
     else if(event.switchedTo4D()){
-      inputField.setDimension(3);
+      inputField.setDimension(4);
+      lastSymmetry3DChooseEvent = null;
     }
   }
 
