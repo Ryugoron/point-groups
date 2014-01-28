@@ -1,11 +1,8 @@
 package pointGroups.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -16,7 +13,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import pointGroups.gui.event.EventDispatcher;
-import pointGroups.gui.event.EventHandler;
 import pointGroups.gui.event.types.ShowCoordinateEvent;
 import pointGroups.gui.event.types.ShowCoordinateHandler;
 import pointGroups.gui.event.types.ShowFundamentalDomainEvent;
