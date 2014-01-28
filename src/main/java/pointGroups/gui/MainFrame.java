@@ -29,6 +29,7 @@ public class MainFrame
   protected JPanel symmetryChooser;
   protected JPanel coordinates;
   protected JPanel statusBar;
+  protected JFrame log;
   
   protected JSplitPane mainSplitPane;
   protected JSplitPane leftTopComponent;
@@ -42,6 +43,8 @@ public class MainFrame
     setSize(1000, 800);
     setLocationRelativeTo(null); // center window
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+    log = new LogFrame();
     
     // setting up main split pane
     schlegelView = new SchlegelView();
