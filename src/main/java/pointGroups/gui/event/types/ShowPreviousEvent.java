@@ -4,19 +4,20 @@ import pointGroups.gui.event.Event;
 
 
 public class ShowPreviousEvent
-  extends Event<ShowPriviousHandler>
+  extends Event<ShowPreviousHandler>
 {
 
-  public final static Class<ShowPriviousHandler> TYPE = ShowPriviousHandler.class;
+  public final static Class<ShowPreviousHandler> TYPE =
+      ShowPreviousHandler.class;
 
   @Override
-  public Class<ShowPriviousHandler> getType() {
+  public Class<ShowPreviousHandler> getType() {
     return TYPE;
   }
 
   @Override
-  protected void dispatch(ShowPriviousHandler handler) {
-    handler.onUndoEvent(this);
+  protected void dispatch(ShowPreviousHandler handler) {
+    handler.onPreviousEvent(this);
 
   }
 

@@ -1,12 +1,12 @@
 package pointGroups.util.polymake;
 
+import java.util.Collection;
+
 import pointGroups.geometry.Edge;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Schlegel;
 import pointGroups.util.AbstractTransformer;
-
-import java.util.Collection;
 
 
 /**
@@ -43,7 +43,8 @@ public class SchlegelTransformer
     script.append("my $v = \"$schlegelverts\";");
     script.append("my $e = \"$edges\";");
 
-    script.append("print $v.\"$\".$e");
+    script.append("print $v.\"\\$\\n\".$e");
+
     return script.toString();
   }
 
@@ -59,13 +60,16 @@ public class SchlegelTransformer
       for (double comp : pointComps) {
         matrix.append("," + comp);
       }
-      // for simplicity always appending a comma after each transformation of a
+      // for simplicity always appending a comma after each transformation
+      // of a
       // point
-      // afterwards the last comma will be replaced by a closing bracket ']' of
+      // afterwards the last comma will be replaced by a closing bracket
+      // ']' of
       // the matrix
       matrix.append("],");
     }
-    // replacing last comma of the for-loop with a closing bracket of the matrix
+    // replacing last comma of the for-loop with a closing bracket of the
+    // matrix
     matrix.setCharAt(matrix.length() - 1, ']');
     return matrix.toString();
   }

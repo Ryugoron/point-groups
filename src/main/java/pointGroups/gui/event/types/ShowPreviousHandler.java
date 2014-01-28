@@ -6,7 +6,7 @@ import pointGroups.gui.event.EventHandler;
 /**
  * @author Oliver, Nadja
  */
-public interface ShowPriviousHandler
+public interface ShowPreviousHandler
   extends EventHandler
 {
   /**
@@ -15,6 +15,6 @@ public interface ShowPriviousHandler
    * 
    * @param event The event received
    */
-  public void onUndoEvent(final ShowPreviousEvent event);
+  public void onPreviousEvent(final ShowPreviousEvent event);
 
 }

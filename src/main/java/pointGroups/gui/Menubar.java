@@ -107,7 +107,7 @@ public class Menubar
     previousItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
     nextItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
     pointPickerItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-    pointPickerItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+    coordinateItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
     showLogItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
     tutorialItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
 

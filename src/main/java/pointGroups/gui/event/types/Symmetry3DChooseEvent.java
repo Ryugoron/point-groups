@@ -15,7 +15,9 @@ import pointGroups.gui.event.Event;
 public class Symmetry3DChooseEvent
   extends Event<Symmetry3DChooseHandler>
 {
-  protected final Symmetry<Point3D, ?> symmetry;
+  private final Symmetry<Point3D, ?> symmetry;
+  private final String subgroup;
+
   /**
    * The type of the corresponding {@link Symmetry3DChooseHandler}.
    */
@@ -25,10 +27,13 @@ public class Symmetry3DChooseEvent
   /**
    * Creates a new {@link Symmetry3DChooseEvent} with given {@link Symmetry}.
    * 
-   * @param symmetry The symmtry chosen
+   * @param symmetry The symmetry chosen
+   * @param subgroup the subgroup's string representation
    */
-  public Symmetry3DChooseEvent(final Symmetry<Point3D, ?> symmetry) {
+  public Symmetry3DChooseEvent(final Symmetry<Point3D, ?> symmetry,
+      final String subgroup) {
     this.symmetry = symmetry;
+    this.subgroup = subgroup;
   }
 
   /**
@@ -38,6 +43,15 @@ public class Symmetry3DChooseEvent
    */
   public Symmetry<Point3D, ?> getSymmetry3D() {
     return symmetry;
+  }
+
+  /**
+   * The chosen subgroup of the event's associated {@link Symmetry}
+   * 
+   * @return The chosen symmetry.
+   */
+  public String getSubgroup() {
+    return this.subgroup;
   }
 
   @Override
