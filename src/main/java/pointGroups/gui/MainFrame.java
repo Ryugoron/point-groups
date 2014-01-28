@@ -24,7 +24,6 @@ public class MainFrame
   private static final long serialVersionUID = 1886397100814345247L;
 
   protected JMenuBar menuBar;
-<<<<<<< HEAD
   protected JPanel schlegelView;
   protected JPanel pointPicker = new JPanel();
   protected JPanel symmetryChooser;
