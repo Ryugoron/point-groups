@@ -8,7 +8,7 @@
 \include{fu-beamer-template}
 \beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
 
-%\titleimage{point-groups}
+\titleimage{fu_500.jpg}
 
 \title[Punktgruppen]{Visualisierung der 3D/4D Punktgruppen}
 \subtitle{Abschlusspräsentation}
@@ -46,7 +46,6 @@
 	\item Darstellung als Schlegeldiagramm 
 }
 	\end{itemize}
-
 \end{column}%
 \hfill%
 \begin{column}{.48\textwidth}
@@ -60,8 +59,7 @@
 \includegraphics[width=1\textwidth]{schlegel.png}
 }
 \end{column}%
-\end{columns}
-	
+\end{columns}	
 \end{frame}
 
 \begin{frame}{Meilensteine}
@@ -124,10 +122,9 @@ TODO
 					\item Diskussion über aktuelle Probleme
 					\item Aufgabenverteilung für die nächste Woche
 				\end{itemize} \pause
-			\item T$^\star$-Modell \pause
 			\item T$^\bigstar$-Modell \pause
 			\item Java, Eclipse, polymake, JReality \pause
-			\item Coding Style, MIT Lizenz
+			\item Coding Style, BSD Lizenz
 		\end{itemize}
 \end{frame}
 
@@ -147,19 +144,34 @@ TODO überarbeiten und Grafik \\
 Eventsystem genauer erläutern?
 \end{frame}
 
-\begin{frame}{Benutzung der Software}
-	TODO mit Demo
-\end{frame}
-
 \begin{frame}{Zusammenfassung der Funktionen}
-TODO
+	\begin{itemize}
+		\item Auswahl 3D/4D \pause
+		\item Symmetriegruppen: Tetraeder, Oktaeder \& Ikosaeder \pause
+		\item Punktwahl im Raum, Eingabe oder zufällig \pause
+		\item Darstellung des Fundamentalbereichs \pause
+		\item Darstellung der Punktgruppe als Schlegeldiagramm \pause
+		\item Logbuch 	
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Lesson Learned}
-TODO
+	\begin{itemize}
+		\item Für Projekt und Teilnehmeranzahl gutes Prozessmodell \pause
+		\item Wöchentliches Meeting sinnvoll \pause
+		\item Protokoll hilfreich zur Erinnerung oder Fokussierung der Besprechung (Spline-Pad) \pause
+		\item Persönliche Kommunikation notwendig \pause
+		\item Meist guter Einsatz von Git \pause
+		\item Verwendung von Fremdsoftware aufwendig \pause
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Ausblick}
-TODO 
+\begin{itemize}
+	\item Symmetriegruppen aus Erzeugern generieren
+	\item GUI verschönern
+	\item Schnittstelle um Polyeder im 3D-Drucker ausdrucken zu können
+	\item Parallelisierung der Anfragen an Polymake
+\end{itemize}
 \end{frame}
 \end{document}
