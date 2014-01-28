@@ -104,4 +104,13 @@ public interface Symmetry<P extends Point, E extends Symmetry<P, E>>
    * @return the subgroup object, if existing
    */
   public Subgroup<E> getSubgroupByName(String subgroup);
+
+  /**
+   * Returns a point that is not located on any of the symmetry axis. This
+   * returned point is Normalized, that it is located on the unitsphere in the
+   * Dimension of P
+   * 
+   * @return a point on the UnitSphere
+   */
+  public P getNormalPoint();
 }

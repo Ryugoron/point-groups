@@ -23,6 +23,15 @@ public class Point3D
   }
 
   /**
+   * Creates a new {@link Point3D} my throw an exception, if the components
+   * have not the right size.
+   * @param ds [x,y,z] - coordiantes of p
+   */
+  public Point3D(double[] ds) {
+	super(0, ds[0], ds[1], ds[2]);
+}
+
+/**
    * Rotates the point <code>this</code> around the rotation axis as described
    * by {@link UnitQuaternion} q and returns it as new {@link Point3D}. The
    * point <code>this</code> is not altered by this operation.

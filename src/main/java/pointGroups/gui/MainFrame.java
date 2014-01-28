@@ -24,6 +24,7 @@ public class MainFrame
   private static final long serialVersionUID = 1886397100814345247L;
 
   protected JMenuBar menuBar;
+<<<<<<< HEAD
   protected JPanel schlegelView;
   protected JPanel pointPicker = new JPanel();
   protected JPanel symmetryChooser;
@@ -48,7 +49,7 @@ public class MainFrame
     Component leftPanel = setUpLeftPanel();   
     
     // ensures to drag the divider all the way to both sides
-    Dimension minimumSize = new Dimension(0,0);
+    Dimension minimumSize = new Dimension(0, 0);
     leftPanel.setMinimumSize(minimumSize);
     schlegelView.setMinimumSize(minimumSize);
     
@@ -58,7 +59,7 @@ public class MainFrame
     mainSplitPane.setDividerLocation(320);
     mainSplitPane.setOneTouchExpandable(true);
     mainSplitPane.setBorder(BorderFactory.createEmptyBorder());
-    
+
     menuBar = new Menubar(dispatcher);
     statusBar = new StatusBar(dispatcher);
 
@@ -70,22 +71,22 @@ public class MainFrame
   }
 
   private Component setUpLeftPanel() {
-    
+
     symmetryChooser = new SymmetryChooser();
-    pointPicker.setBackground(Color.YELLOW);
-    coordinates = new CoordinateView(3,dispatcher);
+    pointPicker = new PointPicker(false);
+    coordinates = new CoordinateView(3, 4, dispatcher);
     
     leftTopComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, symmetryChooser, pointPicker);
     leftComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, coordinates);
+
     leftComponent.setBorder(BorderFactory.createEmptyBorder());
     leftTopComponent.setBorder(BorderFactory.createEmptyBorder());
     leftComponent.setOneTouchExpandable(true);
     leftTopComponent.setOneTouchExpandable(true);
-    
+
     leftComponent.setDividerLocation(600);
     leftTopComponent.setDividerLocation(500);
-    
-    
+
     return leftComponent;
   }
 

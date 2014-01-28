@@ -19,13 +19,14 @@ import pointGroups.geometry.symmetries.TetrahedralSymmetry;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.symchooser.elements.SymmetryList;
+import pointGroups.util.LoggerFactory;
 
 
 public class SymmetryPanel
   extends JTabbedPane
 {
   private static final long serialVersionUID = 8455433801260981217L;
-  private final Logger logger = Logger.getLogger(this.getClass().getName());
+  private final Logger logger = LoggerFactory.get(this.getClass());
 
   protected final JList<Symmetry<Point3D, ?>> symmetries3DPanel;
   protected final JList<Symmetry<Point4D, ?>> symmetries4DPanel;

@@ -3,23 +3,21 @@ package pointGroups.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Calendar;
-import java.util.Date;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import pointGroups.gui.event.Event;
 import pointGroups.gui.event.EventDispatcher;
-import pointGroups.gui.event.types.ChangeCoordinateEvent;
-import pointGroups.gui.event.types.ChangeCoordinateHandler;
-import pointGroups.gui.event.types.RunEvent;
-import pointGroups.gui.event.types.RunHandler;
+import pointGroups.gui.event.types.ChangeCoordinate3DPointEvent;
+import pointGroups.gui.event.types.ChangeCoordinate3DPointHandler;
+import pointGroups.gui.event.types.ChangeCoordinate4DPointEvent;
+import pointGroups.gui.event.types.ChangeCoordinate4DPointHandler;
+import pointGroups.gui.event.types.Schlegel3DComputeEvent;
+import pointGroups.gui.event.types.Schlegel3DComputeHandler;
+import pointGroups.gui.event.types.Schlegel4DComputeEvent;
+import pointGroups.gui.event.types.Schlegel4DComputeHandler;
 import pointGroups.gui.event.types.ShowCoordinateEvent;
 import pointGroups.gui.event.types.ShowCoordinateHandler;
 import pointGroups.gui.event.types.ShowFundamentalDomainEvent;
@@ -32,10 +30,12 @@ import pointGroups.gui.event.types.ShowPreviousEvent;
 import pointGroups.gui.event.types.ShowPreviousHandler;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseHandler;
+import pointGroups.gui.event.types.Symmetry4DChooseEvent;
+import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.gui.event.types.TutorialEvent;
 import pointGroups.gui.event.types.TutorialHandler;
 
-public class StatusBar extends JPanel implements ChangeCoordinateHandler, RunHandler, ShowCoordinateHandler, ShowFundamentalDomainHandler, ShowLogHandler, ShowNextHandler, ShowPreviousHandler, Symmetry3DChooseHandler,TutorialHandler 
+public class StatusBar extends JPanel implements ChangeCoordinate4DPointHandler,ChangeCoordinate3DPointHandler, Schlegel3DComputeHandler,Schlegel4DComputeHandler , ShowCoordinateHandler, ShowFundamentalDomainHandler, ShowLogHandler, ShowNextHandler, ShowPreviousHandler, Symmetry3DChooseHandler, Symmetry4DChooseHandler, TutorialHandler 
 {
   /**
    * 
@@ -48,14 +48,16 @@ public class StatusBar extends JPanel implements ChangeCoordinateHandler, RunHan
   public StatusBar(EventDispatcher dispatcher){   
     // GUI layout
     setLayout(new BorderLayout(2, 2));
-    statusLabel = new JLabel("");
+    statusLabel = new JLabel(" ");
     statusLabel.setBorder(BorderFactory.createLoweredBevelBorder());
     statusLabel.setForeground(Color.black);
     add(BorderLayout.CENTER, statusLabel);
     
     // register events
-    dispatcher.addHandler(ChangeCoordinateEvent.TYPE, this);
-    dispatcher.addHandler(RunEvent.TYPE, this);
+    dispatcher.addHandler(ChangeCoordinate3DPointEvent.TYPE, this);
+    dispatcher.addHandler(ChangeCoordinate4DPointEvent.TYPE, this);
+    dispatcher.addHandler(Schlegel3DComputeEvent.TYPE, this);
+    dispatcher.addHandler(Schlegel4DComputeEvent.TYPE, this);
     dispatcher.addHandler(ShowCoordinateEvent.TYPE, this);
     dispatcher.addHandler(ShowFundamentalDomainEvent.TYPE, this);
     dispatcher.addHandler(ShowLogEvent.TYPE, this);
@@ -69,29 +71,20 @@ public class StatusBar extends JPanel implements ChangeCoordinateHandler, RunHan
     Calendar now = Calendar.getInstance();
     int hour = now.get(Calendar.HOUR_OF_DAY);
     int minute = now.get(Calendar.MINUTE);
-    statusLabel.setText(hour+": "+minute+" "+status);
+    if(minute < 10){
+      statusLabel.setText("["+hour+":0"+minute+"] "+status);
+
+    }
+    statusLabel.setText("["+hour+":"+minute+"] "+status);
   }
   
   public void removeStatusmessage(){
-    setStatus("");
+    setStatus(" ");
   }
   
-  @Override
-  public void onChangeCoordinateEvent(ChangeCoordinateEvent event) {
-    setStatus("Coordinate choosen");    
-  }
+  
 
-  @Override
-  public void onRunEvent(RunEvent event) {
-    StringBuilder s = new StringBuilder(200); 
-    s.append("Run with point (");
-    for(double d : event.getCoordinates()){
-      s.append(d+", ");
-    }
-    s.delete(s.length()-2, s.length()-1);
-    s.append(")");
-    setStatus(s.toString());    
-  }
+ 
 
   @Override
   public void onTutorialEvent(TutorialEvent event) {
@@ -100,8 +93,7 @@ public class StatusBar extends JPanel implements ChangeCoordinateHandler, RunHan
 
   @Override
   public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
-    //TODO: toString method for a Symmetrygroup
-    setStatus("Symmetry choosed: "+event.getSymmetry3D().getClass().getName());
+    setStatus("Symmetry choosed: "+event.getSymmetry3D().getName());
     
   }
 
@@ -140,5 +132,50 @@ public class StatusBar extends JPanel implements ChangeCoordinateHandler, RunHan
     else{
       setStatus("Coordinatesystem is hidden");
     }
+  }
+
+  @Override
+  public void onSchlegel4DComputeEvent(Schlegel4DComputeEvent event) {
+   showComputeInfo(event.getPickedPoint().getComponents(),event.getSymmetry4D().getName(),event.getSubgroup().intern());
+    
+  }
+
+  @Override
+  public void onSchlegel3DComputeEvent(Schlegel3DComputeEvent event) {    
+    showComputeInfo(event.getPickedPoint().getComponents(),event.getSymmetry3D().getName(),event.getSubgroup().intern());
+  }
+  
+  private void showComputeInfo(double[] coords, String symgroup, String subgroup){
+    StringBuilder s = new StringBuilder(300); 
+    s.append("Run with point (");
+    for(double d : coords){
+      s.append(d+", ");
+    }
+    s.delete(s.length()-2, s.length()-1);
+    s.append(") Symmetry group: ");
+    s.append(symgroup);
+    s.append(" Subroup: ");
+    s.append(subgroup);
+    
+    setStatus(s.toString()); 
+  }
+
+  @Override
+  public void
+      onChangeCoordinate3DPointEvent(ChangeCoordinate3DPointEvent event) {
+    setStatus("Coordinate choosen");   
+  }
+
+  @Override
+  public void
+      onChangeCoordinate4DPointEvent(ChangeCoordinate4DPointEvent event) {
+    setStatus("Coordinate choosen"); 
+    
+  }
+
+  @Override
+  public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
+    setStatus("Symmetry choosed: "+event.getSymmetry4D().getName());
+    
   }  
 }

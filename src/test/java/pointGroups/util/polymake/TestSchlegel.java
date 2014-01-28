@@ -33,12 +33,12 @@ public class TestSchlegel
     return octa.images(p, Subgroups.Full);
   }
 
-  private static Schlegel polymake2schlegel(String result) {
+  private static Schlegel polymake2schlegel(final String result) {
     SchlegelTransformer trans = new SchlegelTransformer(null);
 
     trans.setResultString(result);
     try {
-      return trans.get();
+      return trans.get().getSchlegel();
     }
     catch (Exception e) {
       return null;

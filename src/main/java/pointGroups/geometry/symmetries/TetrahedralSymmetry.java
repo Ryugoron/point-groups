@@ -187,4 +187,10 @@ public class TetrahedralSymmetry
     return Point3D.class;
   }
 
+  @Override
+  public Point3D getNormalPoint() {
+    // TODO Look for a point, that is not located on a symmetry axis
+    return new Point3D(0.8, 0.6, 0.0);
+  }
+
 }
