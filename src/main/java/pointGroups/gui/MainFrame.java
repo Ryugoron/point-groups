@@ -101,6 +101,7 @@ public class MainFrame
     dispatcher.addHandler(ShowFundamentalDomainEvent.TYPE, menuBarEventHandler);
     dispatcher.addHandler(ShowCoordinateEvent.TYPE, menuBarEventHandler);
 
+    return leftComponent;
   }
   
   
