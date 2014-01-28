@@ -22,29 +22,18 @@ public class SchlegelTransformer
 {
 
   private final Collection<? extends Point> points;
-  private final int facet;
   private final Point p;
   private final Symmetry<?, ?> sym;
 
   public SchlegelTransformer(final Collection<? extends Point> points,
       final Symmetry<?, ?> sym, final Point p) {
     this.points = points;
-    this.facet = -1;
     this.sym = sym;
     this.p = p;
   }
 
   public SchlegelTransformer(final Collection<? extends Point> points) {
     this.points = points;
-    this.facet = -1;
-    this.p = null;
-    this.sym = null;
-  }
-
-  public SchlegelTransformer(final Collection<? extends Point> points,
-      final int facet) {
-    this.points = points;
-    this.facet = facet;
     this.p = null;
     this.sym = null;
   }
