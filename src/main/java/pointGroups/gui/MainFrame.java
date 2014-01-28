@@ -80,7 +80,7 @@ public class MainFrame
 
     symmetryChooser = new SymmetryChooser();
     pointPicker = new PointPicker(false);
-    coordinates = new CoordinateView(3, 4, dispatcher);
+    coordinates = new CoordinateView(3,dispatcher);
     
     leftTopComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, symmetryChooser, pointPicker);
     leftComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, coordinates);

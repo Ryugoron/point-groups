@@ -1,5 +1,6 @@
 package pointGroups.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
@@ -58,16 +59,16 @@ public class CoordinateView
   private Symmetry3DChooseEvent lastSymmetry3DChooseEvent;
   private Symmetry4DChooseEvent lastSymmetry4DChooseEvent;
 
-  public CoordinateView(int dimension, int maxDim, EventDispatcher dispatcher) {
-    this.setLayout(new FlowLayout());
-    inputField = new DimensioninputField(dimension, maxDim);
+  public CoordinateView(int dimension,EventDispatcher dispatcher) {
+    this.setLayout(new BorderLayout());
+    inputField = new DimensioninputField(dimension);
     run = new JButton("Run");
     randomCoord = new JButton("Create random coordinate");
     this.dispatcher = dispatcher;
 
-    this.add(inputField);
-    this.add(run);
-    this.add(randomCoord);
+    this.add(inputField, BorderLayout.PAGE_START);
+    this.add(run,BorderLayout.LINE_END);
+    this.add(randomCoord, BorderLayout.CENTER);
 
     dispatcher.addHandler(DimensionSwitchHandler.class, this);
     dispatcher.addHandler(ChangeCoordinate3DPointHandler.class, this);
@@ -77,16 +78,19 @@ public class CoordinateView
 
     run.addActionListener(this);
     randomCoord.addActionListener(this);
+    run.setEnabled(false);
   }
 
   @Override
   public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
     lastSymmetry3DChooseEvent = event;
+    run.setEnabled(true);
   }
 
   @Override
   public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
     lastSymmetry4DChooseEvent = event;
+    run.setEnabled(true);
   }
 
   @Override
@@ -118,11 +122,17 @@ public class CoordinateView
   public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
     if (event.switchedTo3D()) {
       inputField.setDimension(3);
+      this.validate();
+      this.repaint();
       lastSymmetry4DChooseEvent = null;
+      run.setEnabled(false);
     }
     else if (event.switchedTo4D()) {
       inputField.setDimension(4);
       lastSymmetry3DChooseEvent = null;
+      run.setEnabled(false);
+      this.validate();
+      this.repaint();
     }
   }
 
@@ -210,10 +220,9 @@ public class CoordinateView
     private final List<Dimensioninput> dimensioninputs;
     int dimension;
 
-    public DimensioninputField(int dim, int maxDim) {
+    public DimensioninputField(int dim) {
       this.setLayout(new FlowLayout());
       dimensioninputs = new ArrayList<Dimensioninput>();
-      setDimension(maxDim);
       setDimension(dim);
     }
 
@@ -271,6 +280,8 @@ public class CoordinateView
         Dimensioninput dimInput = new Dimensioninput(dim, 0, this);
         dimensioninputs.add(dimInput);
         this.add(dimInput);
+        dimInput.validate();
+        dimInput.repaint();
       }
       // activate panels
       for (int i = 0; i < dimension; i++) {
@@ -280,6 +291,9 @@ public class CoordinateView
       for (int i = dimension; i < dimensioninputs.size(); i++) {
         dimensioninputs.get(i).deactiv();
       }
+      System.out.println("#DimInout: "+dim);
+      this.validate();
+      this.repaint();
     }
 
     protected void changeCoordinateEvent() {
