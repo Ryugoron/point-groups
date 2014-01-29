@@ -35,28 +35,28 @@
 
 \begin{columns}
 \begin{column}{.48\textwidth}
-\begin{itemize}
+\begin{enumerate}
 	\item Wähle eine Symmetriegruppe	
  \visible<2->{
-	\item Wähle einen Punkt auf der Oberfläche
-	\item Abbilden Punktes unter der Symmetriegruppe
+	\item Wähle einen Punkt im Fundamentalbereich \\
+	      \vspace{0.5cm}
+	      \emph{Abbilden Punktes unter der Symmetriegruppe}
 }
  \visible<3->{
-	\item Bilde die konvexe Hülle der Punktmenge
 	\item Darstellung als Schlegeldiagramm 
 }
-	\end{itemize}
+	\end{enumerate}
 \end{column}%
 \hfill%
 \begin{column}{.48\textwidth}
 \only<1>{
-\includegraphics[width=1\textwidth]{javaviewwuerfel3D.png}
+\includegraphics[width=0.5\textwidth]{symmetryChoose.png}
 }
 \only<2>{
-\includegraphics[width=1\textwidth]{konvexhull.png}
+\includegraphics[width=0.8\textwidth]{pointPicker.png}
 }
 \only<3>{
-\includegraphics[width=1\textwidth]{schlegel.png}
+\includegraphics[width=1\textwidth]{schlegelView.png}
 }
 \end{column}%
 \end{columns}	
@@ -65,9 +65,9 @@
 \begin{frame}{Meilensteine}
 	\begin{enumerate}
 		\item Schnittstelle zwischen Java und Polymake, Architekturentwurf \& mathematische Grundlagen erarbeiten 
-		\item 3D-Fall lösen
-		\item grafische Darstellung
-		\item 4D-Fall lösen
+		\item 3D-Symmetrien umsetzen
+		\item grafische Darstellung erarbeiten
+		\item 4D-Symmetrien umsetzen
 	\end{enumerate}
 \end{frame}
 
@@ -140,21 +140,23 @@ TODO
 	\end{column}%
 	\hfill%
 	\begin{column}{.48\textwidth}
-		TODO: BILD
+\includegraphics[width=1\textwidth]{jRealityBla.png}
 	\end{column}%
 \end{columns}
 \end{frame}
 
 
-\begin{frame}{Architektur}
+\begin{frame}[t]{Architektur}
+\vspace{1.5cm}
 	\begin{itemize}
-		\item Eventbasiert und kein MVC \pause
-		\item Pipeline \pause
-		\item Brücken zwischen Java und polymake/JReality \pause
+		\item Eventbasierte Stern-Architektur \pause
+		\item Lose Kopplung zwischen den Komponenten \pause
+		\item Asynchrone Brücken zwischen Java und Polymke \pause
+		\item Berechnungsanfragen als Perl-Programme \pause
 		\item Symmetriegruppen als einzelne Klassen
 	\end{itemize}
-TODO überarbeiten und Grafik \\
-Eventsystem genauer erläutern?
+\vspace{1cm}
+\only<5->{\emph{Siehe folgendes Bild}}
 \end{frame}
 
 \begin{frame}{Architektur}
@@ -170,6 +172,10 @@ Eventsystem genauer erläutern?
 		\item Darstellung der Punktgruppe als Schlegeldiagramm \pause
 		\item Logbuch 	
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo}
+\huge{Siehe: Live-Demo}
 \end{frame}
 
 \begin{frame}{Lesson Learned}
@@ -190,5 +196,13 @@ Eventsystem genauer erläutern?
 	\item Schnittstelle um Polyeder im 3D-Drucker ausdrucken zu können
 	\item Parallelisierung der Anfragen an Polymake
 \end{itemize}
+\end{frame}
+
+
+\begin{frame}[t]{Fragen}
+\vspace{1cm}
+\huge{Vielen Dank für die Aufmerksamkeit!} \\
+\vspace{1cm}
+\only<2->{\huge{Fragen?}}
 \end{frame}
 \end{document}
