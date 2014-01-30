@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 import junit.framework.TestCase;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import pointGroups.geometry.Point;
@@ -103,8 +104,8 @@ public class SchlegelTransformerTest
     String script = st.toScript();
     String desiredScript =
         "use application \"polytope\";my $mat=new Matrix<Rational>([[1,1.1,2.2,3.3],[1,-1.0,2.0,-3.0],[1,0.0,-1.23,1.0]]);my $p = new Polytope(POINTS=>$mat);my $schlegelverts = $p->SCHLEGEL_DIAGRAM->VERTICES;my $edges = $p->GRAPH->EDGES;my $v = \"$schlegelverts\";my $e = \"$edges\";print $v.\"\\$\\n\".$e";
+    Assert.assertEquals(desiredScript, script);
 
-    assertEquals(desiredScript, script);
   }
 
   @Test
