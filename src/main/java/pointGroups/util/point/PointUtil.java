@@ -110,6 +110,15 @@ public class PointUtil
     return erg;
   }
 
+  public static double[] div(double a, double[] b) {
+    if (a == 0) throw new IllegalArgumentException("Divison by zero");
+    double[] erg = new double[b.length];
+    for (int i = 0; i < b.length; i++) {
+      erg[i] = b[i] / 3;
+    }
+    return erg;
+  }
+
   public static double length(double[] point) {
     return Math.sqrt(stScalarProd(point, point));
   }
@@ -152,7 +161,7 @@ public class PointUtil
   public static double[] unit(int i, int dim) {
     double[] p = new double[dim];
     for (int j = 0; j < dim; j++) {
-      p[j] = i == j ? 1 : 0;
+      p[j] = i == (j + 1) ? 1 : 0;
     }
     return p;
   }
