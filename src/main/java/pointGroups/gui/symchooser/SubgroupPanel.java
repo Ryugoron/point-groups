@@ -16,6 +16,7 @@ import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.gui.event.types.Symmetry4DChooseEvent;
 import pointGroups.gui.symchooser.elements.SubgroupListCellRenderer;
+import pointGroups.util.LoggerFactory;
 import pointGroups.util.gui.MouseAdapter;
 
 
@@ -23,7 +24,7 @@ public class SubgroupPanel
   extends JList<Symmetry.Subgroup<?>>
 
 {
-  private final Logger logger = Logger.getLogger(this.getClass().getName());
+  private final Logger logger = LoggerFactory.get(this.getClass());
   private Symmetry<?, ?> lastChosenSymmetry;
 
   protected final EventDispatcher dispatcher = EventDispatcher.get();

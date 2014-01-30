@@ -6,7 +6,9 @@ import pointGroups.geometry.Edge;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Schlegel;
+import pointGroups.geometry.Symmetry;
 import pointGroups.util.AbstractTransformer;
+import pointGroups.util.polymake.SchlegelTransformer.SchlegelCompound;
 
 
 /**
@@ -16,13 +18,24 @@ import pointGroups.util.AbstractTransformer;
  * @author Nadja, Simon
  */
 public class SchlegelTransformer
-  extends AbstractTransformer<Schlegel>
+  extends AbstractTransformer<SchlegelCompound>
 {
 
   private final Collection<? extends Point> points;
+  private final Point p;
+  private final Symmetry<?, ?> sym;
 
-  public SchlegelTransformer(Collection<? extends Point> points) {
+  public SchlegelTransformer(final Collection<? extends Point> points,
+      final Symmetry<?, ?> sym, final Point p) {
     this.points = points;
+    this.sym = sym;
+    this.p = p;
+  }
+
+  public SchlegelTransformer(final Collection<? extends Point> points) {
+    this.points = points;
+    this.p = null;
+    this.sym = null;
   }
 
   @Override
@@ -75,7 +88,7 @@ public class SchlegelTransformer
   }
 
   @Override
-  public Schlegel transformResultString() {
+  public SchlegelCompound transformResultString() {
     StringBuilder regex = new StringBuilder();
     // minimum one 2D point or...
     regex.append("(([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+|");
@@ -140,6 +153,35 @@ public class SchlegelTransformer
       edgesindices[i] = new Edge<Integer, Integer>(fromIndex, toIndex);
     }
 
-    return new Schlegel(points, edges, edgesindices);
+    return new SchlegelCompound(new Schlegel(points, edges, edgesindices),
+        this.sym, this.p);
+  }
+
+
+  public static class SchlegelCompound
+  {
+    private final Schlegel s;
+    private final Symmetry<?, ?> sym;
+    private final Point p;
+
+    public SchlegelCompound(final Schlegel s, final Symmetry<?, ?> sym,
+        final Point p) {
+      this.s = s;
+      this.sym = sym;
+      this.p = p;
+    }
+
+    public Schlegel getSchlegel() {
+      return this.s;
+    }
+
+    public Symmetry<?, ?> getSymmetry() {
+      return this.sym;
+    }
+
+    public Point getPoint() {
+      return this.p;
+    }
+
   }
 }

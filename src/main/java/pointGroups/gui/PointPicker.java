@@ -6,12 +6,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import javax.print.attribute.standard.PresentationDirection;
 import javax.swing.JPanel;
 
 import pointGroups.geometry.Fundamental;
 import pointGroups.geometry.Point3D;
-import pointGroups.geometry.Point4D;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointEvent;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointHandler;
@@ -21,6 +19,13 @@ import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.event.types.DimensionSwitchHandler;
 import pointGroups.gui.event.types.FundamentalResultEvent;
 import pointGroups.gui.event.types.FundamentalResultHandler;
+import pointGroups.gui.event.types.Schlegel3DComputeEvent;
+import pointGroups.gui.event.types.Schlegel4DComputeEvent;
+import pointGroups.gui.event.types.Symmetry3DChooseEvent;
+import pointGroups.gui.event.types.Symmetry3DChooseHandler;
+import pointGroups.gui.event.types.Symmetry4DChooseEvent;
+import pointGroups.gui.event.types.Symmetry4DChooseHandler;
+import pointGroups.util.LoggerFactory;
 import pointGroups.util.jreality.JRealityUtility;
 import pointGroups.util.polymake.FundamentalTransformer;
 import de.jreality.geometry.Primitives;
@@ -41,18 +46,18 @@ import de.jreality.tools.PointDragListener;
 public class PointPicker
   extends JPanel
   implements FundamentalResultHandler, DimensionSwitchHandler,
-  ChangeCoordinate3DPointHandler, ChangeCoordinate4DPointHandler
+  ChangeCoordinate3DPointHandler, ChangeCoordinate4DPointHandler,
+  Symmetry3DChooseHandler, Symmetry4DChooseHandler
 {
 
   private static final long serialVersionUID = -3642299900579728806L;
 
-  private final boolean responsive = false;
+  private final boolean responsive;
 
-  public static int count = 0;
-  public final int id = count++;
-  // TODO is it a good idea to name the logger this way?
-  final protected Logger logger = Logger.getLogger(this.getClass().getName() +
-      "(id: " + id + ")");
+  private Symmetry3DChooseEvent lastSymmetry3DChooseEvent;
+  private Symmetry4DChooseEvent lastSymmetry4DChooseEvent;
+
+  final protected Logger logger = LoggerFactory.getSingle(PointPicker.class);
 
   protected final UiViewer uiViewer = new UiViewer(this) {
     public final SceneGraphComponent point = new SceneGraphComponent();
@@ -178,12 +183,15 @@ public class PointPicker
     this.isSet = false;
     this.dim = 2;
     this.dispatcher = EventDispatcher.get();
+    this.responsive = responsive;
 
     // Register PointPicker on Events
     this.dispatcher.addHandler(FundamentalResultEvent.TYPE, this);
     this.dispatcher.addHandler(DimensionSwitchEvent.TYPE, this);
     this.dispatcher.addHandler(ChangeCoordinate3DPointEvent.TYPE, this);
     this.dispatcher.addHandler(ChangeCoordinate4DPointEvent.TYPE, this);
+    this.dispatcher.addHandler(Symmetry4DChooseEvent.TYPE, this);
+    this.dispatcher.addHandler(Symmetry3DChooseEvent.TYPE, this);
 
   }
 
@@ -216,8 +224,6 @@ public class PointPicker
     }
   }
 
-  
-
   // Method to fire coordinate Changed Event, should be executed by click inside
   // the fundamental domain.
   protected void selectPoint(double[] point) {
@@ -238,15 +244,23 @@ public class PointPicker
       selComp[i] = point[i];
     double[] resP = this.fundamental.revertPoint(selComp);
 
-    logger.info("Point Picker calculated Point (" + resP[0] + "," + resP[1] +
+    logger.fine("Point Picker calculated Point (" + resP[0] + "," + resP[1] +
         "," + resP[2] + (this.dim == 3 ? "," + resP[3] : "") + ")");
 
     // Fire Event, that the coordinate changed
-    if(dim == 3){
-      this.dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(JRealityUtility.asPoint3D(resP), this));
+    if (dim == 2) {
+      this.dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(
+          JRealityUtility.asPoint3D(resP), this));
+      // if (responsive)
+      this.dispatcher.fireEvent(new Schlegel3DComputeEvent(
+          lastSymmetry3DChooseEvent, JRealityUtility.asPoint3D(resP)));
     }
-    else if(dim == 4){
-      this.dispatcher.fireEvent(new ChangeCoordinate4DPointEvent(JRealityUtility.asPoint4D(resP),this));
+    else if (dim == 3) {
+      this.dispatcher.fireEvent(new ChangeCoordinate4DPointEvent(
+          JRealityUtility.asPoint4D(resP), this));
+      // if (responsive)
+      this.dispatcher.fireEvent(new Schlegel4DComputeEvent(
+          lastSymmetry4DChooseEvent, JRealityUtility.asPoint4D(resP)));
 
     }
   }
@@ -277,7 +291,7 @@ public class PointPicker
     // uiViewer.setGeometry(Primitives.point(new double[] { 0.5, 0.5 }));
 
     return;
-    
+
   }
 
   @Override
@@ -290,5 +304,16 @@ public class PointPicker
     // uiViewer.setGeometry(Primitives.point(new double[] { 0.5, 0.5 }));
 
     return;
+  }
+
+  @Override
+  public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
+    this.lastSymmetry4DChooseEvent = event;
+
+  }
+
+  @Override
+  public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
+    this.lastSymmetry3DChooseEvent = event;
   }
 }

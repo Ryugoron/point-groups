@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
+import pointGroups.util.LoggerFactory;
+
 
 /**
  * A {@link Runnable} that allows to continously log errors from the polymake
@@ -19,8 +21,7 @@ import java.util.logging.Logger;
 class PolymakeErrorStreamHandler
   implements Runnable
 {
-  final Logger logger =
-      Logger.getLogger(PolymakeErrorStreamHandler.class.getName());
+  final Logger logger = LoggerFactory.get(this.getClass());
   private final BufferedReader err;
   private final PolymakeWrapper wrapper;
 
@@ -32,8 +33,8 @@ class PolymakeErrorStreamHandler
    * @param polymakeWrapper The wrapped source of the error messages
    * @param errorStream The error stream to listen on
    */
-  PolymakeErrorStreamHandler(PolymakeWrapper polymakeWrapper,
-      InputStream errorStream) {
+  PolymakeErrorStreamHandler(final PolymakeWrapper polymakeWrapper,
+      final InputStream errorStream) {
     this.err = new BufferedReader(new InputStreamReader(errorStream));
     this.wrapper = polymakeWrapper;
   }

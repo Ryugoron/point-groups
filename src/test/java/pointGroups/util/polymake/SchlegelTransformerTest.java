@@ -39,7 +39,7 @@ public class SchlegelTransformerTest
   @Test
   public void testTransformResultString2DSchlegel() {
     st.setResultString(POLYMAKE_2D_RESULT);
-    Schlegel schlegel = st.transformResultString();
+    Schlegel schlegel = st.transformResultString().getSchlegel();
 
     assert2DResults(schlegel);
   }
@@ -47,7 +47,7 @@ public class SchlegelTransformerTest
   @Test
   public void testTransformResultString3DSchlegel() {
     st.setResultString(POLYMAKE_3D_RESULT);
-    Schlegel schlegel = st.transformResultString();
+    Schlegel schlegel = st.transformResultString().getSchlegel();
 
     assert3DResults(schlegel);
   }
@@ -56,7 +56,7 @@ public class SchlegelTransformerTest
   public void testSetAndGetSeq()
     throws InterruptedException, ExecutionException {
     st.setResultString(POLYMAKE_3D_RESULT);
-    Schlegel schlegel = st.get();
+    Schlegel schlegel = st.get().getSchlegel();
 
     assert3DResults(schlegel);
     assertTrue(st.isDone());
@@ -66,7 +66,7 @@ public class SchlegelTransformerTest
   public void testSetAndGetConc()
     throws InterruptedException, ExecutionException {
     new Thread(new GetRunnable(st)).start();
-    Schlegel schlegel = st.get();
+    Schlegel schlegel = st.get().getSchlegel();
 
     assert3DResults(schlegel);
     assertTrue(st.isDone());
@@ -79,7 +79,7 @@ public class SchlegelTransformerTest
 
     private final SchlegelTransformer st;
 
-    public GetRunnable(SchlegelTransformer st) {
+    public GetRunnable(final SchlegelTransformer st) {
       this.st = st;
     }
 
@@ -112,11 +112,11 @@ public class SchlegelTransformerTest
   public void testExecutionOnPolymake()
     throws IOException, InterruptedException, ExecutionException {
 
-    Schlegel schlegel = PolymakeTestExecutor.execute(st);
+    Schlegel schlegel = PolymakeTestExecutor.execute(st).getSchlegel();
     assert2DResults(schlegel);
   }
 
-  public void assert2DResults(Schlegel schlegel) {
+  public void assert2DResults(final Schlegel schlegel) {
     assertEquals(1.613228378, schlegel.points[0].i, 0);
     assertEquals(2.147844766, schlegel.points[0].j, 0);
     assertEquals(-0.1878060471, schlegel.points[1].i, 0);
@@ -139,7 +139,7 @@ public class SchlegelTransformerTest
     assertEquals((Integer) 2, schlegel.edgesViaIndices[2].right);
   }
 
-  public void assert3DResults(Schlegel schlegel) {
+  public void assert3DResults(final Schlegel schlegel) {
     assert2DResults(schlegel);
 
     assertEquals(0, schlegel.points[0].k, 0);

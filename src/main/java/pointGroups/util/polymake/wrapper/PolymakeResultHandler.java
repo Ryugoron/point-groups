@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
+import pointGroups.util.LoggerFactory;
+
 
 /**
  * A {@link Runnable} that is used by {@link PolymakeWrapper} to listen on
@@ -19,8 +21,7 @@ import java.util.logging.Logger;
 class PolymakeResultHandler
   implements Runnable
 {
-  private final Logger logger =
-      Logger.getLogger(PolymakeResultHandler.class.getName());
+  private final Logger logger = LoggerFactory.get(this.getClass());
   private final BufferedReader res;
   private final PolymakeWrapper wrapper;
 
@@ -31,8 +32,8 @@ class PolymakeResultHandler
    * @param polymakeWrapper The wrapped source of the responses
    * @param inputStream The stream to listen on
    */
-  public PolymakeResultHandler(PolymakeWrapper polymakeWrapper,
-      InputStream inputStream) {
+  public PolymakeResultHandler(final PolymakeWrapper polymakeWrapper,
+      final InputStream inputStream) {
     this.res = new BufferedReader(new InputStreamReader(inputStream));
     this.wrapper = polymakeWrapper;
   }
