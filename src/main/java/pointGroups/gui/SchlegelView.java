@@ -2,7 +2,6 @@ package pointGroups.gui;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import pointGroups.geometry.Edge;
@@ -12,7 +11,6 @@ import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.SchlegelResultEvent;
 import pointGroups.gui.event.types.SchlegelResultHandler;
 import pointGroups.util.jreality.JRealityUtility;
-import de.jreality.geometry.Primitives;
 import de.jreality.scene.Geometry;
 
 
@@ -31,12 +29,6 @@ public class SchlegelView
     super();
 
     setLayout(new BorderLayout());
-
-    JButton button3 = new JButton("VIEW");
-    add(button3, BorderLayout.PAGE_END);
-
-    // TODO: remove me, just a placeholder geometry
-    uiViewer.setGeometry(Primitives.cone(15));
 
     dispatcher.addHandler(SchlegelResultHandler.class, this);
   }
