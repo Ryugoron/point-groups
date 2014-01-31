@@ -4,18 +4,21 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
 
 import de.jreality.jogl.JOGLViewer;
 import de.jreality.plugin.JRViewer;
-import de.jreality.plugin.basic.Scene;
-import de.jreality.plugin.content.ContentTools;
+import de.jreality.plugin.JRViewerUtility;
+import de.jreality.plugin.basic.Content;
 import de.jreality.scene.Appearance;
 import de.jreality.scene.Geometry;
 import de.jreality.scene.SceneGraphComponent;
 import de.jreality.scene.Viewer;
+import de.jreality.scene.tool.InputSlot;
+import de.jreality.scene.tool.Tool;
 import de.jreality.shader.DefaultGeometryShader;
 import de.jreality.shader.DefaultLineShader;
 import de.jreality.shader.DefaultPointShader;
@@ -24,6 +27,10 @@ import de.jreality.shader.RenderingHintsShader;
 import de.jreality.shader.ShaderUtility;
 import de.jreality.softviewer.SoftViewer;
 import de.jreality.tools.ClickWheelCameraZoomTool;
+import de.jreality.tools.DraggingTool;
+import de.jreality.tools.RotateTool;
+import de.jtem.jrworkspace.plugin.Controller;
+import de.jtem.jrworkspace.plugin.Plugin;
 
 
 /**
@@ -73,7 +80,7 @@ public class UiViewer
   protected final Container component;
   protected final SceneGraphComponent sceneRoot = new SceneGraphComponent();
   protected final Appearance appearanceRoot = setupAppearance(new Appearance());
-  protected final ContentTools contentTools = new ContentTools();
+  protected final UiViewerToolsPlugin toolsPlugin = new UiViewerToolsPlugin();
 
   /**
    * @param component Add the jReality Viewer to this Component
@@ -83,6 +90,22 @@ public class UiViewer
     worker.execute();
 
     sceneRoot.setAppearance(appearanceRoot);
+  }
+
+  public void set2DMode() {
+    toolsPlugin.set2DMode();
+  }
+
+  public void set3DMode() {
+    toolsPlugin.set3DMode();
+  }
+
+  public boolean is2DMode() {
+    return toolsPlugin.is2DMode();
+  }
+
+  public boolean is3DMode() {
+    return toolsPlugin.is3DMode();
   }
 
   /**
@@ -171,22 +194,10 @@ public class UiViewer
   protected JRViewer startupViewer() {
     JRViewer v = new JRViewer();
 
-    // v.addBasicUI();
-    // v.addVRSupport();
-    // v.addContentSupport(ContentType.TerrainAligned);
-    // v.registerPlugin(new ContentAppearance());
-    contentTools.setRotationEnabled(true);
-    contentTools.setDragEnabled(true);
-    v.registerPlugin(contentTools);
+    v.registerPlugin(toolsPlugin);
     v.setContent(sceneRoot);
-
-    {
-      ClickWheelCameraZoomTool zoomTool = new ClickWheelCameraZoomTool();
-      Scene scene = v.getController().getPlugin(Scene.class);
-      scene.getSceneRoot().addTool(zoomTool);
-    }
-
     v.startupLocal();
+
     return v;
   }
 
@@ -246,5 +257,129 @@ public class UiViewer
     dps.setTransparency(.5);
 
     return ap;
+  }
+
+
+  protected static class UiViewerToolsPlugin
+    extends Plugin
+  {
+    public Content content;
+
+    protected boolean is3DMode = false;
+
+    protected LeftClickDraggingTool leftClickDraggingTool;
+    protected RightClickDraggingTool rightClickDraggingTool;
+    protected RotateTool rotateTool;
+    protected ClickWheelCameraZoomTool zoomTool;
+
+    public UiViewerToolsPlugin() {
+      leftClickDraggingTool = new LeftClickDraggingTool();
+      leftClickDraggingTool.setMoveChildren(false);
+
+      rightClickDraggingTool = new RightClickDraggingTool();
+      rightClickDraggingTool.setMoveChildren(false);
+
+      zoomTool = new ClickWheelCameraZoomTool();
+      rotateTool = new RotateTool();
+      rotateTool.setFixOrigin(false);
+      rotateTool.setMoveChildren(false);
+      rotateTool.setUpdateCenter(false);
+      rotateTool.setAnimTimeMin(250.0);
+      rotateTool.setAnimTimeMax(750.0);
+    }
+
+    @Override
+    public void install(Controller c)
+      throws Exception {
+      super.install(c);
+
+      content = JRViewerUtility.getContentPlugin(c);
+
+      set2DMode();
+    }
+
+    @Override
+    public void uninstall(Controller c)
+      throws Exception {
+      setRotateEnabled(false);
+      setDragEnabled(false);
+      setZoomEnabled(false);
+
+      super.uninstall(c);
+    }
+
+    public void set3DMode() {
+      is3DMode = true;
+
+      setRotateEnabled(true);
+      setDragEnabled(true);
+      setZoomEnabled(true);
+
+      resetCamera();
+    }
+
+    public void set2DMode() {
+      is3DMode = false;
+
+      setRotateEnabled(false);
+      setDragEnabled(true);
+      setZoomEnabled(true);
+
+      resetCamera();
+    }
+
+    public boolean is3DMode() {
+      return is3DMode;
+    }
+
+    public boolean is2DMode() {
+      return !is3DMode;
+    }
+
+    public void resetCamera() {
+      // TODO: rest the camera to the origin
+    }
+
+    public void setRotateEnabled(boolean enable) {
+      setToolEnabled(rotateTool, is3DMode && enable);
+    }
+
+    public void setDragEnabled(boolean enable) {
+      setToolEnabled(leftClickDraggingTool, !is3DMode && enable);
+      setToolEnabled(rightClickDraggingTool, is3DMode && enable);
+    }
+
+    public void setZoomEnabled(boolean enable) {
+      setToolEnabled(zoomTool, enable);
+    }
+
+    protected boolean setToolEnabled(Tool tool, boolean enable) {
+      if (content != null) {
+        if (enable) return content.addContentTool(tool);
+        else content.removeContentTool(tool);
+        return false;
+      }
+      return enable;
+    }
+  }
+
+
+  protected static class RightClickDraggingTool
+    extends DraggingTool
+  {
+    public RightClickDraggingTool() {
+      super();
+      activationSlots = Arrays.asList(InputSlot.RIGHT_BUTTON);
+    }
+  }
+
+
+  protected static class LeftClickDraggingTool
+    extends DraggingTool
+  {
+    public LeftClickDraggingTool() {
+      super();
+      activationSlots = Arrays.asList(InputSlot.LEFT_BUTTON);
+    }
   }
 }
