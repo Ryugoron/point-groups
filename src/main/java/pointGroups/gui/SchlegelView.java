@@ -8,6 +8,8 @@ import pointGroups.geometry.Edge;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Schlegel;
 import pointGroups.gui.event.EventDispatcher;
+import pointGroups.gui.event.types.DimensionSwitchEvent;
+import pointGroups.gui.event.types.DimensionSwitchHandler;
 import pointGroups.gui.event.types.SchlegelResultEvent;
 import pointGroups.gui.event.types.SchlegelResultHandler;
 import pointGroups.util.jreality.JRealityUtility;
@@ -16,7 +18,7 @@ import de.jreality.scene.Geometry;
 
 public class SchlegelView
   extends JPanel
-  implements SchlegelResultHandler
+  implements SchlegelResultHandler, DimensionSwitchHandler
 {
   private static final long serialVersionUID = -3642299900579728806L;
 
@@ -31,6 +33,7 @@ public class SchlegelView
     setLayout(new BorderLayout());
 
     dispatcher.addHandler(SchlegelResultHandler.class, this);
+    dispatcher.addHandler(DimensionSwitchHandler.class, this);
   }
 
   public void dispose() {
@@ -46,5 +49,16 @@ public class SchlegelView
     Geometry geom = JRealityUtility.generateGraph(points, edges);
 
     uiViewer.setGeometry(geom);
+  }
+
+  @Override
+  public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
+    if (event.switchedTo3D()) {
+      uiViewer.set2DMode();
+    }
+
+    if (event.switchedTo4D()) {
+      uiViewer.set3DMode();
+    }
   }
 }
