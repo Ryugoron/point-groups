@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.logging.Logger;
+
+import pointGroups.util.LoggerFactory;
 
 
 /**
@@ -19,6 +22,8 @@ import java.util.Map;
 public class EventDispatcher
 {
   protected final static EventDispatcher dispatcher = new EventDispatcher();
+  protected final static Logger logger =
+      LoggerFactory.getSingle(EventDispatcher.class);
 
   /**
    * Return a singleton instance of {@link EventDispatcher}
@@ -67,6 +72,8 @@ public class EventDispatcher
    * @param event The event to be fired
    */
   public void fireEvent(final Event<?> event) {
+    logger.info("Event fired: " + event);
+
     fireEvent0(event);
   }
 
