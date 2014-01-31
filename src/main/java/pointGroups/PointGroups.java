@@ -4,7 +4,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -22,23 +21,16 @@ public class PointGroups
   static MainFrame mainframe;
   static ExternalCalculationWrapper polymakeWrapper;
 
-  public static void main(final String[] args) {
-    String polyCmd = PointGroupsUtility.getDefaultPolymakePath();
+  public static void main(final String[] args)
+    throws IOException {
 
-    // Try to load properties
-    try {
-      Properties prop = PointGroupsUtility.getProperties();
-      polyCmd = prop.getProperty("POLYMAKEPATH");
-    }
-    catch (IOException e) {
-      System.err.println("settings.ini not found, using default path to polymake executable " +
-          PointGroupsUtility.getDefaultPolymakePath());
-    }
+    File polyCmd = PointGroupsUtility.getPolymakePath();
+    File driverPath = PointGroupsUtility.getPolymakeDriverPath();
 
     // Check whether Polymake exists on the system
-    if (!new File(polyCmd).isFile()) {
+    if (!polyCmd.isFile()) {
       System.err.println("Cannot find polymake executable at " + polyCmd);
-      new StartupErrorFrame(polyCmd);
+      new StartupErrorFrame(polyCmd.toString());
     }
     else {
       // Create Mainframe (copy from MainFrame.java)
@@ -78,8 +70,7 @@ public class PointGroups
 
       // Create Wrapper and HUB
       polymakeWrapper =
-          new PolymakeWrapper(polyCmd,
-              PointGroupsUtility.getPolymakeDriverPath());
+          new PolymakeWrapper(polyCmd.toString(), driverPath.toString());
       new ExternalCalculationEventHub(polymakeWrapper);
     }
   }
