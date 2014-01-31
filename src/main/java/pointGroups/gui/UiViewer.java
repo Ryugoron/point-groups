@@ -330,8 +330,6 @@ public class UiViewer
       setDragEnabled(true);
       setZoomEnabled(true);
 
-      rotateTool.stopAnimation();
-
       resetCamera();
     }
 
@@ -344,6 +342,8 @@ public class UiViewer
     }
 
     public void resetCamera() {
+      rotateTool.stopAnimation();
+
       if (rootScene == null) return;
       rootScene.setTransformation(new Transformation());
     }
