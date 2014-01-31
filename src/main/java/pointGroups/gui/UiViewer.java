@@ -16,9 +16,11 @@ import de.jreality.plugin.basic.Content;
 import de.jreality.scene.Appearance;
 import de.jreality.scene.Geometry;
 import de.jreality.scene.SceneGraphComponent;
+import de.jreality.scene.Transformation;
 import de.jreality.scene.Viewer;
 import de.jreality.scene.tool.InputSlot;
 import de.jreality.scene.tool.Tool;
+import de.jreality.scene.tool.ToolContext;
 import de.jreality.shader.DefaultGeometryShader;
 import de.jreality.shader.DefaultLineShader;
 import de.jreality.shader.DefaultPointShader;
@@ -26,6 +28,7 @@ import de.jreality.shader.DefaultPolygonShader;
 import de.jreality.shader.RenderingHintsShader;
 import de.jreality.shader.ShaderUtility;
 import de.jreality.softviewer.SoftViewer;
+import de.jreality.tools.AnimatorTool;
 import de.jreality.tools.ClickWheelCameraZoomTool;
 import de.jreality.tools.DraggingTool;
 import de.jreality.tools.RotateTool;
@@ -263,13 +266,14 @@ public class UiViewer
   protected static class UiViewerToolsPlugin
     extends Plugin
   {
-    public Content content;
+    protected Content content;
+    protected transient SceneGraphComponent rootScene;
 
     protected boolean is3DMode = false;
 
     protected LeftClickDraggingTool leftClickDraggingTool;
     protected RightClickDraggingTool rightClickDraggingTool;
-    protected RotateTool rotateTool;
+    protected ViewerRotateTool rotateTool;
     protected ClickWheelCameraZoomTool zoomTool;
 
     public UiViewerToolsPlugin() {
@@ -280,7 +284,8 @@ public class UiViewer
       rightClickDraggingTool.setMoveChildren(false);
 
       zoomTool = new ClickWheelCameraZoomTool();
-      rotateTool = new RotateTool();
+
+      rotateTool = new ViewerRotateTool();
       rotateTool.setFixOrigin(false);
       rotateTool.setMoveChildren(false);
       rotateTool.setUpdateCenter(false);
@@ -325,6 +330,8 @@ public class UiViewer
       setDragEnabled(true);
       setZoomEnabled(true);
 
+      rotateTool.stopAnimation();
+
       resetCamera();
     }
 
@@ -337,7 +344,8 @@ public class UiViewer
     }
 
     public void resetCamera() {
-      // TODO: rest the camera to the origin
+      if (rootScene == null) return;
+      rootScene.setTransformation(new Transformation());
     }
 
     public void setRotateEnabled(boolean enable) {
@@ -361,25 +369,64 @@ public class UiViewer
       }
       return enable;
     }
-  }
 
 
-  protected static class RightClickDraggingTool
-    extends DraggingTool
-  {
-    public RightClickDraggingTool() {
-      super();
-      activationSlots = Arrays.asList(InputSlot.RIGHT_BUTTON);
+    protected class ViewerRotateTool
+      extends RotateTool
+    {
+      protected transient ToolContext lastToolContext;
+
+      @Override
+      public void activate(ToolContext tc) {
+        super.activate(tc);
+        rootScene = comp;
+      }
+
+      @Override
+      public void deactivate(ToolContext tc) {
+        super.deactivate(tc);
+        lastToolContext = tc;
+      }
+
+      public boolean stopAnimation() {
+        if (lastToolContext == null || comp == null) return false;
+
+        // stop the rotation animation
+        AnimatorTool.getInstance(lastToolContext).deschedule(comp);
+        return true;
+      }
     }
-  }
 
 
-  protected static class LeftClickDraggingTool
-    extends DraggingTool
-  {
-    public LeftClickDraggingTool() {
-      super();
-      activationSlots = Arrays.asList(InputSlot.LEFT_BUTTON);
+    protected class RightClickDraggingTool
+      extends DraggingTool
+    {
+      public RightClickDraggingTool() {
+        super();
+        activationSlots = Arrays.asList(InputSlot.RIGHT_BUTTON);
+      }
+
+      @Override
+      public void activate(ToolContext tc) {
+        super.activate(tc);
+        rootScene = comp;
+      }
+    }
+
+
+    protected class LeftClickDraggingTool
+      extends DraggingTool
+    {
+      public LeftClickDraggingTool() {
+        super();
+        activationSlots = Arrays.asList(InputSlot.LEFT_BUTTON);
+      }
+
+      @Override
+      public void activate(ToolContext tc) {
+        super.activate(tc);
+        rootScene = comp;
+      }
     }
   }
 }
