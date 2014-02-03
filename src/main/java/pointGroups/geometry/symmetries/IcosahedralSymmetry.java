@@ -1,7 +1,6 @@
 package pointGroups.geometry.symmetries;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -178,7 +177,6 @@ public class IcosahedralSymmetry
    * Initialize subgroup relations
    */
   static {
-    sym.subgroupTable.put(Subgroups.Id, Collections.singleton(id));
     // todo...
 
     // temporal
@@ -255,7 +253,7 @@ public class IcosahedralSymmetry
    */
   public enum Subgroups
     implements Subgroup<IcosahedralSymmetry> {
-    Id("Trivial group"), Full("Full icosahedral symmetry");
+    Full("Full icosahedral symmetry");
 
     private final String name;
 
