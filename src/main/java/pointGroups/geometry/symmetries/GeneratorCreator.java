@@ -1,8 +1,10 @@
 package pointGroups.geometry.symmetries;
 
 import pointGroups.geometry.Quaternion;
+import pointGroups.geometry.UnitQuaternion;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -27,7 +29,7 @@ public class GeneratorCreator
     List<Quaternion> gen = new ArrayList<Quaternion>();
     gen.add(qI);
     gen.add(qw);
-    return generateSymmetryGroup(gen);
+    return generateSymmetryGroup2(gen);
   }  
   
   /**
@@ -84,6 +86,38 @@ public class GeneratorCreator
     while (newElems != 0);
     return group;
   }
+  
+  
+  /**
+   * 
+   * @param generators
+   * @return Groupelem generate by generators
+   */
+  public static List<Quaternion> generateSymmetryGroup2(List<Quaternion> generators) {
+    int newElems = 0;
+    List<Quaternion> group = new ArrayList<>(generators);
+    List<Quaternion> newGroupelem = new ArrayList<>();
+    Quaternion z;
+    do {
+      newElems = 0;
+      for (Quaternion x : group) {
+        for(Quaternion g : generators){
+          z = x.mult(g);
+          z = g.inverse().mult(z);
+          if (!containsApprox(group, z) && !containsApprox(newGroupelem, z)) {
+            newGroupelem.add(z);
+            newElems++;
+          }
+        }
+      }
+      for (Quaternion g : newGroupelem) {
+        group.add(g);
+      }
+      newGroupelem.clear();
+    }
+    while (newElems != 0);
+    return group;
+  }
  
 
   private static boolean containsApprox(List<Quaternion> list, Quaternion x) {
@@ -98,24 +132,40 @@ public class GeneratorCreator
     return distance < epsilon;
   } 
   
-  public boolean equalGroups(List<Quaternion> g1 , List<Quaternion> g2){
+  /**
+   * count elems of g1 that are not in g2
+   * @param g1
+   * @param g2
+   * @return
+   */
+  public static int notInG2(List<Quaternion> g1 , List<Quaternion> g2){
     int notFoundInG2 = 0;
-    int notFoundInG1 = 0;
-
     for(Quaternion q : g1){
       if(!containsApprox(g2, q)){
         notFoundInG2++;
       }    
     }
-    for(Quaternion q : g2){
-      if(!containsApprox(g1, q)){
-        notFoundInG1++;
-      }    
-    }
-    System.out.println("not in G2: #"+notFoundInG2);
-    System.out.println("not in G1: #"+notFoundInG1);
+    return notFoundInG2;
+  }
+  
+  public static boolean equalGroups(List<Quaternion> g1 , List<Quaternion> g2){
+    int notFoundInG2 = notInG2(g1, g2);
+    int notFoundInG1 = notInG2(g2,g1);
+
+  
     return notFoundInG1 == 0 && notFoundInG2 == 0;
 
+  }
+  
+  public static void main(String[] args){
+    Collection<UnitQuaternion> fullIcosa = IcosahedralSymmetry.get().subgroupTable.get(IcosahedralSymmetry.Subgroups.Full);
+    List<Quaternion> icosa = new ArrayList<>();
+    for(UnitQuaternion uq : fullIcosa){
+      icosa.add(uq);
+    }
+    System.out.println("#Elemente bei Alex: "+icosa.size()+" #Elemente aus der Erzeuger: "+IcosahedralSymmetryGroup().size());
+    System.out.println(notInG2(icosa, IcosahedralSymmetryGroup())+" Elemnte aus der Alexgruppe sind nicht in der Gruppe mittels Erzeuger");
+    System.out.println(notInG2(IcosahedralSymmetryGroup(),icosa)+" Elemnte aus der Erzeugergruppe snd nicht in der Gruppe von Alex");
   }
   
  
