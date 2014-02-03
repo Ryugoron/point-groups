@@ -11,6 +11,7 @@ package pointGroups.geometry;
 public class Quaternion
   implements Point
 {
+  public final static Quaternion ONE = new Quaternion(1,0,0,0);
   public final double i, j, k, re;
 
   /**
@@ -123,4 +124,8 @@ public class Quaternion
 
     return components;
   }
+  
+  
+  
+  
 }
