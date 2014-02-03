@@ -129,7 +129,7 @@ public class Menubar
 
     this.add(historyMenu);
     this.add(viewMenu);
-    // this.add(debugMenu);
-    this.add(helpMenu);
+    this.add(debugMenu);
+    // this.add(helpMenu);
   }
 }
