@@ -191,6 +191,8 @@ public class IcosahedralSymmetry
     full.add(diagonalAxis2_240);
     full.add(diagonalAxis3_120);
     full.add(diagonalAxis3_240);
+    full.add(diagonalAxis4_120);
+    full.add(diagonalAxis4_240);
     full.add(snubAxis_1);
     full.add(snubAxis_2);
     full.add(snubAxis_3);

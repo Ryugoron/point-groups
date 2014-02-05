@@ -29,6 +29,8 @@ import pointGroups.gui.event.types.ChangeCoordinate4DPointEvent;
 import pointGroups.gui.event.types.ChangeCoordinate4DPointHandler;
 import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.event.types.DimensionSwitchHandler;
+import pointGroups.gui.event.types.ScaleFundamentalDomainEvent;
+import pointGroups.gui.event.types.ScaleFundamentalDomainHandler;
 import pointGroups.gui.event.types.Schlegel3DComputeEvent;
 import pointGroups.gui.event.types.Schlegel4DComputeEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
@@ -45,7 +47,7 @@ public class CoordinateView
   extends JPanel
   implements ActionListener, Symmetry3DChooseHandler, Symmetry4DChooseHandler,
   DimensionSwitchHandler, ChangeCoordinate3DPointHandler,
-  ChangeCoordinate4DPointHandler
+  ChangeCoordinate4DPointHandler, ScaleFundamentalDomainHandler
 {
   /**
 	 * 
@@ -59,9 +61,9 @@ public class CoordinateView
   private Symmetry3DChooseEvent lastSymmetry3DChooseEvent;
   private Symmetry4DChooseEvent lastSymmetry4DChooseEvent;
 
-  public CoordinateView(int dimension,EventDispatcher dispatcher) {
+  public CoordinateView(int dimension, int maxDimension, EventDispatcher dispatcher) {
     this.setLayout(new BorderLayout());
-    inputField = new DimensioninputField(dimension);
+    inputField = new DimensioninputField(dimension, maxDimension);
     run = new JButton("Run");
     randomCoord = new JButton("Create random coordinate");
     this.dispatcher = dispatcher;
@@ -75,6 +77,7 @@ public class CoordinateView
     dispatcher.addHandler(ChangeCoordinate4DPointHandler.class, this);
     dispatcher.addHandler(Symmetry3DChooseHandler.class, this);
     dispatcher.addHandler(Symmetry4DChooseHandler.class, this);
+    dispatcher.addHandler(ScaleFundamentalDomainHandler.class, this);
 
     run.addActionListener(this);
     randomCoord.addActionListener(this);
@@ -92,6 +95,13 @@ public class CoordinateView
     lastSymmetry4DChooseEvent = event;
     run.setEnabled(true);
   }
+  
+
+  @Override
+  public void onScaleFundamentalDomainEvent(ScaleFundamentalDomainEvent event) {
+    inputField.scale = event.getScale();
+  }
+
 
   @Override
   public void actionPerformed(ActionEvent e) {
@@ -219,10 +229,12 @@ public class CoordinateView
     private static final long serialVersionUID = 8813600622648961730L;
     private final List<Dimensioninput> dimensioninputs;
     int dimension;
+    int scale = 10;
 
-    public DimensioninputField(int dim) {
+    public DimensioninputField(int dim, int maxdim) {
       this.setLayout(new FlowLayout());
       dimensioninputs = new ArrayList<Dimensioninput>();
+      setDimension(maxdim);
       setDimension(dim);
     }
 
@@ -231,7 +243,7 @@ public class CoordinateView
       Random rand = new Random(System.currentTimeMillis());
       for (int i = 0; i < dimension; i++) {
         dimensioninputs.get(i).removePropertyChangeListener("value", this);
-        dimensioninputs.get(i).setCoord(rand.nextDouble() * 10);
+        dimensioninputs.get(i).setCoord(rand.nextDouble() * scale);
         dimensioninputs.get(i).addPropertyChangeListener("value", this);
       }
       changeCoordinateEvent();
@@ -291,7 +303,6 @@ public class CoordinateView
       for (int i = dimension; i < dimensioninputs.size(); i++) {
         dimensioninputs.get(i).deactiv();
       }
-      System.out.println("#DimInout: "+dim);
       this.validate();
       this.repaint();
     }
@@ -312,5 +323,6 @@ public class CoordinateView
       }
     }
   }
+
 
 }
