@@ -1,5 +1,6 @@
 package pointGroups.gui.symchooser;
 
+import java.awt.Color;
 import java.util.logging.Logger;
 
 import javax.swing.DefaultListModel;
@@ -45,7 +46,9 @@ public class SymmetryPanel
         new SymmetryList<Point3D>(this.symmetries3D, subgroupPanel);
     this.symmetries4DPanel =
         new SymmetryList<Point4D>(this.symmetries4D, subgroupPanel);
-
+    this.symmetries3DPanel.setSelectionBackground(SymmetryChooser.SelectionBackground);
+    this.symmetries4DPanel.setSelectionBackground(SymmetryChooser.SelectionBackground);
+    
     this.fillPanelsWithSymmetries();
 
     add("3D", new JScrollPane(symmetries3DPanel,

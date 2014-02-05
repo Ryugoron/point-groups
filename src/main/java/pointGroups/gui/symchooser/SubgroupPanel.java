@@ -32,7 +32,7 @@ public class SubgroupPanel
     super();
     setCellRenderer(new SubgroupListCellRenderer());
 
-    setSelectionBackground(Color.BLUE);
+    setSelectionBackground(SymmetryChooser.SelectionBackground);
     setBackground(Color.WHITE);
 
     addMouseListener(new MouseAdapter() {
