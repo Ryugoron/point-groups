@@ -1,11 +1,12 @@
 package pointGroups.gui.symchooser;
 
-import java.awt.Dimension;
 import java.util.logging.Logger;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -45,14 +46,14 @@ public class SymmetryPanel
     this.symmetries4DPanel =
         new SymmetryList<Point4D>(this.symmetries4D, subgroupPanel);
 
-    Dimension dim = new Dimension(150, 0);
-    setMinimumSize(dim);
-    setPreferredSize(dim);
-
     this.fillPanelsWithSymmetries();
 
-    add("3D", this.symmetries3DPanel);
-    add("4D", this.symmetries4DPanel);
+    add("3D", new JScrollPane(symmetries3DPanel,
+        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
+    add("4D", new JScrollPane(symmetries4DPanel,
+        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
 
     addChangeListener(new ChangeListener() {
       @Override

@@ -3,8 +3,10 @@ package pointGroups.gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -18,6 +20,7 @@ import pointGroups.gui.event.types.ShowCoordinateHandler;
 import pointGroups.gui.event.types.ShowFundamentalDomainEvent;
 import pointGroups.gui.event.types.ShowFundamentalDomainHandler;
 import pointGroups.gui.symchooser.SymmetryChooser;
+import pointGroups.util.PointGroupsUtility;
 
 
 public class MainFrame
@@ -33,32 +36,38 @@ public class MainFrame
   protected JPanel coordinates;
   protected JPanel statusBar;
   protected JFrame log;
-  
+
   protected JSplitPane mainSplitPane;
   protected JSplitPane leftTopComponent;
   protected JSplitPane leftComponent;
-  
+
   protected EventDispatcher dispatcher = EventDispatcher.get();
   protected MenuBarEventHandler menuBarEventHandler = new MenuBarEventHandler();
 
   public MainFrame() {
-    
+
     setTitle("Point groups");
+    try {
+      setIconImage(new ImageIcon(PointGroupsUtility.getImage("icon.png")).getImage());
+    }
+    catch (IOException e) {
+      // Image not found, no problem!
+    }
     setSize(1000, 800);
     setLocationRelativeTo(null); // center window
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    
+
     log = new LogFrame();
-    
+
     // setting up main split pane
     schlegelView = new SchlegelView();
-    Component leftPanel = setUpLeftPanel();   
-    
+    Component leftPanel = setUpLeftPanel();
+
     // ensures to drag the divider all the way to both sides
     Dimension minimumSize = new Dimension(0, 0);
     leftPanel.setMinimumSize(minimumSize);
     schlegelView.setMinimumSize(minimumSize);
-    
+
     mainSplitPane =
         new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, schlegelView);
     mainSplitPane.setResizeWeight(0);
@@ -72,7 +81,7 @@ public class MainFrame
     add(menuBar, BorderLayout.NORTH);
     add(mainSplitPane, BorderLayout.CENTER);
     add(statusBar, BorderLayout.SOUTH);
-    
+
     setVisible(true);
   }
 
@@ -80,10 +89,12 @@ public class MainFrame
 
     symmetryChooser = new SymmetryChooser();
     pointPicker = new PointPicker(false);
-    coordinates = new CoordinateView(3,dispatcher);
-    
-    leftTopComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, symmetryChooser, pointPicker);
-    leftComponent = new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, coordinates);
+    coordinates = new CoordinateView(3, dispatcher);
+
+    leftTopComponent =
+        new JSplitPane(JSplitPane.VERTICAL_SPLIT, symmetryChooser, pointPicker);
+    leftComponent =
+        new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, coordinates);
 
     leftComponent.setBorder(BorderFactory.createEmptyBorder());
     leftTopComponent.setBorder(BorderFactory.createEmptyBorder());
@@ -92,54 +103,55 @@ public class MainFrame
 
     leftComponent.setDividerLocation(600);
     leftTopComponent.setDividerLocation(500);
-    
+
     // add EventHandler for View menubar item
     dispatcher.addHandler(ShowFundamentalDomainEvent.TYPE, menuBarEventHandler);
     dispatcher.addHandler(ShowCoordinateEvent.TYPE, menuBarEventHandler);
 
     return leftComponent;
   }
-  
-  
+
   /**
    * Method to hide CoordinateView and PointPickerView only!
+   * 
    * @param component JSplitPane containing CoordinateView or PointPicker
    */
-  private void hideView(JSplitPane component) {
+  private void hideView(final JSplitPane component) {
     component.setLastDividerLocation(component.getDividerLocation());
     component.setDividerLocation(1.0);
   }
-  
+
   /**
    * Method to show CoordinateView and PointPickerView only!
+   * 
    * @param component JSplitPane containing CoordinateView or PointPicker
    */
-  private void showView(JSplitPane component) {
+  private void showView(final JSplitPane component) {
     component.setDividerLocation(component.getLastDividerLocation());
   }
-  
-  private class MenuBarEventHandler implements ShowCoordinateHandler, ShowFundamentalDomainHandler {
+
+
+  private class MenuBarEventHandler
+    implements ShowCoordinateHandler, ShowFundamentalDomainHandler
+  {
 
     @Override
-    public void onShowCoordinateEvent(ShowCoordinateEvent event) {
-      if (event.getVisible())
-        showView(leftComponent);
-      else
-        hideView(leftComponent);
+    public void onShowCoordinateEvent(final ShowCoordinateEvent event) {
+      if (event.getVisible()) showView(leftComponent);
+      else hideView(leftComponent);
     }
 
     @Override
-    public void onShowFundamentalDomainEvent(ShowFundamentalDomainEvent event) {
-      if (event.getVisible())
-        showView(leftTopComponent);
-      else
-        hideView(leftTopComponent);
-      
+    public void onShowFundamentalDomainEvent(
+        final ShowFundamentalDomainEvent event) {
+      if (event.getVisible()) showView(leftTopComponent);
+      else hideView(leftTopComponent);
+
     }
-    
+
   }
 
-  public static void main(String args[]) {
+  public static void main(final String args[]) {
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 

@@ -1,11 +1,10 @@
 package pointGroups.gui.symchooser;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.GridLayout;
 
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 
 public class SymmetryChooser
@@ -16,19 +15,14 @@ public class SymmetryChooser
 
   public SymmetryChooser() {
     super();
-
-    setLayout(new BorderLayout());
+    setLayout(new GridLayout(1, 2));
 
     final SubgroupPanel subgroupChoose = new SubgroupPanel();
     final SymmetryPanel symChoose = new SymmetryPanel(subgroupChoose);
-    final JSeparator separator = new JSeparator(SwingConstants.VERTICAL);
 
-    Dimension d = separator.getPreferredSize();
-    d.height = symChoose.getPreferredSize().height;
-    separator.setPreferredSize(d);
-
-    this.add(symChoose, BorderLayout.WEST);
-    this.add(separator);
-    this.add(subgroupChoose, BorderLayout.EAST);
+    this.add(symChoose);
+    this.add(new JScrollPane(subgroupChoose,
+        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
   }
 }

@@ -1,7 +1,6 @@
 package pointGroups.geometry.symmetries;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -104,8 +103,6 @@ public class OctahedralSymmetry
    * #Subgroups_of_chiral_octahedral_symmetry.
    */
   static {
-    sym.subgroupTable.put(Subgroups.Id, Collections.singleton(id));
-
     // temporal
     Collection<UnitQuaternion> full = new HashSet<UnitQuaternion>();
     full.add(id);
@@ -146,7 +143,7 @@ public class OctahedralSymmetry
    */
   public enum Subgroups
     implements Subgroup<OctahedralSymmetry> {
-    Id("Trivial group"), Full("Full octahedral symmetry");
+    Full("Full octahedral symmetry");
 
     private final String name;
 

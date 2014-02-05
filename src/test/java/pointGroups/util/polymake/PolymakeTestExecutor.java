@@ -1,7 +1,6 @@
 package pointGroups.util.polymake;
 
 import java.io.IOException;
-import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import pointGroups.util.PointGroupsUtility;
@@ -29,10 +28,8 @@ public class PolymakeTestExecutor
   public static <E> E execute(Transformer<E> transformer)
     throws IOException, InterruptedException, ExecutionException {
 
-    final Properties prop = PointGroupsUtility.getProperties();
-
-    final String polyCmd = prop.getProperty("POLYMAKEPATH");
-    final String polyDriver = prop.getProperty("POLYMAKEDRIVER");
+    String polyCmd = PointGroupsUtility.getPolymakePath().toString();
+    String polyDriver = PointGroupsUtility.getPolymakeDriverPath().toString();
 
     final PolymakeWrapper pmWrapper = new PolymakeWrapper(polyCmd, polyDriver);
     pmWrapper.start();

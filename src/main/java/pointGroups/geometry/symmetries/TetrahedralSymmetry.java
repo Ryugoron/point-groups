@@ -1,7 +1,6 @@
 package pointGroups.geometry.symmetries;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -80,8 +79,6 @@ public class TetrahedralSymmetry
   }
 
   static {
-    sym.subgroupTable.put(Subgroups.Id, Collections.singleton(id));
-
     // temporal
     Collection<UnitQuaternion> full = new HashSet<UnitQuaternion>();
     full.add(id);
@@ -110,7 +107,7 @@ public class TetrahedralSymmetry
    */
   public enum Subgroups
     implements Subgroup<TetrahedralSymmetry> {
-    Id("Trivial group"), Full("Full tetrahedral symmetry");
+    Full("Full tetrahedral symmetry");
 
     private final String name;
 

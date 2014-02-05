@@ -32,29 +32,30 @@ public class Quaternion
    * @param j j-coordinate of q
    * @param k k-coordinate of q
    */
-  public Quaternion(double re, double i, double j, double k) {
+  public Quaternion(final double re, final double i, final double j,
+      final double k) {
     this.re = re;
     this.i = i;
     this.j = j;
     this.k = k;
   }
 
-  protected Quaternion(double re, double i, double j, double k,
-      boolean assumeUnit) {
+  protected Quaternion(final double re, final double i, final double j,
+      final double k, final boolean assumeUnit) {
     double norm = 1d;
-    if (assumeUnit) norm = 1d / Math.sqrt(i * i + j * j + k * k + re * re);
+    if (!assumeUnit) norm = 1d / Math.sqrt(i * i + j * j + k * k + re * re);
     this.re = norm * re;
     this.i = norm * i;
     this.j = norm * j;
     this.k = norm * k;
   }
 
-  public Quaternion plus(Quaternion b) {
+  public Quaternion plus(final Quaternion b) {
     return new Quaternion(this.re + b.re, this.i + b.i, this.j + b.j, this.k +
         b.k);
   }
 
-  public Quaternion mult(Quaternion b) {
+  public Quaternion mult(final Quaternion b) {
     Quaternion a = this;
     double y0, y1, y2, y3;
 
@@ -108,7 +109,7 @@ public class Quaternion
     return this.re + " + " + this.i + "i " + this.j + " j" + this.k + " k";
   }
 
-  public static Quaternion fromDouble(double d) {
+  public static Quaternion fromDouble(final double d) {
     return new Quaternion(d, 0, 0, 0);
   }
 
@@ -117,7 +118,7 @@ public class Quaternion
    * @param b
    * @return euclidean distance between a und b
    */
-  public static double distance(Quaternion a, Quaternion b) {
+  public static double distance(final Quaternion a, final Quaternion b) {
     double re = (a.re - b.re) * (a.re - b.re);
     double i = Math.pow((a.i - b.i), 2);
     double j = Math.pow((a.j - b.j), 2);

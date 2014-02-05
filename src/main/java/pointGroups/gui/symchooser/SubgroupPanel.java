@@ -1,7 +1,6 @@
 package pointGroups.gui.symchooser;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.util.logging.Logger;
 
@@ -31,10 +30,6 @@ public class SubgroupPanel
 
   public SubgroupPanel() {
     super();
-    Dimension dim = new Dimension(150, 0);
-    setMinimumSize(dim);
-    setPreferredSize(dim);
-
     setCellRenderer(new SubgroupListCellRenderer());
 
     setSelectionBackground(Color.BLUE);

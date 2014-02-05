@@ -88,7 +88,7 @@ public class PointPicker
       testShow();
 
       // fundamental.setGeometry(Primitives.cylinder(15));
-      point.setGeometry(Primitives.point(new double[] { 0, 0, 0 }, "Take me :)"));
+      point.setGeometry(Primitives.point(new double[] { 0, 0, 0 }));
 
       setPointAppearance(pointAppearance);
       point.setAppearance(pointAppearance);

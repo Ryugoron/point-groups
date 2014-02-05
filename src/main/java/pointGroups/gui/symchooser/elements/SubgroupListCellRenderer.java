@@ -14,8 +14,6 @@ public class SubgroupListCellRenderer
   implements ListCellRenderer<Symmetry.Subgroup<?>>
 {
   private static final long serialVersionUID = 5300149105061974822L;
-  private static final String PREFIX =
-      "src/main/java/pointGroups/gui/symchooser/resources/";
 
   public SubgroupListCellRenderer() {
 
