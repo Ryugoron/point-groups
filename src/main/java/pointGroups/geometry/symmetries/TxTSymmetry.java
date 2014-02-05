@@ -8,27 +8,28 @@ import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Quaternion;
 import pointGroups.geometry.Symmetry;
 
-public class IxISymmetry implements Symmetry<Point4D, IxISymmetry>
+public class TxTSymmetry implements Symmetry<Point4D, TxTSymmetry>
 {
+
   /**
    * The singleton instance of the IxI's symmetry class.
    */
-  private final static IxISymmetry sym = new IxISymmetry();
+  private final static TxTSymmetry sym = new TxTSymmetry();
   private final List<Rotation4D> gen = new ArrayList<Rotation4D>();
  
   private static Collection<Rotation4D> group;
   
 
-  protected IxISymmetry(){
-    gen.add(new Rotation4D(GeneratorCreator.qI, Quaternion.ONE));
+  protected TxTSymmetry(){
+    gen.add(new Rotation4D(Quaternion.I, Quaternion.ONE));
     gen.add(new Rotation4D(GeneratorCreator.qw, Quaternion.ONE));
     
-    gen.add(new Rotation4D(Quaternion.ONE,GeneratorCreator.qI));
-    gen.add(new Rotation4D(Quaternion.ONE,GeneratorCreator.qw));
+    gen.add(new Rotation4D(Quaternion.ONE,Quaternion.I));
+    gen.add(new Rotation4D(Quaternion.ONE, GeneratorCreator.qw));
     group = GeneratorCreator.generateSymmetryGroup4D(gen);
   }
   public enum Subgroups
-  implements Subgroup<IxISymmetry> {
+  implements Subgroup<TxTSymmetry> {
   Id("Trivial group"), Full("Full [IxI] symmetry");
 
   private final String name;
@@ -48,13 +49,13 @@ public class IxISymmetry implements Symmetry<Point4D, IxISymmetry>
 }
   
   
-  public static IxISymmetry getSym(){
+  public static TxTSymmetry getSym(){
     return sym;
   }
   
   @Override
   public Collection<Point4D> images(Point4D p,
-      pointGroups.geometry.Symmetry.Subgroup<IxISymmetry> s) {
+      pointGroups.geometry.Symmetry.Subgroup<TxTSymmetry> s) {
     return calculateImages(new Quaternion(p.re, p.i, p.j, p.k));
   }
 
@@ -65,21 +66,21 @@ public class IxISymmetry implements Symmetry<Point4D, IxISymmetry>
   }
 
   @Override
-  public Collection<pointGroups.geometry.Symmetry.Subgroup<IxISymmetry>>
+  public Collection<pointGroups.geometry.Symmetry.Subgroup<TxTSymmetry>>
       getSubgroups() {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public int order(pointGroups.geometry.Symmetry.Subgroup<IxISymmetry> s) {
+  public int order(pointGroups.geometry.Symmetry.Subgroup<TxTSymmetry> s) {
     // TODO Auto-generated method stub
     return 0;
   }
 
   @Override
   public String getName() {
-    return "[I x I]";
+    return "[T x T]";
   }
 
   @Override
@@ -88,7 +89,7 @@ public class IxISymmetry implements Symmetry<Point4D, IxISymmetry>
   }
 
   @Override
-  public pointGroups.geometry.Symmetry.Subgroup<IxISymmetry> getSubgroupByName(
+  public pointGroups.geometry.Symmetry.Subgroup<TxTSymmetry> getSubgroupByName(
       String subgroup) {
     // TODO Auto-generated method stub
     return null;
@@ -107,7 +108,4 @@ public class IxISymmetry implements Symmetry<Point4D, IxISymmetry>
     }
     return rotatedPointcollection;
   }
-
-
-
 }

@@ -1,9 +1,15 @@
 package pointGroups.geometry.symmetries;
 
+import java.io.Serializable;
+
 import pointGroups.geometry.Quaternion;
 
-public class Rotation4D
+public class Rotation4D implements Serializable
 {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = -6485384305152700916L;
   public final Quaternion left;
   public final Quaternion right;
   public final Quaternion rightInvers;

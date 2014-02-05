@@ -1,9 +1,15 @@
 package pointGroups.geometry.symmetries;
 
 import pointGroups.geometry.Quaternion;
-import pointGroups.geometry.UnitQuaternion;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -194,15 +200,50 @@ public class GeneratorCreator
 
   }
   
-  public static void main(String[] args){
-    Collection<UnitQuaternion> fullIcosa = IcosahedralSymmetry.get().subgroupTable.get(IcosahedralSymmetry.Subgroups.Full);
-    List<Quaternion> icosa = new ArrayList<>();
-    for(UnitQuaternion uq : fullIcosa){
-      icosa.add(uq);
-    }
-    System.out.println("#Elemente bei Alex: "+icosa.size()+" #Elemente aus der Erzeuger: "+IcosahedralSymmetryGroup().size());
+  
+  public static void writeSymmetryGroup(String filename, Collection<Rotation4D> group) throws IOException{
+    // create a new file with an ObjectOutputStream
+    FileOutputStream out = new FileOutputStream(filename);
+    ObjectOutputStream oout = new ObjectOutputStream(out);
     
-    System.out.println("#Elem IxI: "+IcosahedralXIcosahedralSymmetryGroup().size());
+    oout.writeObject(group);
+    
+    oout.close();
+  }
+  
+  
+  public static Collection<Rotation4D> readSymmetryGroup(String filename) throws FileNotFoundException, IOException, ClassNotFoundException{
+    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename));
+    Object o = ois.readObject();
+    //TODO: ugly
+    Collection<Rotation4D> group =  ((Collection<Rotation4D>)o);
+    ois.close();
+    return group;
+  }
+  
+  public static void main(String[] args){
+    System.out.println("Start: "+Calendar.getInstance().getTime());
+//    Collection<Rotation4D> tXt = TxTSymGroup();
+//    System.out.println("#Elem TxT: "+tXt.size());
+//    try {
+//      writeSymmetryGroup("TxT.sym", tXt);
+//    }
+//    catch (IOException e) {
+//      // TODO Auto-generated catch block
+//      e.printStackTrace();
+//    }
+    
+    try {
+      Collection<Rotation4D> t = readSymmetryGroup("tXt.sym");
+      System.out.println("#Elemente = "+t.size());
+    }
+    catch (ClassNotFoundException | IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    System.out.println("Fertig: "+Calendar.getInstance().getTime());
+
+
   }
   
  
