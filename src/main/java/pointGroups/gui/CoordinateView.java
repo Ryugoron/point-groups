@@ -59,9 +59,9 @@ public class CoordinateView
   private Symmetry3DChooseEvent lastSymmetry3DChooseEvent;
   private Symmetry4DChooseEvent lastSymmetry4DChooseEvent;
 
-  public CoordinateView(int dimension,EventDispatcher dispatcher) {
+  public CoordinateView(int dimension, int maxDimension, EventDispatcher dispatcher) {
     this.setLayout(new BorderLayout());
-    inputField = new DimensioninputField(dimension);
+    inputField = new DimensioninputField(dimension, maxDimension);
     run = new JButton("Run");
     randomCoord = new JButton("Create random coordinate");
     this.dispatcher = dispatcher;
@@ -220,9 +220,10 @@ public class CoordinateView
     private final List<Dimensioninput> dimensioninputs;
     int dimension;
 
-    public DimensioninputField(int dim) {
+    public DimensioninputField(int dim, int maxdim) {
       this.setLayout(new FlowLayout());
       dimensioninputs = new ArrayList<Dimensioninput>();
+      setDimension(maxdim);
       setDimension(dim);
     }
 
@@ -291,7 +292,6 @@ public class CoordinateView
       for (int i = dimension; i < dimensioninputs.size(); i++) {
         dimensioninputs.get(i).deactiv();
       }
-      System.out.println("#DimInout: "+dim);
       this.validate();
       this.repaint();
     }
