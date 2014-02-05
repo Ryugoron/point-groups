@@ -3,6 +3,7 @@ package pointGroups.gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.io.IOException;
 
 import javax.swing.BorderFactory;
@@ -10,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -33,12 +35,14 @@ public class MainFrame
   protected JPanel schlegelView;
   protected JPanel pointPicker;
   protected JPanel symmetryChooser;
+  protected JSlider scaling;
   protected JPanel coordinates;
   protected JPanel statusBar;
   protected JFrame log;
 
   protected JSplitPane mainSplitPane;
   protected JSplitPane leftTopComponent;
+  protected JPanel leftBottomComponent;
   protected JSplitPane leftComponent;
 
   protected EventDispatcher dispatcher = EventDispatcher.get();
@@ -89,20 +93,26 @@ public class MainFrame
 
     symmetryChooser = new SymmetryChooser();
     pointPicker = new PointPicker(false);
-    coordinates = new CoordinateView(3, dispatcher);
+    coordinates = new CoordinateView(4, dispatcher);
+    scaling = new ScalingSlider();
 
     leftTopComponent =
         new JSplitPane(JSplitPane.VERTICAL_SPLIT, symmetryChooser, pointPicker);
+    
+    leftBottomComponent = new JPanel(new GridLayout(2,1));
+    leftBottomComponent.add(scaling);
+    leftBottomComponent.add(coordinates);
+    
     leftComponent =
-        new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, coordinates);
+        new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, leftBottomComponent);
 
     leftComponent.setBorder(BorderFactory.createEmptyBorder());
     leftTopComponent.setBorder(BorderFactory.createEmptyBorder());
     leftComponent.setOneTouchExpandable(true);
     leftTopComponent.setOneTouchExpandable(true);
 
-    leftComponent.setDividerLocation(600);
-    leftTopComponent.setDividerLocation(500);
+    leftComponent.setDividerLocation(550);
+    leftTopComponent.setDividerLocation(400);
 
     // add EventHandler for View menubar item
     dispatcher.addHandler(ShowFundamentalDomainEvent.TYPE, menuBarEventHandler);
