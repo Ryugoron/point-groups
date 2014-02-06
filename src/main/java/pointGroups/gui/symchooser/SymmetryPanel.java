@@ -1,6 +1,5 @@
 package pointGroups.gui.symchooser;
 
-import java.awt.Color;
 import java.util.logging.Logger;
 
 import javax.swing.DefaultListModel;
@@ -18,6 +17,7 @@ import pointGroups.geometry.Symmetry;
 import pointGroups.geometry.symmetries.IcosahedralSymmetry;
 import pointGroups.geometry.symmetries.OctahedralSymmetry;
 import pointGroups.geometry.symmetries.TetrahedralSymmetry;
+import pointGroups.geometry.symmetries.TxTSymmetry;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.symchooser.elements.SymmetryList;
@@ -48,7 +48,7 @@ public class SymmetryPanel
         new SymmetryList<Point4D>(this.symmetries4D, subgroupPanel);
     this.symmetries3DPanel.setSelectionBackground(SymmetryChooser.SelectionBackground);
     this.symmetries4DPanel.setSelectionBackground(SymmetryChooser.SelectionBackground);
-    
+
     this.fillPanelsWithSymmetries();
 
     add("3D", new JScrollPane(symmetries3DPanel,
@@ -92,5 +92,6 @@ public class SymmetryPanel
     this.symmetries3D.addElement(OctahedralSymmetry.get());
     this.symmetries3D.addElement(IcosahedralSymmetry.get());
     // 4D Symmetries
+    this.symmetries4D.addElement(TxTSymmetry.getSym());
   }
 }
