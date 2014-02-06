@@ -7,7 +7,12 @@ import javax.swing.JList;
 import javax.swing.ListModel;
 
 import pointGroups.geometry.Point;
+import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Symmetry;
+import pointGroups.gui.event.EventDispatcher;
+import pointGroups.gui.event.types.Symmetry3DChooseEvent;
+import pointGroups.gui.event.types.Symmetry4DChooseEvent;
 import pointGroups.gui.symchooser.SubgroupPanel;
 import pointGroups.util.gui.MouseAdapter;
 
@@ -33,9 +38,19 @@ public class SymmetryList<P extends Point>
         final SymmetryList<P> list = SymmetryList.this;
         final int index = list.locationToIndex(e.getPoint());
         list.setSelectedIndex(index);
-        subgroupPanel.choose(list.getSelectedValue());
+        // subgroupPanel.choose(list.getSelectedValue());
+        Class<?> type = list.getSelectedValue().getType();
+        if (type == Point3D.class) {
+          EventDispatcher.get().fireEvent(
+              new Symmetry3DChooseEvent(
+                  (Symmetry<Point3D, ?>) list.getSelectedValue(), "Full"));
+        }
+        else if (type == Point4D.class) {
+          EventDispatcher.get().fireEvent(
+              new Symmetry4DChooseEvent(
+                  (Symmetry<Point4D, ?>) list.getSelectedValue(), "Full"));
+        }
       }
     });
   }
-
 }
