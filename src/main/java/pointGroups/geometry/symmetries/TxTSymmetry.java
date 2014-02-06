@@ -62,7 +62,7 @@ public class TxTSymmetry
 
   public enum Subgroups
     implements Subgroup<TxTSymmetry> {
-    Full("Full [IxI] symmetry");
+    Full("Full [TxT] symmetry");
 
     private final String name;
 
