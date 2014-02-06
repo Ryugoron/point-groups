@@ -20,7 +20,7 @@ public class KnownFundamental
   implements Fundamental
 {
 
-  private static final double EPSILON = 0.01;
+  private static final double EPSILON = 0.1;
 
   final protected Logger logger = LoggerFactory.get(KnownFundamental.class);
 
