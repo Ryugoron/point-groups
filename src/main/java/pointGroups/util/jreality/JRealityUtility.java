@@ -38,6 +38,14 @@ public class JRealityUtility
     return new Point3D(point[0], point[1], point[2]);
   }
 
+  public static Point4D asPoint4D(double[] point) {
+    if (point == null || point.length != 4)
+      throw new RuntimeException("could not convert the given point(" +
+          printPoint(point) + ") into a Point4D");
+
+    return new Point4D(point[0], point[1], point[2], point[3]);
+  }
+
   public static double[][] convertPoints(Point[] points) {
     double[][] points_ = new double[points.length][];
 
@@ -80,24 +88,15 @@ public class JRealityUtility
     return ifsf.getGeometry();
   }
 
-  
-  public static Geometry generateCompleteGraph(double[][] points){
-	  // Enumerate all edges
-	  int[][] edges = new int[points.length*(points.length-1) / 2][2];
-	  int at = 0;
-	  for(int i = 0; i < points.length; i++){
-		  for(int j = (i+1); j < points.length; j++){
-			  edges[at++] = new int[] {i, j};
-		  }
-	  }
-	  return generateGraph(points,edges);
-  }
-
-  public static Point4D asPoint4D(double[] point) {
-    if (point == null || point.length != 4)
-      throw new RuntimeException("could not convert the given point(" +
-          printPoint(point) + ") into a Point4D");
-
-    return new Point4D(point[0], point[1], point[2],point[3]);
+  public static Geometry generateCompleteGraph(double[][] points) {
+    // Enumerate all edges
+    int[][] edges = new int[points.length * (points.length - 1) / 2][2];
+    int at = 0;
+    for (int i = 0; i < points.length; i++) {
+      for (int j = (i + 1); j < points.length; j++) {
+        edges[at++] = new int[] { i, j };
+      }
+    }
+    return generateGraph(points, edges);
   }
 }
