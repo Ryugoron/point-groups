@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import pointGroups.geometry.Fundamental;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
+import pointGroups.geometry.UnknownFundamental;
 import pointGroups.gui.event.Event;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.FundamentalResultEvent;
@@ -107,6 +108,7 @@ public class ExternalCalculationEventHub
     // Point4D p = event.getSymmetry4D().getNormalPoint();
     // submit(new FundamentalTransformer(event.getSymmetry4D().images(p,
     // event.getSubgroup())));
+    dispatcher.fireEvent(new FundamentalResultEvent(new UnknownFundamental()));
   }
 
   @Override
