@@ -19,6 +19,8 @@ import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.event.types.DimensionSwitchHandler;
 import pointGroups.gui.event.types.FundamentalResultEvent;
 import pointGroups.gui.event.types.FundamentalResultHandler;
+import pointGroups.gui.event.types.ScaleFundamentalDomainEvent;
+import pointGroups.gui.event.types.ScaleFundamentalDomainHandler;
 import pointGroups.gui.event.types.Schlegel3DComputeEvent;
 import pointGroups.gui.event.types.Schlegel4DComputeEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
@@ -27,6 +29,7 @@ import pointGroups.gui.event.types.Symmetry4DChooseEvent;
 import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.util.LoggerFactory;
 import pointGroups.util.jreality.JRealityUtility;
+import pointGroups.util.point.PointUtil;
 import pointGroups.util.polymake.FundamentalTransformer;
 import de.jreality.geometry.Primitives;
 import de.jreality.scene.Appearance;
@@ -47,12 +50,14 @@ public class PointPicker
   extends JPanel
   implements FundamentalResultHandler, DimensionSwitchHandler,
   ChangeCoordinate3DPointHandler, ChangeCoordinate4DPointHandler,
-  Symmetry3DChooseHandler, Symmetry4DChooseHandler
+  Symmetry3DChooseHandler, Symmetry4DChooseHandler,
+  ScaleFundamentalDomainHandler
 {
 
   private static final long serialVersionUID = -3642299900579728806L;
 
   private final boolean responsive;
+  private double scale = 1; // TODO Initialize ändern
 
   private Symmetry3DChooseEvent lastSymmetry3DChooseEvent;
   private Symmetry4DChooseEvent lastSymmetry4DChooseEvent;
@@ -192,6 +197,7 @@ public class PointPicker
     this.dispatcher.addHandler(ChangeCoordinate4DPointEvent.TYPE, this);
     this.dispatcher.addHandler(Symmetry4DChooseEvent.TYPE, this);
     this.dispatcher.addHandler(Symmetry3DChooseEvent.TYPE, this);
+    this.dispatcher.addHandler(ScaleFundamentalDomainEvent.TYPE, this);
 
   }
 
@@ -246,7 +252,9 @@ public class PointPicker
 
     logger.fine("Point Picker calculated Point (" + resP[0] + "," + resP[1] +
         "," + resP[2] + (this.dim == 3 ? "," + resP[3] : "") + ")");
-
+    resP = PointUtil.mult(this.scale, resP);
+    System.out.println("Scale: " + this.scale + ", point : " +
+        PointUtil.showPoint(resP));
     // Fire Event, that the coordinate changed
     if (dim == 2) {
       this.dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(
@@ -315,5 +323,10 @@ public class PointPicker
   @Override
   public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
     this.lastSymmetry3DChooseEvent = event;
+  }
+
+  @Override
+  public void onScaleFundamentalDomainEvent(ScaleFundamentalDomainEvent event) {
+    this.scale = 1.0 * event.getScale();
   }
 }
