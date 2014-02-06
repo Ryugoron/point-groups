@@ -4,13 +4,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Quaternion;
 import pointGroups.geometry.Symmetry;
 
-public class TxTSymmetry implements Symmetry<Point4D, TxTSymmetry>
+
+public class TxTSymmetry
+  implements Symmetry<Point4D, TxTSymmetry>
 {
 
   /**
@@ -19,12 +22,11 @@ public class TxTSymmetry implements Symmetry<Point4D, TxTSymmetry>
   private final static TxTSymmetry sym = new TxTSymmetry(true);
   private final List<Rotation4D> gen = new ArrayList<Rotation4D>();
   private final static String filename = "tXt.sym";
- 
-  private static Collection<Rotation4D> group;
-  
 
-  protected TxTSymmetry(boolean readFile){
-    if(readFile){
+  private static Collection<Rotation4D> group;
+
+  protected TxTSymmetry(final boolean readFile) {
+    if (readFile) {
       try {
         group = GeneratorCreator.readSymmetryGroup(filename);
       }
@@ -40,66 +42,66 @@ public class TxTSymmetry implements Symmetry<Point4D, TxTSymmetry>
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
-      //TODO: ungly!!!!1111
-    }else
-    {
+      // TODO: ungly!!!!1111
+    }
+    else {
       gen.add(new Rotation4D(Quaternion.I, Quaternion.ONE));
       gen.add(new Rotation4D(GeneratorCreator.qw, Quaternion.ONE));
-      
-      gen.add(new Rotation4D(Quaternion.ONE,Quaternion.I));
+
+      gen.add(new Rotation4D(Quaternion.ONE, Quaternion.I));
       gen.add(new Rotation4D(Quaternion.ONE, GeneratorCreator.qw));
       group = GeneratorCreator.generateSymmetryGroup4D(gen);
     }
-    
+
   }
+
+
   public enum Subgroups
-  implements Subgroup<TxTSymmetry> {
-  Id("Trivial group"), Full("Full [IxI] symmetry");
+    implements Subgroup<TxTSymmetry> {
+    Full("Full [IxI] symmetry");
 
-  private final String name;
+    private final String name;
 
-  Subgroups(final String name) {
-    this.name = name;
-  }
-  @Override
-  public String getName() {
-    return this.name;
+    Subgroups(final String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String getName() {
+      return this.name;
+    }
+
+    @Override
+    public int order() {
+      return sym.order(this);
+    }
   }
 
-  @Override
-  public int order() {
-    return sym.order(this);
-  }
-}
-  
-  
-  public static TxTSymmetry getSym(){
+  public static TxTSymmetry getSym() {
     return sym;
   }
-  
+
   @Override
-  public Collection<Point4D> images(Point4D p,
-      pointGroups.geometry.Symmetry.Subgroup<TxTSymmetry> s) {
+  public Collection<Point4D> images(final Point4D p,
+      final Subgroup<TxTSymmetry> s) {
     return calculateImages(new Quaternion(p.re, p.i, p.j, p.k));
   }
 
   @Override
-  public Collection<Point4D> images(Point4D p, String s) {
-    //TODO: subgroups?
-    return images(p, Subgroups.Full);
+  public Collection<Point4D> images(final Point4D p, final String s) {
+    return images(p, Subgroups.valueOf(s));
   }
 
   @Override
-  public Collection<pointGroups.geometry.Symmetry.Subgroup<TxTSymmetry>>
-      getSubgroups() {
-    // TODO Auto-generated method stub
-    return null;
+  public Collection<Subgroup<TxTSymmetry>> getSubgroups() {
+    Collection<Subgroup<TxTSymmetry>> c = new LinkedList<>();
+    c.add(Subgroups.Full);
+    return c;
   }
 
   @Override
-  public int order(pointGroups.geometry.Symmetry.Subgroup<TxTSymmetry> s) {
-    // TODO Auto-generated method stub
-    return 0;
+  public int order(final pointGroups.geometry.Symmetry.Subgroup<TxTSymmetry> s) {
+    return 576;
   }
 
   @Override
@@ -109,25 +111,22 @@ public class TxTSymmetry implements Symmetry<Point4D, TxTSymmetry>
 
   @Override
   public Class<Point4D> getType() {
-   return Point4D.class;
+    return Point4D.class;
   }
 
   @Override
-  public pointGroups.geometry.Symmetry.Subgroup<TxTSymmetry> getSubgroupByName(
-      String subgroup) {
-    // TODO Auto-generated method stub
-    return null;
+  public Subgroup<TxTSymmetry> getSubgroupByName(final String subgroup) {
+    return Subgroups.valueOf(subgroup);
   }
 
   @Override
   public Point4D getNormalPoint() {
-    // TODO Auto-generated method stub
-    return null;
+    return new Point4D(0.2, 0.3, 0.4, 0.5); // just anything
   }
-  
-  private Collection<Point4D> calculateImages(Quaternion q){
+
+  private Collection<Point4D> calculateImages(final Quaternion q) {
     Collection<Point4D> rotatedPointcollection = new ArrayList<>();
-    for(Rotation4D r : group){
+    for (Rotation4D r : group) {
       rotatedPointcollection.add(r.rotate(q).asPoint4D());
     }
     return rotatedPointcollection;
