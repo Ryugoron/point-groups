@@ -1,5 +1,6 @@
 package pointGroups.geometry.symmetries;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Quaternion;
 import pointGroups.geometry.Symmetry;
+import pointGroups.util.PointGroupsUtility;
 
 
 public class TxTSymmetry
@@ -21,14 +23,16 @@ public class TxTSymmetry
    */
   private final static TxTSymmetry sym = new TxTSymmetry(true);
   private final List<Rotation4D> gen = new ArrayList<Rotation4D>();
-  private final static String filename = "tXt.sym";
+  private final static String filename = "symmetries/tXt.sym";
 
   private static Collection<Rotation4D> group;
 
   protected TxTSymmetry(final boolean readFile) {
     if (readFile) {
       try {
-        group = GeneratorCreator.readSymmetryGroup(filename);
+        group =
+            GeneratorCreator.readSymmetryGroup(new File(
+                PointGroupsUtility.getResource(filename)));
       }
       catch (FileNotFoundException e) {
         // TODO Auto-generated catch block

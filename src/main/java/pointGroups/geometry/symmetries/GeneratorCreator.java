@@ -1,7 +1,6 @@
 package pointGroups.geometry.symmetries;
 
-import pointGroups.geometry.Quaternion;
-
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,87 +12,79 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
+import pointGroups.geometry.Quaternion;
+
 
 public class GeneratorCreator
 {
   public static final double epsilon = 1E-10;
-  //See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 33
-  public static final  double sigma = (Math.sqrt(5) - 1) / 2;
+  // See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 33
+  public static final double sigma = (Math.sqrt(5) - 1) / 2;
   public static final double tau = (Math.sqrt(5) + 1) / 2;
   public static final Quaternion qw = new Quaternion(-0.5, 0.5, 0.5, 0.5);
 
-  public static final Quaternion qI = new Quaternion(0, 0.5, sigma * 0.5, tau * 0.5);
-  public static final Quaternion qO = new Quaternion(0, 0, 1/Math.sqrt(2), 1/Math.sqrt(2));
+  public static final Quaternion qI = new Quaternion(0, 0.5, sigma * 0.5,
+      tau * 0.5);
+  public static final Quaternion qO = new Quaternion(0, 0, 1 / Math.sqrt(2),
+      1 / Math.sqrt(2));
   public static final Quaternion qT = new Quaternion(0, 1, 0, 0);
 
-  
-/**
- * 
- * @return Groupelems of iscosahedral symmetry group
- */
-  public static List<Quaternion> IcosahedralSymmetryGroup(){
+  /**
+   * @return Groupelems of iscosahedral symmetry group
+   */
+  public static List<Quaternion> IcosahedralSymmetryGroup() {
     List<Quaternion> gen = new ArrayList<Quaternion>();
     gen.add(qI);
     gen.add(qw);
     return generateSymmetryGroup3D(gen);
-  }  
-  
-  
-  
-  
-  public static List<Rotation4D> TxTSymGroup(){
+  }
+
+  public static List<Rotation4D> TxTSymGroup() {
     List<Rotation4D> gen = new ArrayList<Rotation4D>();
     gen.add(new Rotation4D(Quaternion.I, Quaternion.ONE));
     gen.add(new Rotation4D(qw, Quaternion.ONE));
-    gen.add(new Rotation4D(Quaternion.ONE,Quaternion.I));
+    gen.add(new Rotation4D(Quaternion.ONE, Quaternion.I));
     gen.add(new Rotation4D(Quaternion.ONE, qw));
     return generateSymmetryGroup4D(gen);
 
-
-    
   }
- 
-  public static List<Rotation4D> IcosahedralXIcosahedralSymmetryGroup(){
-     List<Rotation4D> gen = new ArrayList<Rotation4D>();
-     gen.add(new Rotation4D(qI, Quaternion.ONE));
-     gen.add(new Rotation4D(qw, Quaternion.ONE));
-     
-     gen.add(new Rotation4D(Quaternion.ONE,qI));
-     gen.add(new Rotation4D(Quaternion.ONE,qw));
-     return generateSymmetryGroup4D(gen);
-   }  
-  
+
+  public static List<Rotation4D> IcosahedralXIcosahedralSymmetryGroup() {
+    List<Rotation4D> gen = new ArrayList<Rotation4D>();
+    gen.add(new Rotation4D(qI, Quaternion.ONE));
+    gen.add(new Rotation4D(qw, Quaternion.ONE));
+
+    gen.add(new Rotation4D(Quaternion.ONE, qI));
+    gen.add(new Rotation4D(Quaternion.ONE, qw));
+    return generateSymmetryGroup4D(gen);
+  }
+
   /**
-   * 
    * @return Groupelems of octahedral symmetry group
    */
-    public static List<Quaternion> OctahedralSymmetryGroup(){
-      List<Quaternion> gen = new ArrayList<Quaternion>();
-      gen.add(qO);
-      gen.add(qI);
-      return generateSymmetryGroup3D(gen);
-    } 
-    
-    
-    
-    /**
-     * 
-     * @return Groupelems of tetrahedral symmetry group
-     */
-      public static List<Quaternion> TetrahedralSymmetryGroup(){
-        List<Quaternion> gen = new ArrayList<Quaternion>();
-        gen.add(qT);
-        gen.add(qw);
-        return generateSymmetryGroup3D(gen);
-      }  
-  
+  public static List<Quaternion> OctahedralSymmetryGroup() {
+    List<Quaternion> gen = new ArrayList<Quaternion>();
+    gen.add(qO);
+    gen.add(qI);
+    return generateSymmetryGroup3D(gen);
+  }
 
   /**
-   * 
+   * @return Groupelems of tetrahedral symmetry group
+   */
+  public static List<Quaternion> TetrahedralSymmetryGroup() {
+    List<Quaternion> gen = new ArrayList<Quaternion>();
+    gen.add(qT);
+    gen.add(qw);
+    return generateSymmetryGroup3D(gen);
+  }
+
+  /**
    * @param generators
    * @return Groupelem generate by generators
    */
-  public static List<Quaternion> generateSymmetryGroup3D(List<Quaternion> generators) {
+  public static List<Quaternion> generateSymmetryGroup3D(
+      final List<Quaternion> generators) {
     int newElems = 0;
     List<Quaternion> group = new ArrayList<>(generators);
     List<Quaternion> newGroupelem = new ArrayList<>();
@@ -117,9 +108,9 @@ public class GeneratorCreator
     while (newElems != 0);
     return group;
   }
-  
-  
-  public static List<Rotation4D> generateSymmetryGroup4D(List<Rotation4D> generators){
+
+  public static List<Rotation4D> generateSymmetryGroup4D(
+      final List<Rotation4D> generators) {
     int newElems = 0;
     List<Rotation4D> group = new ArrayList<>(generators);
     List<Rotation4D> newGroupelem = new ArrayList<>();
@@ -134,8 +125,8 @@ public class GeneratorCreator
             newGroupelem.add(z);
             newElems++;
             n++;
-            if(n%100 == 0){
-              System.out.println("n = "+n);
+            if (n % 100 == 0) {
+              System.out.println("n = " + n);
             }
           }
         }
@@ -146,105 +137,107 @@ public class GeneratorCreator
       newGroupelem.clear();
     }
     while (newElems != 0);
-    return group;  
+    return group;
   }
-  
- 
 
-  private static boolean containsApprox(List<Quaternion> list, Quaternion x) {
+  private static boolean containsApprox(final List<Quaternion> list,
+      final Quaternion x) {
     for (Quaternion y : list) {
       if (equalApprox(x, y)) { return true; }
     }
     return false;
   }
 
-  private static boolean equalApprox(Quaternion a, Quaternion b) {
+  private static boolean equalApprox(final Quaternion a, final Quaternion b) {
     double distance = Quaternion.distance(a, b);
     return distance < epsilon;
-  } 
-  
-  private static boolean containsApprox(List<Rotation4D> list, Rotation4D x) {
+  }
+
+  private static boolean containsApprox(final List<Rotation4D> list,
+      final Rotation4D x) {
     for (Rotation4D y : list) {
       if (equalApprox(x, y)) { return true; }
     }
     return false;
   }
 
-  private static boolean equalApprox(Rotation4D a, Rotation4D b) {
+  private static boolean equalApprox(final Rotation4D a, final Rotation4D b) {
     double distance = a.distance(b);
     return distance < epsilon;
-  } 
-  
+  }
+
   /**
    * count elems of g1 that are not in g2
+   * 
    * @param g1
    * @param g2
    * @return
    */
-  public static int notInG2(List<Quaternion> g1 , List<Quaternion> g2){
+  public static int
+      notInG2(final List<Quaternion> g1, final List<Quaternion> g2) {
     int notFoundInG2 = 0;
-    for(Quaternion q : g1){
-      if(!containsApprox(g2, q)){
+    for (Quaternion q : g1) {
+      if (!containsApprox(g2, q)) {
         notFoundInG2++;
-      }    
+      }
     }
     return notFoundInG2;
   }
-  
-  public static boolean equalGroups(List<Quaternion> g1 , List<Quaternion> g2){
-    int notFoundInG2 = notInG2(g1, g2);
-    int notFoundInG1 = notInG2(g2,g1);
 
-  
+  public static boolean equalGroups(final List<Quaternion> g1,
+      final List<Quaternion> g2) {
+    int notFoundInG2 = notInG2(g1, g2);
+    int notFoundInG1 = notInG2(g2, g1);
+
     return notFoundInG1 == 0 && notFoundInG2 == 0;
 
   }
-  
-  
-  public static void writeSymmetryGroup(String filename, Collection<Rotation4D> group) throws IOException{
+
+  public static void writeSymmetryGroup(final String filename,
+      final Collection<Rotation4D> group)
+    throws IOException {
     // create a new file with an ObjectOutputStream
     FileOutputStream out = new FileOutputStream(filename);
     ObjectOutputStream oout = new ObjectOutputStream(out);
-    
+
     oout.writeObject(group);
-    
+
     oout.close();
   }
-  
-  
-  public static Collection<Rotation4D> readSymmetryGroup(String filename) throws FileNotFoundException, IOException, ClassNotFoundException{
-    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename));
+
+  public static Collection<Rotation4D> readSymmetryGroup(final File filename)
+    throws FileNotFoundException, IOException, ClassNotFoundException {
+    ObjectInputStream ois =
+        new ObjectInputStream(new FileInputStream(filename));
     Object o = ois.readObject();
-    //TODO: ugly
-    Collection<Rotation4D> group =  ((Collection<Rotation4D>)o);
+    // TODO: ugly
+    Collection<Rotation4D> group = ((Collection<Rotation4D>) o);
     ois.close();
     return group;
   }
-  
-  public static void main(String[] args){
-    System.out.println("Start: "+Calendar.getInstance().getTime());
-//    Collection<Rotation4D> tXt = TxTSymGroup();
-//    System.out.println("#Elem TxT: "+tXt.size());
-//    try {
-//      writeSymmetryGroup("TxT.sym", tXt);
-//    }
-//    catch (IOException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    }
-    
+
+  public static void main(final String[] args) {
+    System.out.println("Start: " + Calendar.getInstance().getTime());
+    // Collection<Rotation4D> tXt = TxTSymGroup();
+    // System.out.println("#Elem TxT: "+tXt.size());
+    // try {
+    // writeSymmetryGroup("TxT.sym", tXt);
+    // }
+    // catch (IOException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // }
+
     try {
-      Collection<Rotation4D> t = readSymmetryGroup("tXt.sym");
-      System.out.println("#Elemente = "+t.size());
+      Collection<Rotation4D> t = readSymmetryGroup(new File("tXt.sym"));
+      System.out.println("#Elemente = " + t.size());
     }
     catch (ClassNotFoundException | IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    System.out.println("Fertig: "+Calendar.getInstance().getTime());
-
+    System.out.println("Fertig: " + Calendar.getInstance().getTime());
 
   }
-  
- 
+
 }
