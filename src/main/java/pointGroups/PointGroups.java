@@ -8,9 +8,17 @@ import java.io.IOException;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import pointGroups.geometry.Point3D;
+import pointGroups.geometry.symmetries.TetrahedralSymmetry;
 import pointGroups.gui.ExternalCalculationEventHub;
 import pointGroups.gui.MainFrame;
 import pointGroups.gui.StartupErrorFrame;
+import pointGroups.gui.event.EventDispatcher;
+import pointGroups.gui.event.types.ChangeCoordinate3DPointEvent;
+import pointGroups.gui.event.types.DimensionSwitchEvent;
+import pointGroups.gui.event.types.ScaleFundamentalDomainEvent;
+import pointGroups.gui.event.types.Schlegel3DComputeEvent;
+import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.util.ExternalCalculationWrapper;
 import pointGroups.util.PointGroupsUtility;
 import pointGroups.util.polymake.wrapper.PolymakeWrapper;
@@ -72,6 +80,24 @@ public class PointGroups
       polymakeWrapper =
           new PolymakeWrapper(polyCmd.toString(), driverPath.toString());
       new ExternalCalculationEventHub(polymakeWrapper);
+
+      // fire events to initialize the whole gui
+      {
+        Symmetry3DChooseEvent symmetry3dChooseEvent =
+            new Symmetry3DChooseEvent(TetrahedralSymmetry.get(),
+                TetrahedralSymmetry.Subgroups.Full.toString());
+        Point3D point = new Point3D(0, 0, 1);
+
+        EventDispatcher.get().fireEvent(new ScaleFundamentalDomainEvent(1));
+        EventDispatcher.get().fireEvent(new DimensionSwitchEvent(Point3D.class));
+        EventDispatcher.get().fireEvent(symmetry3dChooseEvent);
+
+        EventDispatcher.get().fireEvent(
+            new ChangeCoordinate3DPointEvent(point, new Object()));
+
+        EventDispatcher.get().fireEvent(
+            new Schlegel3DComputeEvent(symmetry3dChooseEvent, point));
+      }
     }
   }
 }
