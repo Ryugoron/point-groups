@@ -82,7 +82,8 @@ public class MainFrame
     menuBar = new Menubar(dispatcher);
     statusBar = new StatusBar(dispatcher);
 
-    add(menuBar, BorderLayout.NORTH);
+    setJMenuBar(menuBar);
+
     add(mainSplitPane, BorderLayout.CENTER);
     add(statusBar, BorderLayout.SOUTH);
 
