@@ -92,7 +92,9 @@ public class StatusBar
       statusLabel.setText("[" + hour + ":0" + minute + "] " + status);
 
     }
-    statusLabel.setText("[" + hour + ":" + minute + "] " + status);
+    else{
+      statusLabel.setText("[" + hour + ":" + minute + "] " + status);
+    }
   }
 
   public void removeStatusmessage() {
