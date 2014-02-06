@@ -10,14 +10,17 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 
 import de.jreality.jogl.JOGLViewer;
+import de.jreality.math.Pn;
 import de.jreality.plugin.JRViewer;
 import de.jreality.plugin.JRViewerUtility;
 import de.jreality.plugin.basic.Content;
 import de.jreality.scene.Appearance;
+import de.jreality.scene.Camera;
 import de.jreality.scene.Geometry;
 import de.jreality.scene.SceneGraphComponent;
 import de.jreality.scene.Transformation;
 import de.jreality.scene.Viewer;
+import de.jreality.scene.tool.AbstractTool;
 import de.jreality.scene.tool.InputSlot;
 import de.jreality.scene.tool.Tool;
 import de.jreality.scene.tool.ToolContext;
@@ -32,6 +35,7 @@ import de.jreality.tools.AnimatorTool;
 import de.jreality.tools.ClickWheelCameraZoomTool;
 import de.jreality.tools.DraggingTool;
 import de.jreality.tools.RotateTool;
+import de.jreality.util.EncompassFactory;
 import de.jtem.jrworkspace.plugin.Controller;
 import de.jtem.jrworkspace.plugin.Plugin;
 
@@ -274,16 +278,20 @@ public class UiViewer
     protected LeftClickDraggingTool leftClickDraggingTool;
     protected RightClickDraggingTool rightClickDraggingTool;
     protected ViewerRotateTool rotateTool;
-    protected ClickWheelCameraZoomTool zoomTool;
+    protected ViewerZoomTool zoomTool;
+    protected ViewerEncompassTool encompassTool;
+    protected ViewerResetTool resetTool;
 
     public UiViewerToolsPlugin() {
+      resetTool = new ViewerResetTool();
+
       leftClickDraggingTool = new LeftClickDraggingTool();
       leftClickDraggingTool.setMoveChildren(false);
 
       rightClickDraggingTool = new RightClickDraggingTool();
       rightClickDraggingTool.setMoveChildren(false);
 
-      zoomTool = new ClickWheelCameraZoomTool();
+      zoomTool = new ViewerZoomTool();
 
       rotateTool = new ViewerRotateTool();
       rotateTool.setFixOrigin(false);
@@ -291,6 +299,8 @@ public class UiViewer
       rotateTool.setUpdateCenter(false);
       rotateTool.setAnimTimeMin(250.0);
       rotateTool.setAnimTimeMax(750.0);
+
+      encompassTool = new ViewerEncompassTool();
     }
 
     @Override
@@ -309,6 +319,8 @@ public class UiViewer
       setRotateEnabled(false);
       setDragEnabled(false);
       setZoomEnabled(false);
+      setEmcompassEnabled(false);
+      setToolEnabled(resetTool, false);
 
       super.uninstall(c);
     }
@@ -319,6 +331,8 @@ public class UiViewer
       setRotateEnabled(true);
       setDragEnabled(true);
       setZoomEnabled(true);
+      setEmcompassEnabled(true);
+      setToolEnabled(resetTool, true);
 
       resetCamera();
     }
@@ -329,6 +343,8 @@ public class UiViewer
       setRotateEnabled(false);
       setDragEnabled(true);
       setZoomEnabled(true);
+      setEmcompassEnabled(true);
+      setToolEnabled(resetTool, true);
 
       resetCamera();
     }
@@ -342,10 +358,11 @@ public class UiViewer
     }
 
     public void resetCamera() {
-      rotateTool.stopAnimation();
+      resetTool.reset();
+    }
 
-      if (rootScene == null) return;
-      rootScene.setTransformation(new Transformation());
+    public void setEmcompassEnabled(boolean enable) {
+      setToolEnabled(encompassTool, enable);
     }
 
     public void setRotateEnabled(boolean enable) {
@@ -371,29 +388,158 @@ public class UiViewer
     }
 
 
+    protected class ViewerResetTool
+      extends AbstractTool
+    {
+      final InputSlot resetSlot = InputSlot.getDevice("DrawPickActivation");
+
+      public ToolContext lastToolContext;
+      public Double fieldOfView = null;
+
+      public ViewerResetTool() {
+        addCurrentSlot(resetSlot);
+      }
+
+      @Override
+      public void perform(ToolContext tc) {
+        setLastToolContext(tc);
+        System.out.println("ResetTool: reset");
+        reset();
+      }
+
+      public void setFieldOfView(ToolContext tc) {
+        if (fieldOfView != null) return;
+
+        Camera cam = (Camera) tc.getViewer().getCameraPath().getLastElement();
+        fieldOfView = cam.getFieldOfView();
+        System.out.println("Set Field of View: " + fieldOfView);
+      }
+
+      public void setLastToolContext(ToolContext tc) {
+        lastToolContext = tc;
+      }
+
+      public void reset() {
+        stopAnimation();
+        resetTransformation();
+        resetZoom();
+
+        if (lastToolContext != null) {
+          lastToolContext.getViewer().renderAsync();
+        }
+      }
+
+      public boolean resetZoom() {
+        if (lastToolContext == null || fieldOfView == null) return false;
+        ToolContext tc = lastToolContext;
+
+        Camera cam = (Camera) tc.getViewer().getCameraPath().getLastElement();
+        cam.setFieldOfView(fieldOfView);
+
+        fieldOfView = null;
+
+        return true;
+      }
+
+      public boolean resetTransformation() {
+        if (rootScene == null) return false;
+        rootScene.setTransformation(new Transformation());
+        return true;
+      }
+
+      public boolean stopAnimation() {
+        if (lastToolContext == null || rootScene == null) return false;
+
+        // stop the rotation animation
+        AnimatorTool.getInstance(lastToolContext).deschedule(rootScene);
+        return true;
+      }
+    }
+
+
+    protected class ViewerZoomTool
+      extends ClickWheelCameraZoomTool
+    {
+      @Override
+      public void activate(ToolContext tc) {
+        resetTool.setFieldOfView(tc);
+
+        super.activate(tc);
+
+        resetTool.setLastToolContext(tc);
+      }
+    }
+
+
+    protected class ViewerEncompassTool
+      extends AbstractTool
+    {
+
+      double margin = 1.75; // value greater than one creates a margin around
+                            // the encompassed object
+      boolean automaticClippingPlanes = true;
+
+      final InputSlot encompassSlot =
+          InputSlot.getDevice("EncompassActivation");
+      final InputSlot SHIFT = InputSlot.getDevice("Secondary");
+      final InputSlot CTRL = InputSlot.getDevice("Meta");
+
+      EncompassFactory encompassFactory = new EncompassFactory();
+
+      public ViewerEncompassTool() {
+        addCurrentSlot(encompassSlot);
+      }
+
+      @Override
+      public void perform(ToolContext tc) {
+        // HACK: otherwise collision with viewerapp key bindings
+        if (tc.getAxisState(SHIFT).isPressed() ||
+            tc.getAxisState(CTRL).isPressed()) return;
+
+        if (tc.getAxisState(encompassSlot).isPressed()) {
+          System.out.println("encompass performed");
+
+          resetTool.setLastToolContext(tc);
+          resetCamera();
+
+          // TODO get the metric from the effective appearance of avatar path
+          encompassFactory.setAvatarPath(tc.getAvatarPath());
+          encompassFactory.setCameraPath(tc.getViewer().getCameraPath());
+          encompassFactory.setScenePath(tc.getRootToLocal());
+          encompassFactory.setMargin(margin);
+          encompassFactory.setMetric(Pn.EUCLIDEAN); // TODO: other metrics?
+          encompassFactory.setClippingPlanes(automaticClippingPlanes);
+          encompassFactory.update();
+        }
+      }
+
+      public void setMargin(double p) {
+        margin = p;
+      }
+
+      public double getMargin() {
+        return margin;
+      }
+
+      public boolean isSetClippingPlanes() {
+        return automaticClippingPlanes;
+      }
+
+      public void setAutomaticClippingPlanes(boolean setClippingPlanes) {
+        this.automaticClippingPlanes = setClippingPlanes;
+      }
+    }
+
+
     protected class ViewerRotateTool
       extends RotateTool
     {
-      protected transient ToolContext lastToolContext;
 
       @Override
       public void activate(ToolContext tc) {
         super.activate(tc);
         rootScene = comp;
-      }
-
-      @Override
-      public void deactivate(ToolContext tc) {
-        super.deactivate(tc);
-        lastToolContext = tc;
-      }
-
-      public boolean stopAnimation() {
-        if (lastToolContext == null || comp == null) return false;
-
-        // stop the rotation animation
-        AnimatorTool.getInstance(lastToolContext).deschedule(comp);
-        return true;
+        resetTool.setLastToolContext(tc);
       }
     }
 
@@ -410,6 +556,7 @@ public class UiViewer
       public void activate(ToolContext tc) {
         super.activate(tc);
         rootScene = comp;
+        resetTool.setLastToolContext(tc);
       }
     }
 
@@ -426,6 +573,7 @@ public class UiViewer
       public void activate(ToolContext tc) {
         super.activate(tc);
         rootScene = comp;
+        resetTool.setLastToolContext(tc);
       }
     }
   }
