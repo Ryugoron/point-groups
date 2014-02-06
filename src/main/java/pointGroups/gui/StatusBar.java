@@ -1,11 +1,14 @@
 package pointGroups.gui;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.util.Calendar;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -35,24 +38,38 @@ import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.gui.event.types.TutorialEvent;
 import pointGroups.gui.event.types.TutorialHandler;
 
-public class StatusBar extends JPanel implements ChangeCoordinate4DPointHandler,ChangeCoordinate3DPointHandler, Schlegel3DComputeHandler,Schlegel4DComputeHandler , ShowCoordinateHandler, ShowFundamentalDomainHandler, ShowLogHandler, ShowNextHandler, ShowPreviousHandler, Symmetry3DChooseHandler, Symmetry4DChooseHandler, TutorialHandler 
+
+public class StatusBar
+  extends JPanel
+  implements ChangeCoordinate4DPointHandler, ChangeCoordinate3DPointHandler,
+  Schlegel3DComputeHandler, Schlegel4DComputeHandler, ShowCoordinateHandler,
+  ShowFundamentalDomainHandler, ShowLogHandler, ShowNextHandler,
+  ShowPreviousHandler, Symmetry3DChooseHandler, Symmetry4DChooseHandler,
+  TutorialHandler
 {
   /**
    * 
    */
   private static final long serialVersionUID = 5642754641792078341L;
-  private JLabel statusLabel;
-  
-  
-  
-  public StatusBar(EventDispatcher dispatcher){   
+  private final JLabel statusLabel;
+  protected final JPanel resizeHandle;
+
+  public StatusBar(EventDispatcher dispatcher) {
     // GUI layout
-    setLayout(new BorderLayout(2, 2));
+    setLayout(new BorderLayout(2, 1));
+    setPreferredSize(new Dimension(10, 23));
+    setBorder(BorderFactory.createLoweredBevelBorder());
+
     statusLabel = new JLabel(" ");
-    statusLabel.setBorder(BorderFactory.createLoweredBevelBorder());
     statusLabel.setForeground(Color.black);
-    add(BorderLayout.CENTER, statusLabel);
-    
+
+    resizeHandle = new JPanel(new BorderLayout());
+    resizeHandle.add(new JLabel(new ResizeHandleIcon()), BorderLayout.SOUTH);
+    resizeHandle.setOpaque(false);
+
+    add(statusLabel, BorderLayout.CENTER);
+    add(resizeHandle, BorderLayout.EAST);
+
     // register events
     dispatcher.addHandler(ChangeCoordinate3DPointEvent.TYPE, this);
     dispatcher.addHandler(ChangeCoordinate4DPointEvent.TYPE, this);
@@ -66,25 +83,21 @@ public class StatusBar extends JPanel implements ChangeCoordinate4DPointHandler,
     dispatcher.addHandler(Symmetry3DChooseEvent.TYPE, this);
     dispatcher.addHandler(TutorialEvent.TYPE, this);
   }
-  
-  public void setStatus(String status){
+
+  public void setStatus(String status) {
     Calendar now = Calendar.getInstance();
     int hour = now.get(Calendar.HOUR_OF_DAY);
     int minute = now.get(Calendar.MINUTE);
-    if(minute < 10){
-      statusLabel.setText("["+hour+":0"+minute+"] "+status);
+    if (minute < 10) {
+      statusLabel.setText("[" + hour + ":0" + minute + "] " + status);
 
     }
-    statusLabel.setText("["+hour+":"+minute+"] "+status);
+    statusLabel.setText("[" + hour + ":" + minute + "] " + status);
   }
-  
-  public void removeStatusmessage(){
+
+  public void removeStatusmessage() {
     setStatus(" ");
   }
-  
-  
-
- 
 
   @Override
   public void onTutorialEvent(TutorialEvent event) {
@@ -93,20 +106,20 @@ public class StatusBar extends JPanel implements ChangeCoordinate4DPointHandler,
 
   @Override
   public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
-    setStatus("Symmetry choosed: "+event.getSymmetry3D().getName());
-    
+    setStatus("Symmetry choosed: " + event.getSymmetry3D().getName());
+
   }
 
   @Override
   public void onPreviousEvent(ShowPreviousEvent event) {
     setStatus("Show previous point");
-    
+
   }
 
   @Override
   public void onNextEvent(ShowNextEvent event) {
     setStatus("Show next point");
-    
+
   }
 
   @Override
@@ -116,66 +129,111 @@ public class StatusBar extends JPanel implements ChangeCoordinate4DPointHandler,
 
   @Override
   public void onShowFundamentalDomainEvent(ShowFundamentalDomainEvent event) {
-    if(event.getVisible()){
+    if (event.getVisible()) {
       setStatus("Show Fundamental domain");
     }
-    else{
+    else {
       setStatus("Fundamental domain is hidden");
     }
   }
 
   @Override
   public void onShowCoordinateEvent(ShowCoordinateEvent event) {
-    if(event.getVisible()){
+    if (event.getVisible()) {
       setStatus("Show coordinatesystem");
     }
-    else{
+    else {
       setStatus("Coordinatesystem is hidden");
     }
   }
 
   @Override
   public void onSchlegel4DComputeEvent(Schlegel4DComputeEvent event) {
-   showComputeInfo(event.getPickedPoint().getComponents(),event.getSymmetry4D().getName(),event.getSubgroup().intern());
-    
+    showComputeInfo(event.getPickedPoint().getComponents(),
+        event.getSymmetry4D().getName(), event.getSubgroup().intern());
+
   }
 
   @Override
-  public void onSchlegel3DComputeEvent(Schlegel3DComputeEvent event) {    
-    showComputeInfo(event.getPickedPoint().getComponents(),event.getSymmetry3D().getName(),event.getSubgroup().intern());
+  public void onSchlegel3DComputeEvent(Schlegel3DComputeEvent event) {
+    showComputeInfo(event.getPickedPoint().getComponents(),
+        event.getSymmetry3D().getName(), event.getSubgroup().intern());
   }
-  
-  private void showComputeInfo(double[] coords, String symgroup, String subgroup){
-    StringBuilder s = new StringBuilder(300); 
+
+  private void
+      showComputeInfo(double[] coords, String symgroup, String subgroup) {
+    StringBuilder s = new StringBuilder(300);
     s.append("Run with point (");
-    for(double d : coords){
-      s.append(d+", ");
+    for (double d : coords) {
+      s.append(d + ", ");
     }
-    s.delete(s.length()-2, s.length()-1);
+    s.delete(s.length() - 2, s.length() - 1);
     s.append(") Symmetry group: ");
     s.append(symgroup);
     s.append(" Subroup: ");
     s.append(subgroup);
-    
-    setStatus(s.toString()); 
+
+    setStatus(s.toString());
   }
 
   @Override
   public void
       onChangeCoordinate3DPointEvent(ChangeCoordinate3DPointEvent event) {
-    setStatus("Coordinate choosen");   
+    setStatus("Coordinate choosen");
   }
 
   @Override
   public void
       onChangeCoordinate4DPointEvent(ChangeCoordinate4DPointEvent event) {
-    setStatus("Coordinate choosen"); 
-    
+    setStatus("Coordinate choosen");
+
   }
 
   @Override
   public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
-    setStatus("Symmetry choosed: "+event.getSymmetry4D().getName());
-    
-  }  
+    setStatus("Symmetry choosed: " + event.getSymmetry4D().getName());
+
+  }
+
+
+  private static class ResizeHandleIcon
+    implements Icon
+  {
+    private static final Color WHITE_LINE_COLOR = new Color(255, 255, 255);
+    private static final Color GRAY_LINE_COLOR = new Color(172, 168, 153);
+    private static final int WIDTH = 13;
+    private static final int HEIGHT = 13;
+
+    @Override
+    public int getIconHeight() {
+      return WIDTH;
+    }
+
+    @Override
+    public int getIconWidth() {
+      return HEIGHT;
+    }
+
+    @Override
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+
+      g.setColor(WHITE_LINE_COLOR);
+      g.drawLine(0, 12, 12, 0);
+      g.drawLine(5, 12, 12, 5);
+      g.drawLine(10, 12, 12, 10);
+
+      g.setColor(GRAY_LINE_COLOR);
+      g.drawLine(1, 12, 12, 1);
+      g.drawLine(2, 12, 12, 2);
+      g.drawLine(3, 12, 12, 3);
+
+      g.drawLine(6, 12, 12, 6);
+      g.drawLine(7, 12, 12, 7);
+      g.drawLine(8, 12, 12, 8);
+
+      g.drawLine(11, 12, 12, 11);
+      g.drawLine(12, 12, 12, 12);
+
+    }
+  }
 }
