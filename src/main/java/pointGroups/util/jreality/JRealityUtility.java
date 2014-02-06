@@ -9,11 +9,14 @@ import pointGroups.geometry.Point2D;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
 import de.jreality.geometry.IndexedFaceSetFactory;
+import de.jreality.geometry.IndexedLineSetUtility;
 import de.jreality.scene.Geometry;
 
 
 public class JRealityUtility
 {
+  private static int CIRCLE_N = 320;
+
   private static String printPoint(double[] ds) {
     List<Double> list = new ArrayList<Double>(ds.length);
     for (double d : ds) {
@@ -44,6 +47,10 @@ public class JRealityUtility
           printPoint(point) + ") into a Point4D");
 
     return new Point4D(point[0], point[1], point[2], point[3]);
+  }
+
+  public static Geometry circle(double cx, double cy, double radius) {
+    return IndexedLineSetUtility.circle(CIRCLE_N, cx, cy, radius);
   }
 
   public static double[][] convertPoints(Point[] points) {
