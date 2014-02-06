@@ -273,7 +273,7 @@ public class PointPicker
       g = JRealityUtility.generateCompleteGraph(this.fundamental.getVertices());
     }
     else {
-      if (this.dim == 2) g = Primitives.sphere(20);
+      if (this.dim == 2) g = JRealityUtility.circle(0, 0, 1);
       else g = Primitives.sphere(20);
     }
     // Reset tools (3D rotation, 2D no Rotation)
