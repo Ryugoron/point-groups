@@ -127,7 +127,7 @@ public class Menubar
 
     helpMenu.add(tutorialItem);
 
-    this.add(historyMenu);
+    // this.add(historyMenu);
     this.add(viewMenu);
     this.add(debugMenu);
     // this.add(helpMenu);
