@@ -10,7 +10,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import pointGroups.geometry.Quaternion;
 
@@ -32,14 +34,14 @@ public class GeneratorCreator
   /**
    * @return Groupelems of iscosahedral symmetry group
    */
-  public static List<Quaternion> IcosahedralSymmetryGroup() {
+  public static Collection<Quaternion> IcosahedralSymmetryGroup() {
     List<Quaternion> gen = new ArrayList<Quaternion>();
     gen.add(qI);
     gen.add(qw);
     return generateSymmetryGroup3D(gen);
   }
 
-  public static List<Rotation4D> TxTSymGroup() {
+  public static Collection<Rotation4D> TxTSymGroup() {
     List<Rotation4D> gen = new ArrayList<Rotation4D>();
     gen.add(new Rotation4D(Quaternion.I, Quaternion.ONE));
     gen.add(new Rotation4D(qw, Quaternion.ONE));
@@ -49,7 +51,7 @@ public class GeneratorCreator
 
   }
 
-  public static List<Rotation4D> IcosahedralXIcosahedralSymmetryGroup() {
+  public static Collection<Rotation4D> IcosahedralXIcosahedralSymmetryGroup() {
     List<Rotation4D> gen = new ArrayList<Rotation4D>();
     gen.add(new Rotation4D(qI, Quaternion.ONE));
     gen.add(new Rotation4D(qw, Quaternion.ONE));
@@ -62,7 +64,7 @@ public class GeneratorCreator
   /**
    * @return Groupelems of octahedral symmetry group
    */
-  public static List<Quaternion> OctahedralSymmetryGroup() {
+  public static Collection<Quaternion> OctahedralSymmetryGroup() {
     List<Quaternion> gen = new ArrayList<Quaternion>();
     gen.add(qO);
     gen.add(qI);
@@ -72,7 +74,7 @@ public class GeneratorCreator
   /**
    * @return Groupelems of tetrahedral symmetry group
    */
-  public static List<Quaternion> TetrahedralSymmetryGroup() {
+  public static Collection<Quaternion> TetrahedralSymmetryGroup() {
     List<Quaternion> gen = new ArrayList<Quaternion>();
     gen.add(qT);
     gen.add(qw);
@@ -83,18 +85,19 @@ public class GeneratorCreator
    * @param generators
    * @return Groupelem generate by generators
    */
-  public static List<Quaternion> generateSymmetryGroup3D(
+  public static Collection<Quaternion> generateSymmetryGroup3D(
       final List<Quaternion> generators) {
     int newElems = 0;
-    List<Quaternion> group = new ArrayList<>(generators);
-    List<Quaternion> newGroupelem = new ArrayList<>();
+    Set <Quaternion> group = new HashSet<Quaternion>(generators);
+    Set<Quaternion> newGroupelem = new HashSet<>();
     Quaternion z;
     do {
       newElems = 0;
       for (Quaternion x : group) {
         for (Quaternion y : group) {
           z = x.mult(y);
-          if (!containsApprox(group, z) && !containsApprox(newGroupelem, z)) {
+          // if (!containsApprox(group, z) && !containsApprox(newGroupelem, z)) {
+          if(!group.contains(z) && !newGroupelem.contains(z)){
             newGroupelem.add(z);
             newElems++;
           }
@@ -109,11 +112,11 @@ public class GeneratorCreator
     return group;
   }
 
-  public static List<Rotation4D> generateSymmetryGroup4D(
+  public static Collection <Rotation4D> generateSymmetryGroup4D(
       final List<Rotation4D> generators) {
     int newElems = 0;
-    List<Rotation4D> group = new ArrayList<>(generators);
-    List<Rotation4D> newGroupelem = new ArrayList<>();
+    Set <Rotation4D> group = new HashSet<>(generators);
+    Set<Rotation4D> newGroupelem = new HashSet<>();
     Rotation4D z;
     int n = 0;
     do {
@@ -121,12 +124,19 @@ public class GeneratorCreator
       for (Rotation4D x : group) {
         for (Rotation4D y : group) {
           z = x.nextRotation(y);
-          if (!containsApprox(group, z) && !containsApprox(newGroupelem, z)) {
+          //if (!containsApprox(group, z) && !containsApprox(newGroupelem, z)) {
+          if(!group.contains(z) && !newGroupelem.contains(z)){
             newGroupelem.add(z);
             newElems++;
             n++;
             if (n % 100 == 0) {
               System.out.println("n = " + n);
+              System.out.println("new Elemes: "+newGroupelem.size());
+            }
+            if(n > 14350){
+              System.out.println("n = " + n);
+              System.out.println("new Elemes Group list size: "+newGroupelem.size());
+              System.out.println("New found: "+newElems);
             }
           }
         }
@@ -135,6 +145,8 @@ public class GeneratorCreator
         group.add(g);
       }
       newGroupelem.clear();
+      System.out.println("new Elems: "+newElems);
+      
     }
     while (newElems != 0);
     return group;
@@ -218,24 +230,28 @@ public class GeneratorCreator
 
   public static void main(final String[] args) {
     System.out.println("Start: " + Calendar.getInstance().getTime());
-    // Collection<Rotation4D> tXt = TxTSymGroup();
-    // System.out.println("#Elem TxT: "+tXt.size());
-    // try {
-    // writeSymmetryGroup("TxT.sym", tXt);
-    // }
-    // catch (IOException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
+    Collection<Rotation4D> tXt = TxTSymGroup();
+    System.out.println("#Elem TxT: "+tXt.size());
+    System.out.println("Fertig mit TxT " + Calendar.getInstance().getTime());
 
-    try {
-      Collection<Rotation4D> t = readSymmetryGroup(new File("tXt.sym"));
-      System.out.println("#Elemente = " + t.size());
-    }
-    catch (ClassNotFoundException | IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    Collection<Rotation4D> iXi = IcosahedralXIcosahedralSymmetryGroup();
+     System.out.println("#Elem IxI: "+iXi.size());
+     try {
+     writeSymmetryGroup("TxT.sym", iXi);
+     }
+     catch (IOException e) {
+     // TODO Auto-generated catch block
+     e.printStackTrace();
+     }
+
+//    try {
+//      Collection<Rotation4D> t = readSymmetryGroup(new File("tXt.sym"));
+//      System.out.println("#Elemente = " + t.size());
+//    }
+//    catch (ClassNotFoundException | IOException e) {
+//      // TODO Auto-generated catch block
+//      e.printStackTrace();
+//    }
     System.out.println("Fertig: " + Calendar.getInstance().getTime());
 
   }
