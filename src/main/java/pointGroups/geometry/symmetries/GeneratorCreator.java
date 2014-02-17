@@ -115,94 +115,52 @@ public class GeneratorCreator
   public static Collection <Rotation4D> generateSymmetryGroup4D(
       final List<Rotation4D> generators) {
     int newElems = 0;
-    Set <Rotation4D> group = new HashSet<>(generators);
+    // All known group elems
+    Set <Rotation4D> group = new HashSet<>();
+    // All new group elems. Test them for new elems.
+    Set<Rotation4D> currentToTest = new HashSet<>(generators);
+    // All new found group elems.
     Set<Rotation4D> newGroupelem = new HashSet<>();
-    Rotation4D z;
-    int n = 0;
+    
+    // Test for new elems since there are no more new elems....
     do {
-      newElems = 0;
-      for (Rotation4D x : group) {
-        for (Rotation4D y : group) {
-          z = x.nextRotation(y);
-          //if (!containsApprox(group, z) && !containsApprox(newGroupelem, z)) {
-          if(!group.contains(z) && !newGroupelem.contains(z)){
-            newGroupelem.add(z);
-            newElems++;
-            n++;
-            if (n % 100 == 0) {
-              System.out.println("n = " + n);
-              System.out.println("new Elemes: "+newGroupelem.size());
-            }
-            if(n > 14350){
-              System.out.println("n = " + n);
-              System.out.println("new Elemes Group list size: "+newGroupelem.size());
-              System.out.println("New found: "+newElems);
-            }
+      // x in Group, y in CurrentToText-> x*y new Elem?
+      newElems = calculate(group, group, currentToTest, newGroupelem);
+      // x in CurrentToText, y in Group-> x*y new Elem?
+      newElems += calculate(group, currentToTest, group, newGroupelem);
+      // x in CurrentToText, y in CurrentToText-> x*y new Elem?
+      newElems += calculate(group, currentToTest, currentToTest, newGroupelem);
+      
+      // Add all tested elems to the group
+      for (Rotation4D g : currentToTest) {
+        group.add(g);
+      }      
+      currentToTest.clear();
+      
+      // Now test all new found group elems
+      for (Rotation4D g : newGroupelem) {
+        currentToTest.add(g);
+      }
+      newGroupelem.clear();      
+    }
+   while (newElems != 0);
+   return group;
+  }  
+  
+  
+  private static int calculate(Collection<Rotation4D> group,Collection<Rotation4D> arg1, Collection<Rotation4D> arg2, Collection<Rotation4D> dist){
+    int newElems = 0;
+    Rotation4D z; 
+    for (Rotation4D x : arg1) {
+      for (Rotation4D y : arg2) {
+        z = x.nextRotation(y);
+        if(!group.contains(z) && !arg1.contains(z) && !arg2.contains(z)){
+          dist.add(z);
+          newElems++;
           }
         }
-      }
-      for (Rotation4D g : newGroupelem) {
-        group.add(g);
-      }
-      newGroupelem.clear();
-      System.out.println("new Elems: "+newElems);
-      
-    }
-    while (newElems != 0);
-    return group;
-  }
-
-  private static boolean containsApprox(final List<Quaternion> list,
-      final Quaternion x) {
-    for (Quaternion y : list) {
-      if (equalApprox(x, y)) { return true; }
-    }
-    return false;
-  }
-
-  private static boolean equalApprox(final Quaternion a, final Quaternion b) {
-    double distance = Quaternion.distance(a, b);
-    return distance < epsilon;
-  }
-
-  private static boolean containsApprox(final List<Rotation4D> list,
-      final Rotation4D x) {
-    for (Rotation4D y : list) {
-      if (equalApprox(x, y)) { return true; }
-    }
-    return false;
-  }
-
-  private static boolean equalApprox(final Rotation4D a, final Rotation4D b) {
-    double distance = a.distance(b);
-    return distance < epsilon;
-  }
-
-  /**
-   * count elems of g1 that are not in g2
-   * 
-   * @param g1
-   * @param g2
-   * @return
-   */
-  public static int
-      notInG2(final List<Quaternion> g1, final List<Quaternion> g2) {
-    int notFoundInG2 = 0;
-    for (Quaternion q : g1) {
-      if (!containsApprox(g2, q)) {
-        notFoundInG2++;
-      }
-    }
-    return notFoundInG2;
-  }
-
-  public static boolean equalGroups(final List<Quaternion> g1,
-      final List<Quaternion> g2) {
-    int notFoundInG2 = notInG2(g1, g2);
-    int notFoundInG1 = notInG2(g2, g1);
-
-    return notFoundInG1 == 0 && notFoundInG2 == 0;
-
+      }    
+    return newElems;
   }
 
   public static void writeSymmetryGroup(final String filename,

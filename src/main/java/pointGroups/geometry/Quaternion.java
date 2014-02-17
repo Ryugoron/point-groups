@@ -21,7 +21,7 @@ public class Quaternion
   public final static Quaternion I = new Quaternion(0,1,0,0);
   public final static Quaternion J = new Quaternion(0,0,1,0);
   
-  private final static int digits = 10;
+  private final static int digits = 5;
   private final static double r = Math.pow(10, digits);
 
   public final double i, j, k, re;
