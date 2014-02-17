@@ -2,30 +2,26 @@ package pointGroups.geometry.symmetries;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Quaternion;
 import pointGroups.geometry.Symmetry;
 
-public class IxISymmetry implements Symmetry<Point4D, IxISymmetry>
+public class IxISymmetry extends SymmetryGenerated4D implements Symmetry<Point4D, IxISymmetry>
 {
   /**
    * The singleton instance of the IxI's symmetry class.
    */
-  private final static IxISymmetry sym = new IxISymmetry();
-  private final List<Rotation4D> gen = new ArrayList<Rotation4D>();
- 
-  private static Collection<Rotation4D> group;
+  private final static IxISymmetry sym = new IxISymmetry(); 
   
 
   protected IxISymmetry(){
-    gen.add(new Rotation4D(GeneratorCreator.qI, Quaternion.ONE));
-    gen.add(new Rotation4D(GeneratorCreator.qw, Quaternion.ONE));
+    super(false,false,"IxI.sym");
+    generator.add(new Rotation4D(GeneratorCreator.qI, Quaternion.ONE));
+    generator.add(new Rotation4D(GeneratorCreator.qw, Quaternion.ONE));
     
-    gen.add(new Rotation4D(Quaternion.ONE,GeneratorCreator.qI));
-    gen.add(new Rotation4D(Quaternion.ONE,GeneratorCreator.qw));
-    group = GeneratorCreator.generateSymmetryGroup4D(gen);
+    generator.add(new Rotation4D(Quaternion.ONE,GeneratorCreator.qI));
+    generator.add(new Rotation4D(Quaternion.ONE,GeneratorCreator.qw));     
   }
   public enum Subgroups
   implements Subgroup<IxISymmetry> {
@@ -102,7 +98,7 @@ public class IxISymmetry implements Symmetry<Point4D, IxISymmetry>
   
   private Collection<Point4D> calculateImages(Quaternion q){
     Collection<Point4D> rotatedPointcollection = new ArrayList<>();
-    for(Rotation4D r : group){
+    for(Rotation4D r : super.generateSymmetryGroup4D()){
       rotatedPointcollection.add(r.rotate(q).asPoint4D());
     }
     return rotatedPointcollection;

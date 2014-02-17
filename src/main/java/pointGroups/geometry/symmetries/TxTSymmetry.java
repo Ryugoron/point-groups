@@ -1,61 +1,30 @@
 package pointGroups.geometry.symmetries;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Quaternion;
 import pointGroups.geometry.Symmetry;
-import pointGroups.util.PointGroupsUtility;
 
 
-public class TxTSymmetry
+public class TxTSymmetry extends SymmetryGenerated4D
   implements Symmetry<Point4D, TxTSymmetry>
 {
 
   /**
    * The singleton instance of the IxI's symmetry class.
    */
-  private final static TxTSymmetry sym = new TxTSymmetry(true);
-  private final List<Rotation4D> gen = new ArrayList<Rotation4D>();
-  private final static String filename = "symmetries/tXt.sym";
+  private final static TxTSymmetry sym = new TxTSymmetry();
 
-  private static Collection<Rotation4D> group;
 
-  protected TxTSymmetry(final boolean readFile) {
-    if (readFile) {
-      try {
-        group =
-            GeneratorCreator.readSymmetryGroup(new File(
-                PointGroupsUtility.getResource(filename)));
-      }
-      catch (FileNotFoundException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      catch (ClassNotFoundException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      // TODO: ungly!!!!1111
-    }
-    else {
-      gen.add(new Rotation4D(Quaternion.I, Quaternion.ONE));
-      gen.add(new Rotation4D(GeneratorCreator.qw, Quaternion.ONE));
-
-      gen.add(new Rotation4D(Quaternion.ONE, Quaternion.I));
-      gen.add(new Rotation4D(Quaternion.ONE, GeneratorCreator.qw));
-      group = GeneratorCreator.generateSymmetryGroup4D(gen);
-    }
+  protected TxTSymmetry() {
+    super(false,false,"TxT.sym");
+    generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE));
+    generator.add(new Rotation4D(qw, Quaternion.ONE));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I));
+    generator.add(new Rotation4D(Quaternion.ONE, qw));
 
   }
 
@@ -130,7 +99,7 @@ public class TxTSymmetry
 
   private Collection<Point4D> calculateImages(final Quaternion q) {
     Collection<Point4D> rotatedPointcollection = new ArrayList<>();
-    for (Rotation4D r : group) {
+    for (Rotation4D r : groupElems) {
       rotatedPointcollection.add(r.rotate(q).asPoint4D());
     }
     return rotatedPointcollection;

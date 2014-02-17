@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,15 +29,31 @@ public abstract class SymmetryGenerated4D
   public static final Quaternion qT = new Quaternion(0, 1, 0, 0);
   
   
-  public final Collection<Rotation4D> generator;
+  protected Collection<Rotation4D> generator = new ArrayList<>();
   public Set<Rotation4D> groupElems;
+    
   
-  public SymmetryGenerated4D(Collection<Rotation4D> generator){
-    this.generator = generator;
+  public SymmetryGenerated4D(boolean readFile, boolean writeFile, String filename){
+    if(readFile){
+      try {
+        groupElems = readSymmetryGroup(new File(filename));
+      }
+      catch (ClassNotFoundException | IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }      
+    }
+    else{
+      generateSymmetryGroup4D();
+      try {
+        writeSymmetryGroup(filename);
+      }
+      catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
   }
-  
-  
-  
   
   private int calculate(Collection<Rotation4D> group,Collection<Rotation4D> arg1, Collection<Rotation4D> arg2, Collection<Rotation4D> dist){
     int newElems = 0;
@@ -92,25 +109,24 @@ public abstract class SymmetryGenerated4D
    while (newElems != 0);
    return groupElems;
   } 
-  public static void writeSymmetryGroup(final String filename,
-      final Collection<Rotation4D> group)
+  private void writeSymmetryGroup(final String filename)
     throws IOException {
     // create a new file with an ObjectOutputStream
     FileOutputStream out = new FileOutputStream(filename);
     ObjectOutputStream oout = new ObjectOutputStream(out);
 
-    oout.writeObject(group);
+    oout.writeObject(groupElems);
 
     oout.close();
   }
   
-  public static Collection<Rotation4D> readSymmetryGroup(final File filename)
+  private static Set<Rotation4D> readSymmetryGroup(final File filename)
       throws FileNotFoundException, IOException, ClassNotFoundException {
       ObjectInputStream ois =
           new ObjectInputStream(new FileInputStream(filename));
       Object o = ois.readObject();
       // TODO: ugly
-      Collection<Rotation4D> group = ((Collection<Rotation4D>) o);
+      Set<Rotation4D> group = ((Set<Rotation4D>) o);
       ois.close();
       return group;
     }
