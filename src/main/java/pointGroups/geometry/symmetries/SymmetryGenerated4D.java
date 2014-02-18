@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +14,7 @@ import java.util.Set;
 import pointGroups.geometry.Quaternion;
 
 
-public abstract class SymmetryGenerated4D
+public class SymmetryGenerated4D
 {
   // See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 33
   public static final double sigma = (Math.sqrt(5) - 1) / 2;
@@ -29,11 +28,12 @@ public abstract class SymmetryGenerated4D
   public static final Quaternion qT = new Quaternion(0, 1, 0, 0);
   
   
-  protected Collection<Rotation4D> generator = new ArrayList<>();
-  public Set<Rotation4D> groupElems;
+  public final Collection<Rotation4D> generator;
+  private Set<Rotation4D> groupElems;
     
   
-  public SymmetryGenerated4D(boolean readFile, boolean writeFile, String filename){
+  public SymmetryGenerated4D(Collection<Rotation4D> gen, boolean readFile, boolean writeFile, String filename){
+    this.generator = gen;
     if(readFile){
       try {
         groupElems = readSymmetryGroup(new File(filename));

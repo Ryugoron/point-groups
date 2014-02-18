@@ -7,21 +7,22 @@ import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Quaternion;
 import pointGroups.geometry.Symmetry;
 
-public class IxISymmetry extends SymmetryGenerated4D implements Symmetry<Point4D, IxISymmetry>
+public class IxISymmetry implements Symmetry<Point4D, IxISymmetry>
 {
   /**
    * The singleton instance of the IxI's symmetry class.
    */
   private final static IxISymmetry sym = new IxISymmetry(); 
+  private Collection<Rotation4D> generator = new ArrayList<>();
+  private SymmetryGenerated4D symGen;
   
-
   protected IxISymmetry(){
-    super(false,false,"IxI.sym");
     generator.add(new Rotation4D(GeneratorCreator.qI, Quaternion.ONE));
     generator.add(new Rotation4D(GeneratorCreator.qw, Quaternion.ONE));
     
     generator.add(new Rotation4D(Quaternion.ONE,GeneratorCreator.qI));
     generator.add(new Rotation4D(Quaternion.ONE,GeneratorCreator.qw));     
+    symGen = new SymmetryGenerated4D(generator, false, false, this.getName()+".sym");
   }
   public enum Subgroups
   implements Subgroup<IxISymmetry> {
@@ -98,7 +99,7 @@ public class IxISymmetry extends SymmetryGenerated4D implements Symmetry<Point4D
   
   private Collection<Point4D> calculateImages(Quaternion q){
     Collection<Point4D> rotatedPointcollection = new ArrayList<>();
-    for(Rotation4D r : super.generateSymmetryGroup4D()){
+    for(Rotation4D r : symGen.generateSymmetryGroup4D()){
       rotatedPointcollection.add(r.rotate(q).asPoint4D());
     }
     return rotatedPointcollection;

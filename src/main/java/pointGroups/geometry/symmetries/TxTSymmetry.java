@@ -9,7 +9,7 @@ import pointGroups.geometry.Quaternion;
 import pointGroups.geometry.Symmetry;
 
 
-public class TxTSymmetry extends SymmetryGenerated4D
+public class TxTSymmetry
   implements Symmetry<Point4D, TxTSymmetry>
 {
 
@@ -17,15 +17,15 @@ public class TxTSymmetry extends SymmetryGenerated4D
    * The singleton instance of the IxI's symmetry class.
    */
   private final static TxTSymmetry sym = new TxTSymmetry();
-
-
+  private Collection<Rotation4D> generator = new ArrayList<>();
+  private SymmetryGenerated4D symGen;
+  
   protected TxTSymmetry() {
-    super(false,false,"TxT.sym");
     generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE));
-    generator.add(new Rotation4D(qw, Quaternion.ONE));
+    generator.add(new Rotation4D(SymmetryGenerated4D.qw, Quaternion.ONE));
     generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I));
-    generator.add(new Rotation4D(Quaternion.ONE, qw));
-
+    generator.add(new Rotation4D(Quaternion.ONE, SymmetryGenerated4D.qw));
+    symGen = new SymmetryGenerated4D(generator, false, false, getName()+".sym");
   }
 
 
@@ -99,7 +99,7 @@ public class TxTSymmetry extends SymmetryGenerated4D
 
   private Collection<Point4D> calculateImages(final Quaternion q) {
     Collection<Point4D> rotatedPointcollection = new ArrayList<>();
-    for (Rotation4D r : groupElems) {
+    for (Rotation4D r : symGen.generateSymmetryGroup4D()) {
       rotatedPointcollection.add(r.rotate(q).asPoint4D());
     }
     return rotatedPointcollection;
