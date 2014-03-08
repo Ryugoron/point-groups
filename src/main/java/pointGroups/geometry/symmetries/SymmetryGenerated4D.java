@@ -25,37 +25,46 @@ public class SymmetryGenerated4D
       tau * 0.5);
   public static final Quaternion qO = new Quaternion(0, 0, 1 / Math.sqrt(2),
       1 / Math.sqrt(2));
-  public static final Quaternion qT = new Quaternion(0, 1, 0, 0);
+  public static final Quaternion qT = new Quaternion(0, 1, 0, 0); 
+  
+  public static final String dir = ""; //TODO: dir?!
   
   
-  public final Collection<Rotation4D> generator;
-  private Set<Rotation4D> groupElems;
-    
   
-  public SymmetryGenerated4D(Collection<Rotation4D> gen, boolean readFile, boolean writeFile, String filename){
-    this.generator = gen;
-    if(readFile){
-      try {
-        groupElems = readSymmetryGroup(new File(filename));
-      }
-      catch (ClassNotFoundException | IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }      
-    }
-    else{
-      generateSymmetryGroup4D();
-      try {
-        writeSymmetryGroup(filename);
-      }
-      catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
+  
+  /**
+   * Add here new symmetry groups
+   */
+  protected static void createSymgroups(){
+    createSymgroup(TxTSymmetry.getSym().getName(), TxTSymmetry.TxTGenerator());
   }
   
-  private int calculate(Collection<Rotation4D> group,Collection<Rotation4D> arg1, Collection<Rotation4D> arg2, Collection<Rotation4D> dist){
+  
+  
+  private static void createSymgroup(String groupname, Collection<Rotation4D> generator){
+    Collection<Rotation4D> group = generateSymmetryGroup4D(generator);
+    try {
+      writeSymmetryGroup(groupname,group);
+    }
+    catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }    
+  }
+  
+  
+  
+  
+  
+  /**
+   * Find new group elem x s.t. x not in group, arg1, arg2 and it exists y in arg1, z in arg2 s.t. x = y*z. Add x in dist.
+   * @param group
+   * @param arg1
+   * @param arg2
+   * @param dist
+   * @return #new group elems
+   */
+  private static int calculate(Collection<Rotation4D> group,Collection<Rotation4D> arg1, Collection<Rotation4D> arg2, Collection<Rotation4D> dist){
     int newElems = 0;
     Rotation4D z; 
     for (Rotation4D x : arg1) {
@@ -73,11 +82,8 @@ public class SymmetryGenerated4D
   
   
   
-  public Collection <Rotation4D> generateSymmetryGroup4D() {
+  private static Collection <Rotation4D> generateSymmetryGroup4D(Collection<Rotation4D> generator) {
     int newElems = 0;
-    if(groupElems != null){
-      return groupElems;
-    }
     // All known group elems
     Set <Rotation4D> groupElems = new HashSet<>();
     // All new group elems. Test them for new elems.
@@ -109,10 +115,13 @@ public class SymmetryGenerated4D
    while (newElems != 0);
    return groupElems;
   } 
-  private void writeSymmetryGroup(final String filename)
+  
+  
+  
+  private static void writeSymmetryGroup(String groupname, Collection<Rotation4D> groupElems)
     throws IOException {
     // create a new file with an ObjectOutputStream
-    FileOutputStream out = new FileOutputStream(filename);
+    FileOutputStream out = new FileOutputStream(dir+groupname+".sym");
     ObjectOutputStream oout = new ObjectOutputStream(out);
 
     oout.writeObject(groupElems);
@@ -120,10 +129,11 @@ public class SymmetryGenerated4D
     oout.close();
   }
   
-  private static Set<Rotation4D> readSymmetryGroup(final File filename)
+  public static Set<Rotation4D> readSymmetryGroup(final String groupname)
       throws FileNotFoundException, IOException, ClassNotFoundException {
+      File f = new File(dir+groupname+".sym");
       ObjectInputStream ois =
-          new ObjectInputStream(new FileInputStream(filename));
+          new ObjectInputStream(new FileInputStream(f));
       Object o = ois.readObject();
       // TODO: ugly
       Set<Rotation4D> group = ((Set<Rotation4D>) o);
@@ -131,5 +141,8 @@ public class SymmetryGenerated4D
       return group;
     }
   
+  public static void main(String[] args){
+    createSymgroups();
+  }
   
 }

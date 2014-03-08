@@ -1,5 +1,6 @@
 package pointGroups.geometry.symmetries;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -17,17 +18,31 @@ public class TxTSymmetry
    * The singleton instance of the IxI's symmetry class.
    */
   private final static TxTSymmetry sym = new TxTSymmetry();
-  private Collection<Rotation4D> generator = new ArrayList<>();
-  private SymmetryGenerated4D symGen;
+  private Collection<Rotation4D> groupelems;
   
-  protected TxTSymmetry() {
+  public final static Collection<Rotation4D> TxTGenerator(){
+    Collection<Rotation4D> generator = new ArrayList<>();
     generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE));
     generator.add(new Rotation4D(SymmetryGenerated4D.qw, Quaternion.ONE));
     generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I));
     generator.add(new Rotation4D(Quaternion.ONE, SymmetryGenerated4D.qw));
-    symGen = new SymmetryGenerated4D(generator, false, false, getName()+".sym");
+    return generator;
   }
-
+  
+  protected TxTSymmetry() {
+    // read file
+    try {
+      groupelems = SymmetryGenerated4D.readSymmetryGroup(getName());
+    }
+    catch (ClassNotFoundException | IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+  
+  
+  
+  
 
   public enum Subgroups
     implements Subgroup<TxTSymmetry> {
@@ -99,7 +114,7 @@ public class TxTSymmetry
 
   private Collection<Point4D> calculateImages(final Quaternion q) {
     Collection<Point4D> rotatedPointcollection = new ArrayList<>();
-    for (Rotation4D r : symGen.generateSymmetryGroup4D()) {
+    for (Rotation4D r : groupelems) {
       rotatedPointcollection.add(r.rotate(q).asPoint4D());
     }
     return rotatedPointcollection;
