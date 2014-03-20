@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 
 import pointGroups.geometry.Edge;
 import pointGroups.geometry.Point;
+import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Schlegel;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.DimensionSwitchEvent;
@@ -45,7 +46,7 @@ public class SchlegelView
     lastSchlegel = event.getResult();
 
     Point[] points = lastSchlegel.points;
-    Edge<Integer, Integer>[] edges = lastSchlegel.edgesViaIndices;
+    Edge<Point3D>[] edges = lastSchlegel.edges;
     Geometry geom = JRealityUtility.generateGraph(points, edges);
 
     uiViewer.setGeometry(geom);

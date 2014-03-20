@@ -64,11 +64,11 @@ public class JRealityUtility
     return points_;
   }
 
-  public static int[][] convertEdges(Edge<Integer, Integer>[] edges) {
+  public static int[][] convertEdges(Edge<?>[] edges) {
     int[][] edges_ = new int[edges.length][];
 
     int i = 0;
-    for (Edge<Integer, Integer> edge : edges) {
+    for (Edge<?> edge : edges) {
       int u = edge.left, v = edge.right;
 
       edges_[i++] = new int[] { u, v };
@@ -77,8 +77,7 @@ public class JRealityUtility
     return edges_;
   }
 
-  public static Geometry generateGraph(Point[] points,
-      Edge<Integer, Integer>[] edges) {
+  public static Geometry generateGraph(Point[] points, Edge<?>[] edges) {
     return generateGraph(convertPoints(points), convertEdges(edges));
   }
 

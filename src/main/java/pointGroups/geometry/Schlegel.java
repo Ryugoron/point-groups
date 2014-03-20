@@ -9,20 +9,15 @@ package pointGroups.geometry;
 public class Schlegel
 {
   public final Point3D[] points;
-  
-  /**
-   * holds edges as pairs of Point3D
-   */
-  public final Edge<Point3D,Point3D>[] edgesViaPoints;
-  
-  /**
-   * holds edges as pairs of Integers referring to indices of <code> points </code>
-   */
-  public final Edge<Integer, Integer>[] edgesViaIndices;
 
-  public Schlegel(Point3D[] points, Edge<Point3D,Point3D>[] edgespoints, Edge<Integer, Integer>[] edgesindices) {
+  /**
+   * holds edges as pairs of Integers referring to indices of <code> points
+   * </code>
+   */
+  public final Edge<Point3D>[] edges;
+
+  public Schlegel(Point3D[] points, Edge<Point3D>[] edges) {
     this.points = points;
-    this.edgesViaPoints = edgespoints;
-    this.edgesViaIndices = edgesindices;
+    this.edges = edges;
   }
 }

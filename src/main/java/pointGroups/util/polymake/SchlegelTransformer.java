@@ -3,10 +3,10 @@ package pointGroups.util.polymake;
 import java.util.Collection;
 
 import pointGroups.geometry.Edge;
-import pointGroups.geometry.Symmetry;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Schlegel;
+import pointGroups.geometry.Symmetry;
 import pointGroups.util.AbstractTransformer;
 import pointGroups.util.polymake.SchlegelTransformer.SchlegelCompound;
 
@@ -52,11 +52,12 @@ public class SchlegelTransformer
 
     script.append("my $schlegelverts = $p->SCHLEGEL_DIAGRAM->VERTICES;");
     script.append("my $edges = $p->GRAPH->EDGES;");
+    script.append("my $sep = \"\\$\\n\";");
 
     script.append("my $v = \"$schlegelverts\";");
     script.append("my $e = \"$edges\";");
 
-    script.append("print $v.\"\\$\\n\".$e");
+    script.append("print $v.$sep.$e;");
 
     return script.toString();
   }
@@ -87,6 +88,61 @@ public class SchlegelTransformer
     return matrix.toString();
   }
 
+  protected Point3D[] parsePoints(String pointsString) {
+    Point3D[] points;
+
+    // splitting string containing points into one per point
+    String[] splittedPointsString = pointsString.split("\n");
+
+    points = new Point3D[splittedPointsString.length];
+    for (int i = 0; i < splittedPointsString.length; i++) {
+      String str = splittedPointsString[i];
+      // ignore brackets and split into components
+      String[] compStr = str.substring(0, str.length()).split(" ");
+      if (compStr.length == 2) {
+        points[i] =
+            new Point3D(Double.parseDouble(compStr[0]),
+                Double.parseDouble(compStr[1]), 0);
+      }
+      else if (compStr.length == 3) {
+        points[i] =
+            new Point3D(Double.parseDouble(compStr[0]),
+                Double.parseDouble(compStr[1]),
+                Double.parseDouble(compStr[2]));
+      }
+      else {
+        logger.severe("Point in resultString split in: " + compStr.length +
+            "components");
+        logger.fine("resultString was: " + resultString);
+      }
+    }
+
+    return points;
+  }
+
+  protected Edge<Point3D>[] parseEdges(String edgesString, Point3D[] points) {
+    Edge<Point3D>[] edgesindices;
+
+    // Store Edges as Array von Pair<Point3D,Point3D> and as Array von
+    // Pair<Integer,Integer>
+    String[] splittedEdgesString = edgesString.split("\n");
+
+    edgesindices = new Edge[splittedEdgesString.length];
+    // start iteration with i = 1 because the first string after splitting
+    // is empty caused by leading \n
+    for (int i = 0; i < splittedEdgesString.length; i++) {
+      String str = splittedEdgesString[i];
+      // ignore brackets and split into components
+      String[] compStr = str.substring(1, str.length() - 1).split(" ");
+      int fromIndex = Integer.valueOf(compStr[0]);
+      int toIndex = Integer.valueOf(compStr[1]);
+
+      edgesindices[i] = new Edge<Point3D>(points, fromIndex, toIndex);
+    }
+
+    return edgesindices;
+  }
+
   @Override
   public SchlegelCompound transformResultString() {
 
@@ -111,30 +167,7 @@ public class SchlegelTransformer
     // transforming strings into Point-Objects
     Point3D[] points;
     try {
-      // splitting string containing points into one per point
-      String[] splittedPointsString = pointsString.split("\n");
-      points = new Point3D[splittedPointsString.length];
-      for (int i = 0; i < splittedPointsString.length; i++) {
-        String str = splittedPointsString[i];
-        // ignore brackets and split into components
-        String[] compStr = str.substring(0, str.length()).split(" ");
-        if (compStr.length == 2) {
-          points[i] =
-              new Point3D(Double.parseDouble(compStr[0]),
-                  Double.parseDouble(compStr[1]), 0);
-        }
-        else if (compStr.length == 3) {
-          points[i] =
-              new Point3D(Double.parseDouble(compStr[0]),
-                  Double.parseDouble(compStr[1]),
-                  Double.parseDouble(compStr[2]));
-        }
-        else {
-          logger.severe("Point in resultString split in: " + compStr.length +
-              "components");
-          logger.fine("resultString was: " + resultString);
-        }
-      }
+      points = parsePoints(pointsString);
     }
     catch (Exception e) {
       logger.severe("Can't parse points in resultString.");
@@ -142,28 +175,10 @@ public class SchlegelTransformer
       logger.fine("resultString was: " + resultString);
       throw new PolymakeOutputException("Wrong Format of resultString.");
     }
-    Edge<Point3D, Point3D>[] edges;
-    Edge<Integer, Integer>[] edgesindices;
+
+    Edge<Point3D>[] edgesindices;
     try {
-      // Store Edges as Array von Pair<Point3D,Point3D> and as Array von
-      // Pair<Integer,Integer>
-      String[] splittedEdgesString = edgesString.split("\n");
-      edges = new Edge[splittedEdgesString.length];
-      edgesindices = new Edge[splittedEdgesString.length];
-      // start iteration with i = 1 because the first string after splitting
-      // is
-      // empty caused by leading \n
-      for (int i = 0; i < splittedEdgesString.length; i++) {
-        String str = splittedEdgesString[i];
-        // ignore brackets and split into components
-        String[] compStr = str.substring(1, str.length() - 1).split(" ");
-        int fromIndex = Integer.valueOf(compStr[0]);
-        int toIndex = Integer.valueOf(compStr[1]);
-        Point3D from = points[fromIndex];
-        Point3D to = points[toIndex];
-        edges[i] = new Edge<Point3D, Point3D>(from, to);
-        edgesindices[i] = new Edge<Integer, Integer>(fromIndex, toIndex);
-      }
+      edgesindices = parseEdges(edgesString, points);
     }
     catch (Exception e) {
       logger.severe("Can't parse edges in resultString.");
@@ -172,8 +187,8 @@ public class SchlegelTransformer
       throw new PolymakeOutputException("Wrong Format of resultString.");
     }
 
-    return new SchlegelCompound(new Schlegel(points, edges, edgesindices),
-        this.sym, this.p);
+    return new SchlegelCompound(new Schlegel(points, edgesindices), this.sym,
+        this.p);
   }
 
 
