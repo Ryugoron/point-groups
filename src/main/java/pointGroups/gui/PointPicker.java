@@ -196,10 +196,12 @@ public class PointPicker
     if (event.switchedTo3D()) {
       logger.fine("Point Picker switched to 2D Mode.");
       this.dim = 2;
+      uiViewer.set2DMode();
     }
     else if (event.switchedTo4D()) {
       logger.fine("Point Picker switched to 3D Mode.");
       this.dim = 3;
+      uiViewer.set3DMode();
     }
     else {
       this.dim = 0;
