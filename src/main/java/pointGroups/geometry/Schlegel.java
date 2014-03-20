@@ -8,16 +8,18 @@ package pointGroups.geometry;
  */
 public class Schlegel
 {
+  public final Polytope<Point3D> polytope;
   public final Point3D[] points;
 
   /**
    * holds edges as pairs of Integers referring to indices of <code> points
    * </code>
    */
-  public final Edge<Point3D>[] edges;
+  public final Edge[] edges;
 
-  public Schlegel(Point3D[] points, Edge<Point3D>[] edges) {
+  public Schlegel(Point3D[] points, Edge[] edges, Polytope<Point3D> polytope) {
     this.points = points;
     this.edges = edges;
+    this.polytope = polytope;
   }
 }

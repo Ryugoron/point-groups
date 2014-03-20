@@ -3,11 +3,15 @@ package pointGroups.util.polymake;
 import java.util.Collection;
 
 import pointGroups.geometry.Edge;
+import pointGroups.geometry.Face;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Polytope;
 import pointGroups.geometry.Schlegel;
 import pointGroups.geometry.Symmetry;
 import pointGroups.util.AbstractTransformer;
+import pointGroups.util.LoggerFactory;
+import pointGroups.util.Utility;
 import pointGroups.util.polymake.SchlegelTransformer.SchlegelCompound;
 
 
@@ -54,10 +58,12 @@ public class SchlegelTransformer
     script.append("my $edges = $p->GRAPH->EDGES;");
     script.append("my $sep = \"\\$\\n\";");
 
-    script.append("my $v = \"$schlegelverts\";");
-    script.append("my $e = \"$edges\";");
+    script.append("my $n = $p->N_VERTICES;");
+    script.append("my $f = $p->FACET_LABELS;");
+    script.append("my $v = $schlegelverts;");
+    script.append("my $e = $edges;");
 
-    script.append("print $v.$sep.$e;");
+    script.append("print $n.$sep.$v.$sep.$e.$sep.$f.$sep;");
 
     return script.toString();
   }
@@ -74,12 +80,9 @@ public class SchlegelTransformer
       for (double comp : pointComps) {
         matrix.append("," + comp);
       }
-      // for simplicity always appending a comma after each transformation
-      // of a
-      // point
-      // afterwards the last comma will be replaced by a closing bracket
-      // ']' of
-      // the matrix
+      // for simplicity always appending a comma after each transformation of a
+      // point afterwards the last comma will be replaced by a closing bracket
+      // ']' of the matrix
       matrix.append("],");
     }
     // replacing last comma of the for-loop with a closing bracket of the
@@ -120,16 +123,15 @@ public class SchlegelTransformer
     return points;
   }
 
-  protected Edge<Point3D>[] parseEdges(String edgesString, Point3D[] points) {
-    Edge<Point3D>[] edgesindices;
+  protected Edge[] parseEdges(String edgesString) {
+    Edge[] edges;
 
     // Store Edges as Array von Pair<Point3D,Point3D> and as Array von
     // Pair<Integer,Integer>
     String[] splittedEdgesString = edgesString.split("\n");
 
-    edgesindices = new Edge[splittedEdgesString.length];
-    // start iteration with i = 1 because the first string after splitting
-    // is empty caused by leading \n
+    edges = new Edge[splittedEdgesString.length];
+
     for (int i = 0; i < splittedEdgesString.length; i++) {
       String str = splittedEdgesString[i];
       // ignore brackets and split into components
@@ -137,25 +139,78 @@ public class SchlegelTransformer
       int fromIndex = Integer.valueOf(compStr[0]);
       int toIndex = Integer.valueOf(compStr[1]);
 
-      edgesindices[i] = new Edge<Point3D>(points, fromIndex, toIndex);
+      edges[i] = new Edge(fromIndex, toIndex);
     }
 
-    return edgesindices;
+    return edges;
+  }
+
+  protected Face[] parseFaces(String facesString) {
+    Face[] faces;
+
+    String[] splittedString = facesString.split(" ");
+
+    faces = new Face[splittedString.length];
+
+    int i = 0;
+    for (String faceString : splittedString) {
+      Face face = new Face();
+
+      for (String index : faceString.split(",")) {
+        face.addIndex(Integer.parseInt(index));
+      }
+      System.out.println(face.indices);
+
+      faces[i++] = face;
+    }
+
+    return faces;
+  }
+
+  protected Polytope<Point3D> buildPolytope(Edge[] edges,
+      Face[] faces, int numberOfPoints) {
+
+    @SuppressWarnings("unchecked")
+    Collection<Point3D> points = (Collection<Point3D>) this.points;
+
+    if (numberOfPoints != points.size()) {
+      LoggerFactory.get(getClass()).warning(
+          String.format(
+              "There are duplicated points, because the number of given points (%d) and the number of points (%d) returned by polymake mismatches.",
+              points.size(), numberOfPoints));
+
+      points = Utility.uniqueList(points);
+
+      if (numberOfPoints != points.size()) {
+        String msg =
+            String.format(
+                "Even after removing duplicated points the size mismatches (new size: %d).",
+                points.size());
+
+        throw new RuntimeException(msg);
+      }
+    }
+
+    Point3D[] polytopePoints = points.toArray(new Point3D[] { });
+    return new Polytope<Point3D>(polytopePoints, edges, faces);
   }
 
   @Override
   public SchlegelCompound transformResultString() {
 
     // splitting result string into two. One contains the points, the other
-    // the
-    // edges.
+    // the edges.
 
+    int numberOfPoints = 0;
     String pointsString;
     String edgesString;
+    String facesString;
     try {
       String[] pointsAndEdges = resultString.split("\\$\n");
-      pointsString = pointsAndEdges[0];
-      edgesString = pointsAndEdges[1];
+      numberOfPoints = Integer.parseInt(pointsAndEdges[0]);
+      pointsString = pointsAndEdges[1];
+      edgesString = pointsAndEdges[2];
+      facesString = pointsAndEdges[3];
     }
     catch (Exception e) {
       logger.severe("Wrong Format of resultString. Probably missing \\$\n");
@@ -176,9 +231,9 @@ public class SchlegelTransformer
       throw new PolymakeOutputException("Wrong Format of resultString.");
     }
 
-    Edge<Point3D>[] edgesindices;
+    Edge[] edges;
     try {
-      edgesindices = parseEdges(edgesString, points);
+      edges = parseEdges(edgesString);
     }
     catch (Exception e) {
       logger.severe("Can't parse edges in resultString.");
@@ -187,8 +242,20 @@ public class SchlegelTransformer
       throw new PolymakeOutputException("Wrong Format of resultString.");
     }
 
-    return new SchlegelCompound(new Schlegel(points, edgesindices), this.sym,
-        this.p);
+    Face[] faces;
+    try {
+      faces = parseFaces(facesString);
+    }
+    catch (Exception e) {
+      logger.severe("Can't parse faces in resultString.");
+      logger.fine(e.getMessage());
+      logger.fine("resultString was: " + resultString);
+      throw new PolymakeOutputException("Wrong Format of resultString.");
+    }
+
+    Polytope<Point3D> polytope = buildPolytope(edges, faces, numberOfPoints);
+    return new SchlegelCompound(new Schlegel(points, edges, polytope),
+        this.sym, this.p);
   }
 
 

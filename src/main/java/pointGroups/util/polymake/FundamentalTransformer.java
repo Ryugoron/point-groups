@@ -131,8 +131,7 @@ public class FundamentalTransformer
     String[] answer = this.resultString.split("\n");
 
     List<double[]> points = new LinkedList<double[]>();
-    List<Edge<Integer, Integer>> edges =
-        new LinkedList<Edge<Integer, Integer>>();
+    List<Edge> edges = new LinkedList<Edge>();
     List<double[]> hyperPlanes = new LinkedList<double[]>();
     int pos = 0;
     // The first ones are Vertices
@@ -215,13 +214,13 @@ public class FundamentalTransformer
    * @param s - Stringrepresentation of an edge
    * @return an edge object
    */
-  private Edge<Integer, Integer> parseEdge(String s) {
+  private Edge parseEdge(String s) {
     String[] ends = s.substring(1, s.length() - 1).split(" ");
     int[] endi = new int[2];
     endi[0] = Integer.parseInt(ends[0]);
     endi[1] = Integer.parseInt(ends[1]);
 
-    return new Edge<Integer, Integer>(endi[0], endi[1]);
+    return new Edge(endi[0], endi[1]);
   }
 
   /**

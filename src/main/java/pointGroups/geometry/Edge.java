@@ -6,17 +6,16 @@ package pointGroups.geometry;
  * @author Alex
  * @param <P>
  */
-public final class Edge<P extends Point>
+public final class Edge
 {
-  public final P[] points;
   public final int left;
   public final int right;
 
-  public P getLeft() {
+  public <P extends Point> P getLeft(P[] points) {
     return points[left];
   }
 
-  public P getRight() {
+  public <P extends Point> P getRight(P[] points) {
     return points[right];
   }
 
@@ -26,10 +25,9 @@ public final class Edge<P extends Point>
    * @param left Left value of tuple
    * @param right Right value of tuple
    */
-  public Edge(P[] points, int left, int right) {
+  public Edge(int left, int right) {
     this.left = left;
     this.right = right;
-    this.points = points;
   }
 
   @Override
@@ -41,8 +39,8 @@ public final class Edge<P extends Point>
   public boolean equals(Object o) {
     if (o == null) return false;
     if (!(o instanceof Edge)) return false;
-    Edge<?> p = (Edge<?>) o;
+    Edge p = (Edge) o;
     return ((Integer) this.left).equals(p.left) &&
-        ((Integer) this.right).equals(p.right) && this.points.equals(p.points);
+        ((Integer) this.right).equals(p.right);
   }
 }

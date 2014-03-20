@@ -131,12 +131,15 @@ public class SchlegelTransformerTest
     assertEquals(1, schlegel.edges[2].left);
     assertEquals(2, schlegel.edges[2].right);
 
-    assertEquals(schlegel.points[0], schlegel.edges[0].getLeft());
-    assertEquals(schlegel.points[1], schlegel.edges[0].getRight());
-    assertEquals(schlegel.points[0], schlegel.edges[1].getLeft());
-    assertEquals(schlegel.points[2], schlegel.edges[1].getRight());
-    assertEquals(schlegel.points[1], schlegel.edges[2].getLeft());
-    assertEquals(schlegel.points[2], schlegel.edges[2].getRight());
+    assertEquals(schlegel.points[0], schlegel.edges[0].getLeft(schlegel.points));
+    assertEquals(schlegel.points[1],
+        schlegel.edges[0].getRight(schlegel.points));
+    assertEquals(schlegel.points[0], schlegel.edges[1].getLeft(schlegel.points));
+    assertEquals(schlegel.points[2],
+        schlegel.edges[1].getRight(schlegel.points));
+    assertEquals(schlegel.points[1], schlegel.edges[2].getLeft(schlegel.points));
+    assertEquals(schlegel.points[2],
+        schlegel.edges[2].getRight(schlegel.points));
   }
 
   public void assert3DResults(final Schlegel schlegel) {

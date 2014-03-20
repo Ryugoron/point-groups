@@ -5,7 +5,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
 import pointGroups.geometry.Edge;
-import pointGroups.geometry.Point;
+import pointGroups.geometry.Face;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Schlegel;
 import pointGroups.gui.event.EventDispatcher;
@@ -45,9 +45,10 @@ public class SchlegelView
   public void onSchlegelResultEvent(SchlegelResultEvent event) {
     lastSchlegel = event.getResult();
 
-    Point[] points = lastSchlegel.points;
-    Edge<Point3D>[] edges = lastSchlegel.edges;
-    Geometry geom = JRealityUtility.generateGraph(points, edges);
+    Point3D[] points = lastSchlegel.polytope.points;
+    Edge[] edges = lastSchlegel.edges;
+    Face[] faces = lastSchlegel.polytope.faces;
+    Geometry geom = JRealityUtility.generateGraph(points, edges, faces);
 
     uiViewer.setGeometry(geom);
   }
