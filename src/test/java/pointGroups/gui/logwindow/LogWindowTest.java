@@ -41,7 +41,9 @@ public class LogWindowTest
         logger2.getName());
     Assert.assertEquals("pointGroups.gui.logwindow.LogWindowTest",
         single.getName());
-    logger2.info("foo");
+    for (int i = 0; i < 100; i++) {
+      logger2.info("foo");
+    }
     logger1.warning("bar");
     single.severe("ahhh");
   }

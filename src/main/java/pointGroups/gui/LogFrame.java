@@ -3,14 +3,18 @@
  */
 package pointGroups.gui;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTable;
+// import javax.swing.JTextArea;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ShowLogEvent;
@@ -24,31 +28,59 @@ public class LogFrame
   extends JFrame
   implements ShowLogHandler
 {
-  private JTextArea textArea;
+  // private JTextArea textArea;
   private JScrollPane scrollPane;
+  private JTable table;
+  TableModel model;
+  private String[] columnNames = { "LoggerName", "Level", "Message" };
+  private List<Object[]> data;
 
   public LogFrame() {
-    super("Log");
-    this.setSize(400, 400);
-    textArea = new JTextArea();
-    textArea.setEditable(false);
-    scrollPane = new JScrollPane(textArea);
-    this.add(scrollPane);
-    this.setDefaultCloseOperation(HIDE_ON_CLOSE);
-    EventDispatcher.get().addHandler(ShowLogEvent.TYPE, this);
-    Logger.getGlobal().addHandler(new LogHandler(textArea));
+    this(1000, 600);
   }
 
   public LogFrame(int width, int height) {
     super("Log");
     this.setSize(width, height);
-    textArea = new JTextArea();
-    textArea.setEditable(false);
-    scrollPane = new JScrollPane(textArea);
+    data = new ArrayList<>();
+
+    // create TableModel to customize Table (not editable and List instead of an
+    // array for data)
+    model = new AbstractTableModel() {
+      public String getColumnName(int col) {
+        return columnNames[col].toString();
+      }
+
+      public int getRowCount() {
+        return data.size();
+      }
+
+      public int getColumnCount() {
+        return columnNames.length;
+      }
+
+      public Object getValueAt(int row, int col) {
+        return data.get(row)[col];
+      }
+    };
+    table = new JTable(model);
+    // second column holds log level -> only short strings
+    table.getColumnModel().getColumn(1).setMaxWidth(100);
+    scrollPane = new JScrollPane(table);
+    // textArea = new JTextArea();
+    // textArea.setEditable(false);
+    // scrollPane = new JScrollPane(textArea);
+
     this.add(scrollPane);
+
+    // don't quit program, only hide log window. can be shown again via
+    // ShowLogEvent fired by the Menubar
     this.setDefaultCloseOperation(HIDE_ON_CLOSE);
     EventDispatcher.get().addHandler(ShowLogEvent.TYPE, this);
-    Logger.getGlobal().addHandler(new LogHandler(textArea));
+
+    // get all logs via the global logger
+    Logger.getGlobal().addHandler(new LogHandler(data, table, scrollPane));
+    // Logger.getGlobal().addHandler(new LogHandler(textArea));
   }
 
   @Override
@@ -58,20 +90,49 @@ public class LogFrame
   }
 
 
+  /**
+   * Handler should be registered at {@link Logger#getGlobal()}. Published
+   * records will be inserted into the Log Window.
+   * 
+   * @author nadjascharf
+   */
   private class LogHandler
     extends Handler
   {
 
-    JTextArea area;
+    // JTextArea area;
+    List<Object[]> data;
+    // boolean asTable;
+    JTable table;
+    JScrollPane pane;
 
-    LogHandler(JTextArea area) {
-      this.area = area;
+    // LogHandler(JTextArea area) {
+    // this.area = area;
+    // asTable = false;
+    // }
+    //
+    LogHandler(List<Object[]> data, JTable table, JScrollPane pane) {
+      this.data = data;
+      // asTable = true;
+      this.table = table;
+      this.pane = pane;
     }
 
     @Override
     public void publish(LogRecord record) {
-      area.append(record.getLoggerName() + ": <" + record.getLevel() + "> " +
-          record.getMessage() + "\n");
+      // if(!asTable){
+      // area.append(record.getLoggerName() + ": <" + record.getLevel() + "> " +
+      // record.getMessage() + "\n");
+      // }
+      // else{
+      Object[] newLog =
+          { record.getLoggerName(), record.getLevel(), record.getMessage() };
+      data.add(newLog);
+      // updated->repaint to show new log
+      table.repaint();
+      // is it necessary to be scrollable?
+      pane.revalidate();
+      // }
 
     }
 
