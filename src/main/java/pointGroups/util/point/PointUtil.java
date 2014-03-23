@@ -1,5 +1,9 @@
 package pointGroups.util.point;
 
+import pointGroups.geometry.Point;
+import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Point4D;
+
 public class PointUtil
 {
   /**
@@ -187,4 +191,30 @@ public class PointUtil
     erg += ")";
     return erg;
   }
+  
+  public static Point[] gramSchmitt(Point[] base){
+    double[][] gram = new double[base.length][];
+    Point[] res = new Point[base.length];
+    for(int i = 0; i < base.length; i++){
+      double[] p = base[i].getComponents();  
+      for(int j = 0; j < i; j++){
+        p = add(p, mult(stScalarProd(p, gram[j]), gram[j]));
+      }
+      p = normalize(p);
+      gram[i] = p;
+      res[i] = doubleToPoint(p);
+    }
+    return res;
+  }
+  
+  public static Point doubleToPoint(double[] p){
+      Point ret;
+      if (p.length == 3){
+        ret = new Point3D(p);
+      } else {
+        ret = new Point4D(p[0], p[1], p[2], p[3]);
+      }
+      return ret;
+  }
 }
+

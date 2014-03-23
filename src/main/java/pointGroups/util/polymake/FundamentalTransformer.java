@@ -1,7 +1,10 @@
 package pointGroups.util.polymake;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 
+import pointGroups.geometry.Edge;
 import pointGroups.geometry.Fundamental;
 import pointGroups.geometry.KnownFundamental;
 import pointGroups.geometry.Point;
@@ -24,8 +27,12 @@ public class FundamentalTransformer
   private final Collection<? extends Point> points;
   private final int dim;
 
+  // To ensure the same order
+  private ArrayList<Point> pointsInOrder;
+
   public FundamentalTransformer(Collection<? extends Point> points) {
     this.points = points;
+    pointsInOrder = new ArrayList<>(this.points.size());
     this.dim = this.points.iterator().next().getComponents().length;
   }
 
@@ -38,6 +45,7 @@ public class FundamentalTransformer
     sb.append("my $points = new Matrix<Rational>([");
     boolean first = true;
     for (Point point : this.points) {
+      this.pointsInOrder.add(point);
       if (!first) {
         sb.append(",");
         size = point.getComponents().length;
@@ -54,37 +62,13 @@ public class FundamentalTransformer
     sb.append("]);");
     sb.append("my $v = new VoronoiDiagram(SITES=>$points);");
     sb.append("print $v->VORONOI_VERTICES->[0];");
-    sb.append("print \"\\n\";");
-    sb.append("my $adj = $v->DUAL_GRAPH->ADJACENCY->adjacent_nodes(0);");
-    sb.append("my $s0 = $points->[0];");
-    sb.append("my $s1 = $points->[$adj->[0]];");
-    sb.append("my $s2 = $points->[$adj->[1]];");
-    sb.append("my $s3 = $points->[$adj->[2]];");
-    if (size == 4) sb.append("my $s4 = $points->[$adj->[3]];");
-    sb.append("print \"&\\n\";");
-    sb.append("print $s0;print \"\\n\";");
-    sb.append("print $s1; print \"\\n\";");
-    sb.append("print $s2; print \"\\n\";");
-    sb.append("print $s3; print \"\\n\";");
-    if (size == 4) sb.append("print $s4; print \"\\n\";");
+    sb.append("print $v->DUAL_GRAPH->ADJACENCY;");
     this.script = sb.toString();
     return this.script;
   }
 
   @Override
   public Fundamental transformResultString() {
-    // StringBuilder regex = new StringBuilder();
-    // minimum one 3D point followed by...
-    // regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+|");
-    // or one 4D point
-    // regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+)");
-
-    // TODO Should be extended to the following matrix
-
-    // if (!resultString.matches(regex.toString())) { throw new
-    // PolymakeOutputException(
-    // "String set by setResultString() does not match defined format for fundamental domain.");
-    // }
 
     Fundamental res;
     try {
@@ -98,102 +82,150 @@ public class FundamentalTransformer
     }
     return res;
   }
-
-  private Fundamental transformHelper() {
-    String[] pointString = this.resultString.split("\n");
-    double[][] prePoints = new double[pointString.length - 1][];
-
-    // First point
-    String[] coords = pointString[0].split(" ");
-    prePoints[0] = new double[coords.length - 1];
-    for (int j = 1; j < coords.length; j++) {
-      prePoints[0][j - 1] = this.parseCoordinate(coords[j]);
-    }
-
-    // The next points
-    for (int i = 1; i < prePoints.length; i++) {
-      String[] cords = pointString[i + 1].split(" ");
-      prePoints[i] = new double[cords.length - 1];
-      // Drop first coordinate for it is only one
-      for (int j = 1; j < cords.length; j++) {
-        prePoints[i][j - 1] = this.parseCoordinate(cords[j]);
+  
+  /**
+   * Copmutes the edges between the indices, if the origin is has a 
+   * Hemmingdistance of 1.
+   *  
+   * @param origin Indices the point origened in
+   * @return list of edges
+   */
+  private LinkedList<Edge<Integer, Integer>> getEdges(LinkedList<int[]> origin){
+    LinkedList<Edge<Integer, Integer>> res = new LinkedList<Edge<Integer, Integer>>();
+    for(int i = 0; i < origin.size(); i++){
+      for(int j = 0; j < origin.size(); j++) {
+        if (hemmingDist(origin.get(i), origin.get(j)) == 1){
+          res.add(new Edge<Integer, Integer>(i, j));
+        }
       }
     }
-    // The first point point can be used to check, if the Voronoi Was
-    // Correct.
-    //
-    // if (nearNull(prePoints[0]))
-    // throw new Exception("Voronoi not correct");
-    //
+    return res;
+  }
+  
+  private int hemmingDist(int[] a, int [] b) {
+    int res = 0;
+    int akta = 0, aktb = 0;
+    while (akta < a.length && aktb < b.length){
+      if(a[akta] == b[aktb]){
+        res++;
+        akta++;
+        aktb++;
+      } else if(a[akta] < b[aktb] ) {
+        akta++;
+      } else {
+        aktb++;
+      }
+    }
+    return res;
+  }
 
-    double[][] points = new double[prePoints.length - 2][];
+  private Fundamental transformHelper() {
+    String[] answer = this.resultString.split("\n");
 
-    // Build every dimension - 1 kombination of the later points with the first
-    // one
+    // Last line is infinity
+    int[][] adjMat = new int[answer.length - 1][];
 
-    if (this.dim == 3) {
-      points[0] =
-          PointUtil.div(3, PointUtil.add(
-              PointUtil.add(prePoints[1], prePoints[2]), prePoints[3]));
-      points[1] =
-          PointUtil.div(3, PointUtil.add(
-              PointUtil.add(prePoints[1], prePoints[2]), prePoints[4]));
+    // Parse the adjacency matrix
+    for (int i = 0; i < answer.length - 1; i++) {
+      String[] line = answer[i].substring(1, answer.length - 1).split(" ");
+      adjMat[i] = new int[line.length - 1];
+      // Again the last point should be the infinity point
+      for (int j = 0; j < line.length - 1; j++) {
+        adjMat[i][j] = Integer.parseInt(line[j]);
+      }
+    }
 
-      points[2] =
-          PointUtil.div(3, PointUtil.add(
-              PointUtil.add(prePoints[1], prePoints[3]), prePoints[4]));
+    // Building the circle
+    // Go from the fist point in order through the points
+    LinkedList<Point> fundPoints = new LinkedList<Point>();
+    // Sorted origin of the fund points (same indices)
+    LinkedList<int[]> origin = new LinkedList<int[]>();
 
+    if (dim == 3) {
+      // 2 Adjacent nodes make a voronoi edge
+      for (int i = 0; i < adjMat[0].length; i++) {
+        for (int j = 0; j < adjMat[0].length; j++) {
+          // For two adjecent nodes look if they are connected (and ordered)
+          for (int k = 0; k < adjMat[j].length; k++) {
+            if (adjMat[0][i] == adjMat[adjMat[0][j]][k] &&
+                adjMat[0][i] < adjMat[0][j]) {
+              origin.add(new int[] { adjMat[0][i], adjMat[0][j] });
+
+              // Copmute Mass Point of triangle
+              Point p =
+                  PointUtil.doubleToPoint(PointUtil.add(
+                      this.pointsInOrder.get(0).getComponents(), PointUtil.add(
+                          this.pointsInOrder.get(adjMat[0][j]).getComponents(),
+                          this.pointsInOrder.get(adjMat[0][i]).getComponents())));
+              fundPoints.add(p);
+
+            }
+          }
+        }
+      }
     }
     else {
-      points[0] =
-          PointUtil.add(PointUtil.add(
-              PointUtil.add(prePoints[1], prePoints[2]), prePoints[3]),
-              prePoints[4]);
-      points[1] =
-          PointUtil.add(PointUtil.add(
-              PointUtil.add(prePoints[1], prePoints[2]), prePoints[3]),
-              prePoints[5]);
-      points[2] =
-          PointUtil.add(
-              PointUtil.add(PointUtil.add(points[1], points[2]), points[4]),
-              points[5]);
-      points[3] =
-          PointUtil.mult(1 / 4, PointUtil.add(
-              PointUtil.add(PointUtil.add(points[1], points[3]), points[4]),
-              points[5]));
-
+      // 3 Adjecent nodes make a voronoi edge
+      for (int i = 0; i < adjMat[0].length; i++) {
+        for (int j = 0; j < adjMat[0].length; j++) {
+          for (int k = 0; k < adjMat[0].length; k++) {
+            // Test if they see each other
+            boolean one = false;
+            boolean two = false;
+            boolean three = false;
+            for (int l = 0; l < adjMat[adjMat[0][j]].length; l++) {
+              if (adjMat[0][i] == adjMat[adjMat[0][j]][l]) {
+                one = true;
+                break;
+              }
+            }
+            for (int l = 0; l < adjMat[adjMat[0][k]].length; l++) {
+              if (adjMat[0][j] == adjMat[adjMat[0][k]][l]) {
+                two = true;
+                break;
+              }
+            }
+            for (int l = 0; l < adjMat[adjMat[0][i]].length; l++) {
+              if (adjMat[0][k] == adjMat[adjMat[0][i]][l]) {
+                three = true;
+                break;
+              }
+            }
+            if (one && two && three && adjMat[0][i] < adjMat[0][j] &&
+                adjMat[0][j] < adjMat[0][k]) {
+              origin.add(new int[] { adjMat[0][i], adjMat[0][j], adjMat[0][k] });
+              Point p =
+                  PointUtil.doubleToPoint(PointUtil.add(
+                      this.pointsInOrder.get(adjMat[0][k]).getComponents(),
+                      PointUtil.add(
+                          this.pointsInOrder.get(0).getComponents(),
+                          PointUtil.add(
+                              this.pointsInOrder.get(adjMat[0][j]).getComponents(),
+                              this.pointsInOrder.get(adjMat[0][i]).getComponents()))));
+              fundPoints.add(p);
+            }
+          }
+        }
+      }
     }
+    
+    // Reconstruct the edges
+    LinkedList<Edge<Integer, Integer>> edges = getEdges(origin);
 
-    //
-    // The second point is the affine translation
-    //
-    double[] aff = points[0];
-    //
-    // The Matrix is build of the last n-1 points
-    // The first one is the voronoi vertex
-    // the second one is the affine translation
-    // the last one is a point at infinity
-    //
-    double[][] mat = new double[points.length - 1][];
-    for (int i = 1; i < points.length; i++) {
-      mat[i - 1] = new double[points[i].length];
-      mat[i - 1] = PointUtil.subtract(points[i], aff);
-    }
-
-    //
-    // Lastly the boundary points of this construction are the unit base for
-    // the
-    // goal dimension
-    //
-    double[][] boundary;
-    boundary = new double[points.length][points[1].length - 1];
-
-    for (int i = 0; i < boundary.length; i++) {
-      boundary[i] = PointUtil.unit(i, points[1].length - 1);// points[i + 2];
-      // System.out.println((showPoint(boundary[i])));
-    }
-
-    return new KnownFundamental(boundary, PointUtil.transpose(mat), aff);
+    
+    // Calculate hit with hyperplane
+    // normal and origin vektor is points[0]
+    
+    
+    // Gram Schmitt to Orthonormalize Hyperplanes normal vektor + rest of base
+    
+    
+    // Express points in new base
+    
+    // Calculate revert matrix and normalize it
+    
+    
+    return null;
   }
 
   private double parseCoordinate(String s) {
