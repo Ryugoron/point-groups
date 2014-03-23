@@ -1,15 +1,6 @@
 package pointGroups.gui.logwindow;
 
-import java.awt.Point;
 import java.util.logging.Logger;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.Popup;
-import javax.swing.PopupFactory;
 
 import org.junit.Assert;
 import org.junit.Test;

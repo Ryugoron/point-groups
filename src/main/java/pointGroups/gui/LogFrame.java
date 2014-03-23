@@ -33,6 +33,10 @@ public class LogFrame
   extends JFrame
   implements ShowLogHandler
 {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 6753966305287019976L;
   // private JTextArea textArea;
   private JScrollPane scrollPane;
   private JTable table;
@@ -52,6 +56,11 @@ public class LogFrame
     // create TableModel to customize Table (not editable and List instead of an
     // array for data)
     model = new AbstractTableModel() {
+      /**
+       * 
+       */
+      private static final long serialVersionUID = 7525868394963262424L;
+
       public String getColumnName(int col) {
         return columnNames[col].toString();
       }
@@ -159,22 +168,28 @@ public class LogFrame
 
 
   public class LevelRenderer
-    extends JLabel
     implements TableCellRenderer
   {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7165707951780037835L;
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
         boolean isSelected, boolean hasFocus, int row, int column) {
       String level = ((Level) value).getName();
+      System.out.println(level);
+      JLabel label = new JLabel();
       if (level.equals("WARNING")){
-        this.setForeground(Color.ORANGE);
+        label.setForeground(Color.ORANGE);
       }
       if (level.equals("SEVERE")){
-        this.setForeground(Color.RED);
+        label.setForeground(Color.RED);
       }
-      this.setText(((Level) value).getName());
-      return this;
+      label.setText(((Level) value).getName());
+      return label;
     }
 
   }
