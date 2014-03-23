@@ -2,6 +2,7 @@ package pointGroups.geometry;
 
 import java.io.Serializable;
 
+
 /**
  * A quaternion is a number from the set a+bi+cj+dk with a,b,c,d real numbers.
  * The imaginary units i, j, k follow haliton's rules i^2 = j^2 = k^2 = ijk =
@@ -17,10 +18,9 @@ public class Quaternion
    * 
    */
   private static final long serialVersionUID = -2584314271811803851L;
-  public final static Quaternion ONE = new Quaternion(1,0,0,0);
-  public final static Quaternion I = new Quaternion(0,1,0,0);
-  public final static Quaternion J = new Quaternion(0,0,1,0);
-
+  public final static Quaternion ONE = new Quaternion(1, 0, 0, 0);
+  public final static Quaternion I = new Quaternion(0, 1, 0, 0);
+  public final static Quaternion J = new Quaternion(0, 0, 1, 0);
 
   public final double i, j, k, re;
 
@@ -135,8 +135,18 @@ public class Quaternion
 
     return components;
   }
-  
-  
-  
-  
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (!(obj instanceof Quaternion)) { return false; }
+    Quaternion q = (Quaternion) obj;
+
+    return this.i == q.i && this.j == q.j && this.k == q.k && this.re == q.re;
+  }
+
+  @Override
+  public int hashCode() {
+    return new Double(re + i + j + k).hashCode();
+  }
+
 }
