@@ -3,17 +3,22 @@
  */
 package pointGroups.gui;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 // import javax.swing.JTextArea;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import pointGroups.gui.event.EventDispatcher;
@@ -66,6 +71,7 @@ public class LogFrame
     table = new JTable(model);
     // second column holds log level -> only short strings
     table.getColumnModel().getColumn(1).setMaxWidth(100);
+    table.getColumnModel().getColumn(1).setCellRenderer(new LevelRenderer());
     scrollPane = new JScrollPane(table);
     // textArea = new JTextArea();
     // textArea.setEditable(false);
@@ -147,6 +153,28 @@ public class LogFrame
       throws SecurityException {
       // TODO Auto-generated method stub
 
+    }
+
+  }
+
+
+  public class LevelRenderer
+    extends JLabel
+    implements TableCellRenderer
+  {
+
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value,
+        boolean isSelected, boolean hasFocus, int row, int column) {
+      String level = ((Level) value).getName();
+      if (level.equals("WARNING")){
+        this.setForeground(Color.ORANGE);
+      }
+      if (level.equals("SEVERE")){
+        this.setForeground(Color.RED);
+      }
+      this.setText(((Level) value).getName());
+      return this;
     }
 
   }
