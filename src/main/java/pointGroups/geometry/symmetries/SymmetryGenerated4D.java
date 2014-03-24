@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,14 +31,64 @@ public class SymmetryGenerated4D
   
   public static final String dir = ""; //TODO: dir?!
   
+  public final static Collection<Rotation4D> generatorIxI60(){
+    Collection<Rotation4D> generator = new ArrayList<>();
+    generator.add(new Rotation4D(GeneratorCreator.qw, GeneratorCreator.qw));     
+    generator.add(new Rotation4D(GeneratorCreator.qI, GeneratorCreator.qI));
+    return generator;
+  }
   
+  public final static Collection<Rotation4D> generatorOxO24(){
+    Collection<Rotation4D> generator = new ArrayList<>();
+    generator.add(new Rotation4D(GeneratorCreator.qw, GeneratorCreator.qw));          
+    generator.add(new Rotation4D(GeneratorCreator.qO,GeneratorCreator.qO));     
+    return generator;
+  }
+  
+  public final static Collection<Rotation4D> generatorTxT3(){
+    Collection<Rotation4D> generator = new ArrayList<>();
+    generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I));
+    generator.add(new Rotation4D(Quaternion.J, Quaternion.ONE));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.J));
+    generator.add(new Rotation4D(SymmetryGenerated4D.qw, SymmetryGenerated4D.qw));
+    return generator;
+  }
+  
+  public final static Collection<Rotation4D> generatorTxT12(){
+    Collection<Rotation4D> generator = new ArrayList<>();
+    generator.add(new Rotation4D(Quaternion.I, Quaternion.I));
+    generator.add(new Rotation4D(SymmetryGenerated4D.qw, SymmetryGenerated4D.qw));
+    return generator;
+  }
   
   
   /**
    * Add here new symmetry groups
    */
   protected static void createSymgroups(){
+    System.out.println("TxT Start: " + Calendar.getInstance().getTime());
     createSymgroup(TxTSymmetry.getSym().getName(), TxTSymmetry.TxTGenerator());
+    
+    System.out.println("OxO Start: " + Calendar.getInstance().getTime());
+    createSymgroup(OxOSymmetry.getSym().getName(), OxOSymmetry.generator());
+    System.out.println("OxO2 Start: " + Calendar.getInstance().getTime());
+    createSymgroup(OxO2Symmetry.getSym().getName(), OxO2Symmetry.generator());
+    System.out.println("OxO6 Start: " + Calendar.getInstance().getTime());
+    createSymgroup(OxO6Symmetry.getSym().getName(), OxO6Symmetry.generator());
+    System.out.println("TxT12 Start: " + Calendar.getInstance().getTime());
+    createSymgroup("TxT12", generatorTxT12());
+    System.out.println("TxT3 Start: " + Calendar.getInstance().getTime());
+    createSymgroup("TxT3", generatorTxT3());
+    System.out.println("OxO24 Start: " + Calendar.getInstance().getTime());
+    createSymgroup("OxO24", generatorOxO24());
+    System.out.println("IxI60 Start: " + Calendar.getInstance().getTime());
+    createSymgroup("IxI60", generatorIxI60());
+    System.out.println("IxI Start: " + Calendar.getInstance().getTime());
+    createSymgroup(IxISymmetry.getSym().getName(), IxISymmetry.generator());
+
+    System.out.println("finish: " + Calendar.getInstance().getTime());
+
   }
   
   

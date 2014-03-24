@@ -8,25 +8,26 @@ import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Quaternion;
 import pointGroups.geometry.Symmetry;
 
-public class IxISymmetry implements Symmetry<Point4D, IxISymmetry>
+public class OxO2Symmetry implements Symmetry<Point4D, OxO2Symmetry>
 {
   /**
-   * The singleton instance of the IxI's symmetry class.
+   * The singleton instance of the 1/2OxO's symmetry class ([3,4,3]+).
    */
-  private final static IxISymmetry sym = new IxISymmetry(); 
+  private final static OxO2Symmetry sym = new OxO2Symmetry(); 
   private Collection<Rotation4D> groupelems;
 
   
   public final static Collection<Rotation4D> generator(){
     Collection<Rotation4D> generator = new ArrayList<>();
-    generator.add(new Rotation4D(GeneratorCreator.qI, Quaternion.ONE));
+    generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE));
     generator.add(new Rotation4D(GeneratorCreator.qw, Quaternion.ONE));
-    generator.add(new Rotation4D(Quaternion.ONE,GeneratorCreator.qI));
-    generator.add(new Rotation4D(Quaternion.ONE,GeneratorCreator.qw));     
+    generator.add(new Rotation4D(Quaternion.ONE,Quaternion.I));
+    generator.add(new Rotation4D(Quaternion.ONE,GeneratorCreator.qw));
+    generator.add(new Rotation4D(GeneratorCreator.qO,GeneratorCreator.qO));     
     return generator;
   }
   
-  protected IxISymmetry(){
+  protected OxO2Symmetry(){
     
     // read file
     try {
@@ -37,8 +38,8 @@ public class IxISymmetry implements Symmetry<Point4D, IxISymmetry>
       e.printStackTrace();
     }  }
   public enum Subgroups
-  implements Subgroup<IxISymmetry> {
-  Id("Trivial group"), Full("Full [IxI] symmetry");
+  implements Subgroup<OxO2Symmetry> {
+  Id("Trivial group"), Full("Full [3,4,3]+ symmetry");
 
   private final String name;
 
@@ -57,13 +58,13 @@ public class IxISymmetry implements Symmetry<Point4D, IxISymmetry>
 }
   
   
-  public static IxISymmetry getSym(){
+  public static OxO2Symmetry getSym(){
     return sym;
   }
   
   @Override
   public Collection<Point4D> images(Point4D p,
-      pointGroups.geometry.Symmetry.Subgroup<IxISymmetry> s) {
+      Subgroup<OxO2Symmetry> s) {
     return calculateImages(new Quaternion(p.re, p.i, p.j, p.k));
   }
 
@@ -74,21 +75,21 @@ public class IxISymmetry implements Symmetry<Point4D, IxISymmetry>
   }
 
   @Override
-  public Collection<pointGroups.geometry.Symmetry.Subgroup<IxISymmetry>>
+  public Collection<Subgroup<OxO2Symmetry>>
       getSubgroups() {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public int order(pointGroups.geometry.Symmetry.Subgroup<IxISymmetry> s) {
+  public int order(Subgroup<OxO2Symmetry> s) {
     // TODO Auto-generated method stub
     return 0;
   }
 
   @Override
   public String getName() {
-    return "[I x I]";
+    return "[3,4,3]+";
   }
 
   @Override
@@ -97,7 +98,7 @@ public class IxISymmetry implements Symmetry<Point4D, IxISymmetry>
   }
 
   @Override
-  public pointGroups.geometry.Symmetry.Subgroup<IxISymmetry> getSubgroupByName(
+  public Subgroup<OxO2Symmetry> getSubgroupByName(
       String subgroup) {
     // TODO Auto-generated method stub
     return null;
