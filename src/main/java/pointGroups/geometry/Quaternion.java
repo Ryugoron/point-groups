@@ -135,7 +135,53 @@ public class Quaternion
 
     return components;
   }
+  /**
+   * source code from Jreality
+   */
+  @Override
+  public int hashCode() {
+    
+   double x = Math.round(r * re) / r;
+   double y = Math.round(r * i) / r;
+   double z = Math.round(r * j) / r;
+   double w = Math.round(r * k) / r;
+    
+   final int PRIME = 31;
+   int result = 1;
+   long temp;
+   temp = Double.doubleToLongBits(w);
+   result = PRIME * result + (int) (temp ^ (temp >>> 32));
+   temp = Double.doubleToLongBits(x);
+   result = PRIME * result + (int) (temp ^ (temp >>> 32));
+   temp = Double.doubleToLongBits(y);
+   result = PRIME * result + (int) (temp ^ (temp >>> 32));
+   temp = Double.doubleToLongBits(z);
+   result = PRIME * result + (int) (temp ^ (temp >>> 32));
+   return result;
+  }
   
+  /**
+   * source code from Jreality
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    final Quaternion other = (Quaternion) obj;
+    double x1 = Math.round(r * re) / r;
+    double y1 = Math.round(r * i) / r;
+    double z1 = Math.round(r * j) / r;
+    double w1 = Math.round(r * k) / r;
+    
+    double x2 = Math.round(r * other.re) / r;
+    double y2 = Math.round(r * other.i) / r;
+    double z2 = Math.round(r * other.j) / r;
+    double w2 = Math.round(r * other.k) / r;
+    
+    if (x1 == x2 && y1 == y2 && z1 == z2 && w1 == w2) return true;
+    return false;
+  }
   
   
   
