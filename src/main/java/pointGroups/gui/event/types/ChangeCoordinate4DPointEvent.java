@@ -1,7 +1,6 @@
 package pointGroups.gui.event.types;
 
 import pointGroups.geometry.Point4D;
-import pointGroups.geometry.Symmetry;
 import pointGroups.gui.event.Event;
 
 
@@ -14,7 +13,8 @@ public class ChangeCoordinate4DPointEvent
   public final static Class<ChangeCoordinate4DPointHandler> TYPE =
       ChangeCoordinate4DPointHandler.class;
 
-  public ChangeCoordinate4DPointEvent(final Point4D pickedPoint, Object src) {
+  public ChangeCoordinate4DPointEvent(final Point4D pickedPoint,
+      final Object src) {
     this.pickedPoint = pickedPoint;
     this.src = src;
   }
@@ -22,14 +22,15 @@ public class ChangeCoordinate4DPointEvent
   public Point4D getPickedPoint() {
     return pickedPoint;
   }
-  
-  public Object getSource(){
+
+  public Object getSource() {
     return src;
   }
-  
-  public boolean isSource(Object candidate){
+
+  public boolean isSource(final Object candidate) {
     return src.equals(candidate);
   }
+
   @Override
   public final Class<ChangeCoordinate4DPointHandler> getType() {
     return TYPE;
@@ -40,4 +41,3 @@ public class ChangeCoordinate4DPointEvent
     handler.onChangeCoordinate4DPointEvent(this);
   }
 }
-
