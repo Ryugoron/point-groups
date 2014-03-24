@@ -3,7 +3,6 @@ package pointGroups.gui.event.types;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
-import pointGroups.geometry.Symmetry;
 import pointGroups.gui.event.Event;
 
 

@@ -3,10 +3,10 @@ package pointGroups.util.polymake;
 import java.util.Collection;
 
 import pointGroups.geometry.Edge;
+import pointGroups.geometry.Symmetry;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Schlegel;
-import pointGroups.geometry.Symmetry;
 import pointGroups.util.AbstractTransformer;
 import pointGroups.util.polymake.SchlegelTransformer.SchlegelCompound;
 
@@ -23,10 +23,10 @@ public class SchlegelTransformer
 
   private final Collection<? extends Point> points;
   private final Point p;
-  private final Symmetry<?, ?> sym;
+  private final Symmetry<?> sym;
 
   public SchlegelTransformer(final Collection<? extends Point> points,
-      final Symmetry<?, ?> sym, final Point p) {
+      final Symmetry<?> sym, final Point p) {
     this.points = points;
     this.sym = sym;
     this.p = p;
@@ -89,11 +89,11 @@ public class SchlegelTransformer
 
   @Override
   public SchlegelCompound transformResultString() {
-    
+
     // splitting result string into two. One contains the points, the other
     // the
     // edges.
-    
+
     String pointsString;
     String edgesString;
     try {
@@ -126,11 +126,12 @@ public class SchlegelTransformer
         else if (compStr.length == 3) {
           points[i] =
               new Point3D(Double.parseDouble(compStr[0]),
-                  Double.parseDouble(compStr[1]), Double.parseDouble(compStr[2]));
+                  Double.parseDouble(compStr[1]),
+                  Double.parseDouble(compStr[2]));
         }
         else {
-          logger.severe("Point in resultString split in: " +
-              compStr.length + "components");
+          logger.severe("Point in resultString split in: " + compStr.length +
+              "components");
           logger.fine("resultString was: " + resultString);
         }
       }
@@ -144,7 +145,8 @@ public class SchlegelTransformer
     Edge<Point3D, Point3D>[] edges;
     Edge<Integer, Integer>[] edgesindices;
     try {
-      // Store Edges as Array von Pair<Point3D,Point3D> and as Array von Pair<Integer,Integer>
+      // Store Edges as Array von Pair<Point3D,Point3D> and as Array von
+      // Pair<Integer,Integer>
       String[] splittedEdgesString = edgesString.split("\n");
       edges = new Edge[splittedEdgesString.length];
       edgesindices = new Edge[splittedEdgesString.length];
@@ -178,10 +180,10 @@ public class SchlegelTransformer
   public static class SchlegelCompound
   {
     private final Schlegel s;
-    private final Symmetry<?, ?> sym;
+    private final Symmetry<?> sym;
     private final Point p;
 
-    public SchlegelCompound(final Schlegel s, final Symmetry<?, ?> sym,
+    public SchlegelCompound(final Schlegel s, final Symmetry<?> sym,
         final Point p) {
       this.s = s;
       this.sym = sym;
@@ -192,7 +194,7 @@ public class SchlegelTransformer
       return this.s;
     }
 
-    public Symmetry<?, ?> getSymmetry() {
+    public Symmetry<?> getSymmetry() {
       return this.sym;
     }
 

@@ -1,22 +1,21 @@
 package pointGroups.gui.event.types;
 
-import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Symmetry;
+import pointGroups.geometry.Point4D;
 import pointGroups.gui.event.Event;
 
 
 /**
  * This event is supposed to be fired, when the current symmetry was changed to
- * another {@link Symmetry} of {@link Point4D} type. The chosen symmetry can be
- * retrieved by {@link #getSymmetry4D()}, the subgroup by {@link #getSubgroup()}
+ * another {@link Symmetry} of {@link Point4D} type. The chosen symmetry can
+ * be retrieved by {@link #getSymmetry4D()}.
  * 
  * @author Alex
  */
 public class Symmetry4DChooseEvent
   extends Event<Symmetry4DChooseHandler>
 {
-  protected final Symmetry<Point4D, ?> symmetry;
-  protected final String subgroup;
+  protected final Symmetry<Point4D> symmetry;
 
   /**
    * The type of the corresponding {@link Symmetry4DChooseHandler}.
@@ -30,12 +29,9 @@ public class Symmetry4DChooseEvent
    * Symmetry symmetry.
    * 
    * @param symmetry The symmetry chosen
-   * @param subgroup The subgroup of the symmetry
    */
-  public Symmetry4DChooseEvent(final Symmetry<Point4D, ?> symmetry,
-      final String subgroup) {
+  public Symmetry4DChooseEvent(final Symmetry<Point4D> symmetry) {
     this.symmetry = symmetry;
-    this.subgroup = subgroup;
   }
 
   /**
@@ -43,17 +39,8 @@ public class Symmetry4DChooseEvent
    * 
    * @return The chosen symmetry.
    */
-  public Symmetry<Point4D, ?> getSymmetry4D() {
+  public Symmetry<Point4D> getSymmetry4D() {
     return symmetry;
-  }
-
-  /**
-   * The chosen subgroup of the event's associated {@link Symmetry}
-   * 
-   * @return The chosen symmetry.
-   */
-  public String getSubgroup() {
-    return this.subgroup;
   }
 
   @Override

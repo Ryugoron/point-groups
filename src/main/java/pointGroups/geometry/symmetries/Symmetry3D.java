@@ -8,13 +8,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import pointGroups.geometry.NewSymmetry;
+import pointGroups.geometry.Symmetry;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.UnitQuaternion;
 
 
 public enum Symmetry3D
-  implements NewSymmetry<Point3D> {
+  implements Symmetry<Point3D> {
 
   C1("C1", "[]+", "11"), //
   S2("S2", "[2+,2+]", "x"), // Ci = S2
@@ -129,32 +129,61 @@ public enum Symmetry3D
     subgroups = new HashMap<>();
     normalPoints = new HashMap<>();
 
+    // C1 group
     groups.put(C1, Collections.singleton(id));
+    subgroups.put(C1, Arrays.asList(C1));
+    normalPoints.put(C1, new Point3D(0.8, 0.6, 0.0));
+
+    // C2 group
     groups.put(C2, Arrays.asList(id, faceAxisJ_180));
+    subgroups.put(C2, Arrays.asList(C1, C2));
+    normalPoints.put(C2, new Point3D(0.8, 0.6, 0.0));
+
+    // D2 group
     groups.put(D2,
         Arrays.asList(id, faceAxisJ_180, faceAxisI_180, faceAxisK_180));
-    // groups.put(C3, Arrays.asList(id,));
+    subgroups.put(D2, Arrays.asList(D2));
+    normalPoints.put(D2, new Point3D(0.8, 0.6, 0.0));
 
+    // C3
+    // groups.put(C3, Arrays.asList(id,));
+    // ...
+
+    // C4
     groups.put(C4,
         Arrays.asList(id, faceAxisK_180, faceAxisK_90, faceAxisK_270));
+    subgroups.put(C4, Arrays.asList(C4));
+    normalPoints.put(C4, new Point3D(0.8, 0.6, 0.0));
 
+    // D4
     groups.put(D4, new HashSet<UnitQuaternion>());
     groups.get(D4).addAll(groups.get(D2));
     groups.get(D4).addAll(groups.get(C4));
     groups.get(D4).addAll(Arrays.asList(edgeAxis_1, edgeAxis_2));
+    subgroups.put(D4, Arrays.asList(D4));
+    normalPoints.put(D4, new Point3D(0.8, 0.6, 0.0));
+
+    // D3
     // groups.put(D3, Arrays.asList(id,));
+    // ...
+
+    // T
     groups.put(T, Arrays.asList(id, faceAxisI_180, faceAxisJ_180,
         faceAxisK_180, diagonalAxis1_120, diagonalAxis1_240, diagonalAxis2_120,
         diagonalAxis2_240, diagonalAxis3_120, diagonalAxis3_240,
         diagonalAxis4_120, diagonalAxis4_240));
+    subgroups.put(T, Arrays.asList(T));
+    normalPoints.put(T, new Point3D(0.8, 0.6, 0.0));
 
+    // 0
     groups.put(O, new HashSet<UnitQuaternion>());
     groups.get(O).addAll(groups.get(T));
     groups.get(O).addAll(
         Arrays.asList(faceAxisI_90, faceAxisI_270, faceAxisJ_90, faceAxisJ_270,
             faceAxisK_270, faceAxisK_270, edgeAxis_1, edgeAxis_2, edgeAxis_3,
             edgeAxis_4, edgeAxis_5, edgeAxis_6));
-
+    subgroups.put(O, Arrays.asList(O));
+    normalPoints.put(O, new Point3D(0.8, 0.6, 0.0));
   }
 
   private final String coxeter;
@@ -214,4 +243,7 @@ public enum Symmetry3D
     return normalPoints.get(this);
   }
 
+  public static Collection<Symmetry3D> getSymmetries() {
+    return groups.keySet();
+  }
 }

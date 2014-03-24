@@ -1,7 +1,6 @@
 package pointGroups.gui.event.types;
 
 import pointGroups.geometry.Point3D;
-import pointGroups.geometry.Symmetry;
 import pointGroups.gui.event.Event;
 
 
@@ -10,12 +9,12 @@ public class ChangeCoordinate3DPointEvent
 {
   private final Point3D pickedPoint;
   private final Object src;
-  
 
   public final static Class<ChangeCoordinate3DPointHandler> TYPE =
       ChangeCoordinate3DPointHandler.class;
 
-  public ChangeCoordinate3DPointEvent(final Point3D pickedPoint,Object src) {
+  public ChangeCoordinate3DPointEvent(final Point3D pickedPoint,
+      final Object src) {
     this.pickedPoint = pickedPoint;
     this.src = src;
   }
@@ -23,15 +22,14 @@ public class ChangeCoordinate3DPointEvent
   public Point3D getPickedPoint() {
     return pickedPoint;
   }
-  
-  public Object getSource(){
+
+  public Object getSource() {
     return src;
   }
-  
-  public boolean isSource(Object candidate){
+
+  public boolean isSource(final Object candidate) {
     return src.equals(candidate);
   }
-  
 
   @Override
   public final Class<ChangeCoordinate3DPointHandler> getType() {
