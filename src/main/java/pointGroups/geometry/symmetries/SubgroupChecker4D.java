@@ -43,16 +43,16 @@ public class SubgroupChecker4D
   
   public static void main(String[] args){
     try {
-      symmetryGroups.put(Symmetry4D.readSymmetryGroup("TxT"), "TxT");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.TxT), "TxT");
       //symmetryGroups.put(SymmetryGenerated4D.readSymmetryGroup("IxI"), "IxI");
-      symmetryGroups.put(Symmetry4D.readSymmetryGroup("OxO"), "OxO");
-      symmetryGroups.put(Symmetry4D.readSymmetryGroup("OxO2"), "OxO2");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.OxO), "OxO");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.OxO2), "OxO2");
 
-      symmetryGroups.put(Symmetry4D.readSymmetryGroup("OxO6"), "OxO6");
-      symmetryGroups.put(Symmetry4D.readSymmetryGroup("TxT12"), "TxT12");
-      symmetryGroups.put(Symmetry4D.readSymmetryGroup("TxT3"), "TxT3");
-      symmetryGroups.put(Symmetry4D.readSymmetryGroup("OxO24"), "OxO24");
-      symmetryGroups.put(Symmetry4D.readSymmetryGroup("IxI60"), "IxI60");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.OxO6), "OxO6");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.TxT12), "TxT12");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.TxT3), "TxT3");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.OxO24), "OxO24");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.IxI60), "IxI60");
 
     }
     catch (FileNotFoundException e) {

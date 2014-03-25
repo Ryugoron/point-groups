@@ -18,25 +18,13 @@ import pointGroups.geometry.Quaternion;
  */
 public class GeneratorCreator3D
 {
-  public static final double epsilon = 1E-10;
-  // See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 33
-  public static final double sigma = (Math.sqrt(5) - 1) / 2;
-  public static final double tau = (Math.sqrt(5) + 1) / 2;
-  public static final Quaternion qw = new Quaternion(-0.5, 0.5, 0.5, 0.5);
-
-  public static final Quaternion qI = new Quaternion(0, 0.5, sigma * 0.5,
-      tau * 0.5);
-  public static final Quaternion qO = new Quaternion(0, 0, 1 / Math.sqrt(2),
-      1 / Math.sqrt(2));
-  public static final Quaternion qT = new Quaternion(0, 1, 0, 0);
-
   /**
    * @return Groupelems of iscosahedral symmetry group
    */
   public static Collection<Quaternion> IcosahedralSymmetryGroup() {
     List<Quaternion> gen = new ArrayList<Quaternion>();
-    gen.add(qI);
-    gen.add(qw);
+    gen.add(Quaternion.qI);
+    gen.add(Quaternion.qw);
     return generateSymmetryGroup3D(gen);
   }
 
@@ -45,8 +33,8 @@ public class GeneratorCreator3D
    */
   public static Collection<Quaternion> OctahedralSymmetryGroup() {
     List<Quaternion> gen = new ArrayList<Quaternion>();
-    gen.add(qO);
-    gen.add(qI);
+    gen.add(Quaternion.qO);
+    gen.add(Quaternion.qI);
     return generateSymmetryGroup3D(gen);
   }
 
@@ -55,8 +43,8 @@ public class GeneratorCreator3D
    */
   public static Collection<Quaternion> TetrahedralSymmetryGroup() {
     List<Quaternion> gen = new ArrayList<Quaternion>();
-    gen.add(qT);
-    gen.add(qw);
+    gen.add(Quaternion.qT);
+    gen.add(Quaternion.qw);
     return generateSymmetryGroup3D(gen);
   }
 

@@ -19,14 +19,24 @@ public class Quaternion
    */
   private static final long serialVersionUID = -2584314271811803851L;
 
+  public final static Quaternion ONE = new Quaternion(1, 0, 0, 0);
+  public final static Quaternion I = new Quaternion(0, 1, 0, 0);
+  public final static Quaternion J = new Quaternion(0, 0, 1, 0);
 
-  public final static Quaternion ONE = new Quaternion(1,0,0,0);
-  public final static Quaternion I = new Quaternion(0,1,0,0);
-  public final static Quaternion J = new Quaternion(0,0,1,0);
+  // See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 33
+  public static final double sigma = (Math.sqrt(5) - 1) / 2;
+  public static final double tau = (Math.sqrt(5) + 1) / 2;
+  public static final Quaternion qw = new Quaternion(-0.5, 0.5, 0.5, 0.5);
+
+  public static final Quaternion qI = new Quaternion(0, 0.5, sigma * 0.5,
+      tau * 0.5);
+  public static final Quaternion qO = new Quaternion(0, 0, 1 / Math.sqrt(2),
+      1 / Math.sqrt(2));
+  public static final Quaternion qT = new Quaternion(0, 1, 0, 0);
 
   private final static int digits = 5;
   private final static double r = Math.pow(10, digits);
-  
+
   public final double i, j, k, re;
 
   /**
@@ -141,7 +151,6 @@ public class Quaternion
     return components;
   }
 
-
   /**
    * source code from Jreality
    */
@@ -167,8 +176,6 @@ public class Quaternion
     return result;
   }
 
-
-  
   /**
    * source code from Jreality
    */
@@ -190,6 +197,5 @@ public class Quaternion
     if (x1 == x2 && y1 == y2 && z1 == z2 && w1 == w2) return true;
     return false;
   }
-  
 
 }
