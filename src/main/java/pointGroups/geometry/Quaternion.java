@@ -190,5 +190,6 @@ public class Quaternion
     if (x1 == x2 && y1 == y2 && z1 == z2 && w1 == w2) return true;
     return false;
   }
+  
 
 }
