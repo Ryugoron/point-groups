@@ -143,6 +143,7 @@ public class LogFrame
       Object[] newLog =
           { record.getLoggerName(), record.getLevel(), record.getMessage() };
       data.add(newLog);
+     //TODO is repaint and revalidate enough?
       // updated->repaint to show new log
       table.repaint();
       // is it necessary to be scrollable?
