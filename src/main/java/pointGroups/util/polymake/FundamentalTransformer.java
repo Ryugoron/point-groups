@@ -220,9 +220,11 @@ public class FundamentalTransformer
     // Gram Schmitt to Orthonormalize Hyperplanes normal vektor + rest of base
     
     
-    // Express points in new base
+    // Base Transformation Matrix
     
-    // Calculate revert matrix and normalize it
+    // Move points to origin
+    
+    // Express in new coordinates
     
     
     return null;
