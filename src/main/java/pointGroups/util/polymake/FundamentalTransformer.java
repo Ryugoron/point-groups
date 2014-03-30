@@ -1,7 +1,5 @@
 package pointGroups.util.polymake;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,6 +26,8 @@ public class FundamentalTransformer
   private final List<? extends Point> points;
   private final Point center;
   private final int dim;
+  
+  private Fundamental f;
 
 
   public FundamentalTransformer(Point center, List<? extends Point> points) {
@@ -105,6 +105,7 @@ public class FundamentalTransformer
   @Override
   public Fundamental transformResultString() {
 
+    if(this.f != null) return this.f;
     Fundamental res;
     try {
       // Tries to transform a Fundamental Region.
@@ -115,6 +116,7 @@ public class FundamentalTransformer
       logger.info("Could not transform Fundamental Result String, given trivial Fundamental instead.");
       res = new UnknownFundamental();
     }
+    this.f = res;
     return res;
   }
 
@@ -144,9 +146,24 @@ public class FundamentalTransformer
       pos++;
     }
     
+    double[][] f2n = baseTransformation();
+    double[][] n2f = PointUtil.transpose(f2n);
     
+    // Points normalizing
+    double[][] normPoints = new double[points.size()][];
+    for(int i = 0; i < points.size(); i++){
+      double[] p = PointUtil.applyMatrix(n2f, points.get(i));
+      p = PointUtil.rmFst(p);
+      normPoints[i] = p;
+    }
     
-    return null;
+    // Hyperplanes to right format
+    double[][] hyper = new double[hyperPlanes.size()][];
+    for(int i = 0; i < hyper.length; i++){
+      hyper[i] = hyperPlanes.get(i);
+    }
+    
+    return new KnownFundamental(normPoints, f2n, hyper, center.getComponents());
   }
 
   private double parseCoordinate(String s) {
@@ -221,6 +238,20 @@ public class FundamentalTransformer
       point[i] = parseCoordinate(pS[i]);
     }
     return point;
+  }
+  
+  /**
+   * Calculates a base transformation for the current normalvector this.center.
+   * Due to the fact, that this is a orthogonal Matrix, it can be inverted by transposing.
+   * 
+   * It calculates the transformation back into the standard basis.
+   * 
+   * @return Base transformation matrix
+   */
+  private double[][] baseTransformation() {
+    //Will be hard coded for performance reasons.
+    
+    return null;
   }
 
 }

@@ -1,7 +1,6 @@
 package pointGroups.geometry;
 
-import java.util.LinkedList;
-import java.util.List;
+
 import java.util.logging.Logger;
 
 import pointGroups.util.LoggerFactory;
@@ -36,14 +35,14 @@ public class KnownFundamental
    * A list with hyperplanes. The first one is a point on the plane and the
    * second component is a normal Vector which points torwards the inside.
    */
-  private List<double[][]> hPolytope;
+  private final double[][] hPolytope;
 
   /**
    * V-Polytope of the fundamental domain.
    */
   private final double[][] finPoints;
 
-  public KnownFundamental(double[][] points, double[][] revertMatrix,
+  public KnownFundamental(double[][] points, double[][] revertMatrix, double[][] hyperplanes,
       double[] affine) {
 
     // Punkte kopieren
@@ -51,8 +50,7 @@ public class KnownFundamental
 
     this.revertMatrix = revertMatrix;
     this.affine = affine;
-    if (points[0].length == 2) this.hPolytope = getLines();
-    else this.hPolytope = getPlanes();
+    this.hPolytope = hyperplanes;
   }
 
   /**
@@ -75,89 +73,19 @@ public class KnownFundamental
   }
 
   /**
-   * This method assumes, that a fundamental region is a simplex.
+   * Checks for every hyperplane after back transformation
    */
   @Override
   public boolean inFundamental(double[] point) {
-    for (double[][] hp : this.hPolytope) {
-      if (PointUtil.stScalarProd(PointUtil.subtract(point, hp[0]), hp[1]) < -1 *
-          EPSILON) return false;
+    double[] p = this.affinePolytope(point);
+    for (double[] hp : this.hPolytope) {
+      double val = hp[0];
+      for(int i = 1; i < hp.length; i++){
+        val = p[i-1]*hp[i];
+      }
+      if(val <= EPSILON) return false;
     }
     return true;
-  }
-
-  /**
-   * A hyperplane in 2D is represented by a normal vector and one point on the
-   * plane.
-   * 
-   * @return List of all hyperplanes
-   */
-  private List<double[][]> getLines() {
-    LinkedList<double[][]> erg = new LinkedList<double[][]>();
-    double[][] points = this.getVertices();
-    for (int i = 0; i < points.length - 1; i++) {
-      for (int j = i + 1; j < points.length; j++) {
-        double[][] a = new double[2][2];
-        a[0] = points[i].clone();
-        double[] n = new double[2];
-        n[0] = points[j][0] - points[i][0];
-        n[1] = -1 * 1 / (points[j][1] - points[i][1]);
-
-        // Test if the normalvector has to be inverted
-        int tV;
-        if (i != 0 && j != 0) tV = 0;
-        else if (i != 1 && j != 1) tV = 1;
-        else tV = 2;
-
-        double[] tVec = points[tV];
-        tVec[0] = tVec[0] - points[i][0];
-        tVec[1] = tVec[1] - points[i][1];
-        if (PointUtil.stScalarProd(tVec, n) < 0) {
-          n = PointUtil.mult(-1, n);
-        }
-        a[1] = n;
-        erg.add(a);
-      }
-    }
-
-    return erg;
-  }
-
-  /**
-   * As the 2D case.
-   * 
-   * @return List of all hyperplanes
-   */
-  private List<double[][]> getPlanes() {
-    List<double[][]> erg = new LinkedList<double[][]>();
-    double[][] points = this.getVertices();
-    for (int i = 0; i < points.length - 2; i++) {
-      for (int j = i + 1; j < points.length - 1; j++) {
-        for (int w = j + 1; w < points.length; w++) {
-          double[][] toAdd = new double[2][3];
-          double[] x = points[i];
-          double[] y = points[j];
-          double[] z = points[w];
-          y = PointUtil.subtract(y, x);
-          z = PointUtil.subtract(z, x);
-          double[] n = PointUtil.vecProd(y, z);
-
-          // Test if it is the right side
-          int tV;
-          if (i != 0 && j != 0 && w != 0) tV = 0;
-          else if (i != 1 && j != 1 && w != 1) tV = 1;
-          else if (i != 2 && j != 2 && w != 2) tV = 2;
-          else tV = 3;
-
-          if (PointUtil.stScalarProd(points[tV], n) < 0)
-            n = PointUtil.mult(-1, n);
-          toAdd[0] = x;
-          toAdd[1] = n;
-          erg.add(toAdd);
-        }
-      }
-    }
-    return erg;
   }
 
   /**
@@ -169,12 +97,25 @@ public class KnownFundamental
    */
   @Override
   public double[] revertPoint(double[] point) {
-    double[] p = PointUtil.applyMatrix(revertMatrix, point);
-    p = PointUtil.add(p, this.affine);
+    double[] p = affinePolytope(point);
     p = PointUtil.normalize(p);
     if (Math.abs(PointUtil.length(p) - 1) > 0.01) {
       logger.info("A reverted point is not on the unit sphere.");
     }
+    return p;
+  }
+  
+  /**
+   * 
+   * Returns the coordinates in the lifted polytope.
+   * 
+   * @param point - in fundamental
+   * @return point in liftet fundamental
+   */
+  private double[] affinePolytope(double[] point) {
+    double[] p = PointUtil.addZero(point);
+    p = PointUtil.applyMatrix(revertMatrix, point);
+    p = PointUtil.add(p, this.affine);
     return p;
   }
 }

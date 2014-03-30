@@ -182,6 +182,23 @@ public class PointUtil
     }
     return m2;
   }
+  
+  public static double[] addZero(double[] p) {
+    double[] p1 = new double[p.length+1];
+    p1[0] = 0;
+    for(int i = 0; i < p.length; i++) {
+      p1[i+1] = p[i];
+    }
+    return p1;
+  }
+  
+  public static double[] rmFst(double[] p) {
+    double[] p1 = new double[p.length-1];
+    for(int i = 1; i < p.length; i++) {
+      p1[i-1] = p[i];
+    }
+    return p1;
+  }
 
   public static String showPoint(double[] p) {
     String erg = "(" + p[0];
