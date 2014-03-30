@@ -59,7 +59,7 @@ public class SchlegelTransformer
     script.append("my $sep = \"\\$\\n\";");
 
     script.append("my $n = $p->N_VERTICES;");
-    script.append("my $f = $p->FACET_LABELS;");
+    script.append("my $f = $p->RIF_CYCLIC_NORMAL;");
     script.append("my $v = $schlegelverts;");
     script.append("my $e = $edges;");
 
@@ -110,8 +110,7 @@ public class SchlegelTransformer
       else if (compStr.length == 3) {
         points[i] =
             new Point3D(Double.parseDouble(compStr[0]),
-                Double.parseDouble(compStr[1]),
-                Double.parseDouble(compStr[2]));
+                Double.parseDouble(compStr[1]), Double.parseDouble(compStr[2]));
       }
       else {
         logger.severe("Point in resultString split in: " + compStr.length +
@@ -148,18 +147,22 @@ public class SchlegelTransformer
   protected Face[] parseFaces(String facesString) {
     Face[] faces;
 
-    String[] splittedString = facesString.split(" ");
+    String[] splittedString = facesString.split("\n");
 
     faces = new Face[splittedString.length];
 
     int i = 0;
     for (String faceString : splittedString) {
+
+      if (faceString.isEmpty()) {
+        continue;
+      }
+
       Face face = new Face();
 
-      for (String index : faceString.split(",")) {
+      for (String index : faceString.split(" ")) {
         face.addIndex(Integer.parseInt(index));
       }
-      System.out.println(face.indices);
 
       faces[i++] = face;
     }
@@ -167,8 +170,8 @@ public class SchlegelTransformer
     return faces;
   }
 
-  protected Polytope<Point3D> buildPolytope(Edge[] edges,
-      Face[] faces, int numberOfPoints) {
+  protected Polytope<Point3D> buildPolytope(Edge[] edges, Face[] faces,
+      int numberOfPoints) {
 
     @SuppressWarnings("unchecked")
     Collection<Point3D> points = (Collection<Point3D>) this.points;
