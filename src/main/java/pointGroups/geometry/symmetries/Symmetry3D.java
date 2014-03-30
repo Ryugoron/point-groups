@@ -223,29 +223,31 @@ public enum Symmetry3D
   }
 
   // Tables
-  static final Map<Symmetry3D, Collection<UnitQuaternion>> groups;
+  static final Map<Symmetry3D, Collection<UnitQuaternion>> rotations;
+  static final Map<Symmetry3D, Collection<UnitQuaternion>> reflections;
   static final Map<Symmetry3D, Collection<Symmetry3D>> subgroups;
   static final Map<Symmetry3D, Point3D> normalPoints;
 
   static {
-    groups = new HashMap<>();
+    rotations = new HashMap<>();
+    reflections = new HashMap<>();
     subgroups = new HashMap<>();
     normalPoints = new HashMap<>();
 
     // C1 group
-    groups.put(C1, Collections.singleton(id));
+    rotations.put(C1, Collections.singleton(id));
     subgroups.put(C1, Arrays.asList(C1));
     normalPoints.put(C1, new Point3D(0.8, 0.6, 0.0));
 
     // C2 group
-    groups.put(C2, Arrays.asList(id, faceAxisJ_180));
+    rotations.put(C2, Arrays.asList(id, faceAxisJ_180));
     subgroups.put(C2, Arrays.asList(C1, C2));
     normalPoints.put(C2, new Point3D(0.8, 0.6, 0.0));
 
     // D2 group
-    groups.put(D2,
+    rotations.put(D2,
         Arrays.asList(id, faceAxisJ_180, faceAxisI_180, faceAxisK_180));
-    subgroups.put(D2, Arrays.asList(D2));
+    subgroups.put(D2, Arrays.asList(D2, C2, C1));
     normalPoints.put(D2, new Point3D(0.8, 0.6, 0.0));
 
     // C3
@@ -253,17 +255,17 @@ public enum Symmetry3D
     // ...
 
     // C4
-    groups.put(C4,
+    rotations.put(C4,
         Arrays.asList(id, faceAxisK_180, faceAxisK_90, faceAxisK_270));
-    subgroups.put(C4, Arrays.asList(C4));
+    subgroups.put(C4, Arrays.asList(C4, C2, C1));
     normalPoints.put(C4, new Point3D(0.8, 0.6, 0.0));
 
     // D4
-    groups.put(D4, new HashSet<UnitQuaternion>());
-    groups.get(D4).addAll(groups.get(D2));
-    groups.get(D4).addAll(groups.get(C4));
-    groups.get(D4).addAll(Arrays.asList(edgeAxis_1, edgeAxis_2));
-    subgroups.put(D4, Arrays.asList(D4));
+    rotations.put(D4, new HashSet<UnitQuaternion>());
+    rotations.get(D4).addAll(rotations.get(D2));
+    rotations.get(D4).addAll(rotations.get(C4));
+    rotations.get(D4).addAll(Arrays.asList(edgeAxis_1, edgeAxis_2));
+    subgroups.put(D4, Arrays.asList(D4, C4, D2, C2, C1));
     normalPoints.put(D4, new Point3D(0.8, 0.6, 0.0));
 
     // D3
@@ -271,27 +273,35 @@ public enum Symmetry3D
     // ...
 
     // T
-    groups.put(T, Arrays.asList(id, faceAxisI_180, faceAxisJ_180,
+    rotations.put(T, Arrays.asList(id, faceAxisI_180, faceAxisJ_180,
         faceAxisK_180, diagonalAxis1_120, diagonalAxis1_240, diagonalAxis2_120,
         diagonalAxis2_240, diagonalAxis3_120, diagonalAxis3_240,
         diagonalAxis4_120, diagonalAxis4_240));
-    subgroups.put(T, Arrays.asList(T));
+    subgroups.put(T, Arrays.asList(T, D2, C2, C1));
     normalPoints.put(T, new Point3D(0.8, 0.6, 0.0));
 
+    // Th
+    // rotations.put(Th, Arrays.asList(id, faceAxisI_180, faceAxisJ_180,
+    // faceAxisK_180, diagonalAxis1_120, diagonalAxis1_240, diagonalAxis2_120,
+    // diagonalAxis2_240, diagonalAxis3_120, diagonalAxis3_240,
+    // diagonalAxis4_120, diagonalAxis4_240));
+    // reflections.put(Th,
+    // Arrays.asList(faceAxisK_180, faceAxisJ_180, faceAxisI_180));// TODO
+
     // 0
-    groups.put(O, new HashSet<UnitQuaternion>());
-    groups.get(O).addAll(groups.get(T));
-    groups.get(O).addAll(
+    rotations.put(O, new HashSet<UnitQuaternion>());
+    rotations.get(O).addAll(rotations.get(T));
+    rotations.get(O).addAll(
         Arrays.asList(faceAxisI_90, faceAxisI_270, faceAxisJ_90, faceAxisJ_270,
             faceAxisK_270, faceAxisK_270, edgeAxis_1, edgeAxis_2, edgeAxis_3,
             edgeAxis_4, edgeAxis_5, edgeAxis_6));
-    subgroups.put(O, Arrays.asList(O));
+    subgroups.put(O, Arrays.asList(O, T, D4, C4, D2, C2, C1));
     normalPoints.put(O, new Point3D(0.8, 0.6, 0.0));
 
     // I
-    groups.put(I, new HashSet<UnitQuaternion>());
-    groups.get(I).addAll(groups.get(T));
-    groups.get(I).addAll(
+    rotations.put(I, new HashSet<UnitQuaternion>());
+    rotations.get(I).addAll(rotations.get(T));
+    rotations.get(I).addAll(
         Arrays.asList(snubAxis_1, snubAxis_2, snubAxis_3, snubAxis_4,
             snubAxis_5, snubAxis_6, snubAxis_7, snubAxis_8, snubAxis_9,
             snubAxis_10, snubAxis_11, snubAxis_12, snubAxis_13, snubAxis_14,
@@ -302,7 +312,7 @@ public enum Symmetry3D
             snubAxis_35, snubAxis_36, snubAxis_37, snubAxis_38, snubAxis_39,
             snubAxis_40, snubAxis_41, snubAxis_42, snubAxis_43, snubAxis_44,
             snubAxis_45, snubAxis_46, snubAxis_47, snubAxis_48));
-    subgroups.put(I, Arrays.asList(I));
+    subgroups.put(I, Arrays.asList(I, T, D2, C2, C1));
     normalPoints.put(I, new Point3D(0.8, 0.6, 0.0));
   }
 
@@ -339,16 +349,21 @@ public enum Symmetry3D
 
   @Override
   public int order() {
-    return groups.get(this).size();
+    return rotations.get(this).size();
   }
 
   @Override
   public Collection<Point3D> images(final Point3D p) {
     Set<Point3D> res = new HashSet<Point3D>();
 
-    for (UnitQuaternion q : groups.get(this)) {
-      res.add(p.rotate(q).asPoint3D());
-    }
+    if (rotations.get(this) != null)
+      for (UnitQuaternion q : rotations.get(this)) {
+        res.add(p.rotate(q).asPoint3D());
+      }
+    if (reflections.get(this) != null)
+      for (UnitQuaternion q : reflections.get(this)) {
+        res.add(p.reflect(q).asPoint3D());
+      }
 
     return res;
   }
@@ -364,6 +379,6 @@ public enum Symmetry3D
   }
 
   public static Collection<Symmetry3D> getSymmetries() {
-    return groups.keySet();
+    return rotations.keySet();
   }
 }
