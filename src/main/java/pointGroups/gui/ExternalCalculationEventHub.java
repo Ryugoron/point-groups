@@ -26,6 +26,7 @@ import pointGroups.util.ExternalCalculationWrapper;
 import pointGroups.util.LoggerFactory;
 import pointGroups.util.Transformer;
 import pointGroups.util.polymake.FundamentalTransformer;
+import pointGroups.util.polymake.FundamentalTransformerTransformer;
 import pointGroups.util.polymake.PolymakeOutputException;
 import pointGroups.util.polymake.SchlegelTransformer;
 import pointGroups.util.polymake.SchlegelTransformer.SchlegelCompound;
@@ -115,7 +116,7 @@ public class ExternalCalculationEventHub
   public void onSymmetry3DChooseEvent(final Symmetry3DChooseEvent event) {
     Point3D p = event.getSymmetry3D().getNormalPoint();
     logger.info("Calculating new Fundamental Domain");
-    submit(new FundamentalTransformer(event.getSymmetry3D().images(p,
+    submit(new FundamentalTransformerTransformer(event.getSymmetry3D().images(p,
         event.getSubgroup())));
   }
 
@@ -204,9 +205,14 @@ public class ExternalCalculationEventHub
 
           return new SchlegelResultEvent(sc.getSchlegel(), sc.getPoint(),
               sc.getSymmetry());
+        } else if (transformerType == FundamentalTransformerTransformer.class) {
+          // Two step Transformer, unpack it and resend it
+          submit((FundamentalTransformer) result);
         }
-        else if (transformerType == FundamentalTransformer.class) { return new FundamentalResultEvent(
-            (Fundamental) result); }
+        else if (transformerType == FundamentalTransformer.class) {
+          // Second step Transform, broadcast real result
+          return new FundamentalResultEvent((Fundamental) result); 
+        }
         // add further cases here...
 
       }

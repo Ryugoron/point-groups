@@ -2,14 +2,11 @@ package pointGroups.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
 import pointGroups.geometry.Fundamental;
-import pointGroups.geometry.Point3D;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointEvent;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointHandler;
@@ -69,6 +66,7 @@ public class PointPicker
     public final Appearance pointAppearance = new Appearance();
     public final SceneGraphComponent fundamental = new SceneGraphComponent();
 
+    /*
     public void testShow() {
       Collection<Point3D> points = new ArrayList<Point3D>();
       points.add(new Point3D(1, 1, 1));
@@ -83,14 +81,14 @@ public class PointPicker
       fT.setResultString("1 0 0 0\n&\n1 1 0 0\n1 0 0 1\n1 0 1 0\n1 0 0 0\n");
       dispatcher.fireEvent(new FundamentalResultEvent(
           fT.transformResultString()));
-    }
+    }*/
 
     @Override
     public void onInitialized() {
       SceneGraphComponent root = getSceneRoot();
 
       // Test for Fundamental
-      testShow();
+      //testShow();
 
       // fundamental.setGeometry(Primitives.cylinder(15));
       point.setGeometry(Primitives.point(new double[] { 0, 0, 0 }));
@@ -206,7 +204,7 @@ public class PointPicker
   }
 
   @Override
-  public void onSchlegelResultEvent(FundamentalResultEvent event) {
+  public void onFundamentalResultEvent(FundamentalResultEvent event) {
     this.isSet = true;
     this.fundamental = event.getResult();
     // Maybe check for dimension
