@@ -24,7 +24,7 @@ public class FundamentalResultEvent
 
   @Override
   protected void dispatch(FundamentalResultHandler handler) {
-    handler.onSchlegelResultEvent(this);
+    handler.onFundamentalResultEvent(this);
 
   }
 

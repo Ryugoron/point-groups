@@ -13,6 +13,6 @@ public interface FundamentalResultHandler
   extends EventHandler
 {
 
-  public void onSchlegelResultEvent(final FundamentalResultEvent event);
+  public void onFundamentalResultEvent(final FundamentalResultEvent event);
 
 }
