@@ -13,6 +13,11 @@ public class UnitQuaternion
 {
 
   /**
+   * 
+   */
+  private static final long serialVersionUID = 5898503233807475707L;
+
+  /**
    * Creates a new {@link UnitQuaternion} object, which represents a normalized
    * quaternion q, that is, norm(q) = 1. The parameters used to construct this
    * object do not necessarily have to be normalized, normalization is done

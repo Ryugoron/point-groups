@@ -9,7 +9,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import pointGroups.geometry.Point3D;
-import pointGroups.geometry.symmetries.TetrahedralSymmetry;
+import pointGroups.geometry.symmetries.Symmetry3D;
 import pointGroups.gui.ExternalCalculationEventHub;
 import pointGroups.gui.MainFrame;
 import pointGroups.gui.StartupErrorFrame;
@@ -84,8 +84,7 @@ public class PointGroups
       // fire events to initialize the whole gui
       {
         Symmetry3DChooseEvent symmetry3dChooseEvent =
-            new Symmetry3DChooseEvent(TetrahedralSymmetry.get(),
-                TetrahedralSymmetry.Subgroups.Full.toString());
+            new Symmetry3DChooseEvent(Symmetry3D.T);
         Point3D point = new Point3D(0, 0, 1);
 
         EventDispatcher.get().fireEvent(new ScaleFundamentalDomainEvent(1));

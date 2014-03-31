@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Symmetry;
-import pointGroups.geometry.symmetries.TetrahedralSymmetry;
+import pointGroups.geometry.symmetries.Symmetry3D;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseHandler;
 
@@ -30,10 +30,8 @@ public class EventFlowTest
       this.dispatcher = dispatcher;
     }
 
-    public void changeSymmetry(final Symmetry<Point3D, ?> symmetry,
-        final String subgroup) {
-      dispatcher.fireEvent(new Symmetry3DChooseEvent(symmetry,
-          subgroup.toString()));
+    public void changeSymmetry(final Symmetry<Point3D> symmetry) {
+      dispatcher.fireEvent(new Symmetry3DChooseEvent(symmetry));
     }
   }
 
@@ -42,7 +40,7 @@ public class EventFlowTest
     implements Symmetry3DChooseHandler
   {
     EventDispatcher dispatcher;
-    Symmetry<Point3D, ?> symmetry;
+    Symmetry<Point3D> symmetry;
 
     public PointPicker(final EventDispatcher dispatcher) {
       dispatcher.addHandler(Symmetry3DChooseEvent.TYPE, this);
@@ -56,8 +54,8 @@ public class EventFlowTest
 
       symmetry = event.getSymmetry3D();
 
-      assertEquals("the event should contain the right symmetry",
-          TetrahedralSymmetry.get(), symmetry);
+      assertEquals("the event should contain the right symmetry", Symmetry3D.T,
+          symmetry);
     }
   }
 
@@ -67,14 +65,13 @@ public class EventFlowTest
     SymmetryChooser chooser = new SymmetryChooser(main.dispatcher);
     PointPicker picker = new PointPicker(main.dispatcher);
 
-    chooser.changeSymmetry(TetrahedralSymmetry.get(),
-        TetrahedralSymmetry.Subgroups.Full.toString());
+    chooser.changeSymmetry(Symmetry3D.T);
 
     assertEquals(
         "PointPicker#onSymmetry3DChooseEvent should be called at least once",
         1, onSymmetry3DChooseEventCalled);
 
     assertEquals("PointPicker should have the right symmetry assigned",
-        TetrahedralSymmetry.get(), picker.symmetry);
+        Symmetry3D.T, picker.symmetry);
   }
 }

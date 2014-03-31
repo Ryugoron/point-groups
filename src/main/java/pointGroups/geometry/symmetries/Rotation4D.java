@@ -35,4 +35,19 @@ public class Rotation4D implements Serializable
     Rotation4D r1 = this;
     return Quaternion.distance(r1.left, r2.left) + Quaternion.distance(r1.right, r2.right);
   }
+  
+  @Override
+  public int hashCode(){
+    return left.hashCode()^right.hashCode();
+  }
+  
+  
+  @Override
+  public boolean equals(Object o){
+    if(this == o) return true;
+    if(!(o.getClass() == getClass())) return false;
+    final Rotation4D r = (Rotation4D) o;
+    return r.left.equals(this.left) && r.right.equals(this.right);
+    
+  }  
 }

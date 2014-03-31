@@ -1,15 +1,6 @@
 package pointGroups.gui.logwindow;
 
-import java.awt.Point;
 import java.util.logging.Logger;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.Popup;
-import javax.swing.PopupFactory;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,7 +32,9 @@ public class LogWindowTest
         logger2.getName());
     Assert.assertEquals("pointGroups.gui.logwindow.LogWindowTest",
         single.getName());
-    logger2.info("foo");
+    for (int i = 0; i < 100; i++) {
+      logger2.info("foo");
+    }
     logger1.warning("bar");
     single.severe("ahhh");
   }
