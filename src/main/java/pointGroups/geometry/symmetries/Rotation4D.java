@@ -36,8 +36,16 @@ public class Rotation4D implements Serializable
     return Quaternion.distance(r1.left, r2.left) + Quaternion.distance(r1.right, r2.right);
   }
   
+  
   @Override
   public int hashCode(){
+    /*
+     * See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 42
+     * [-l,-r] = [l,r] and [-l,r]=[l,-r]=-[l,r]
+     */
+    if(left.re < 0){
+      return left.minus().hashCode()^right.minus().hashCode();
+    }
     return left.hashCode()^right.hashCode();
   }
   
@@ -47,7 +55,11 @@ public class Rotation4D implements Serializable
     if(this == o) return true;
     if(!(o.getClass() == getClass())) return false;
     final Rotation4D r = (Rotation4D) o;
-    return r.left.equals(this.left) && r.right.equals(this.right);
+    /*
+     * See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 42
+     * [-l,-r] = [l,r] and [-l,r]=[l,-r]=-[l,r]
+     */
+    return (r.left.equals(this.left) && r.right.equals(this.right)) || (r.left.equals(this.left.minus())&& r.right.equals(this.right.minus()));
     
   }  
 }

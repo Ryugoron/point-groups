@@ -53,10 +53,25 @@ public enum Symmetry4D
     generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE));
     generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qI));
     generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw));
+    
+    generator.add(new Rotation4D(Quaternion.qI, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qI.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw.minus()));
     return generator;
   }
 
   private final static Collection<Rotation4D> generatorIxI60() {
+    Collection<Rotation4D> generator = new ArrayList<>();
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw));
+    generator.add(new Rotation4D(Quaternion.qI, Quaternion.qI));
+    
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw.minus()));
+    generator.add(new Rotation4D(Quaternion.qI, Quaternion.qI.minus()));
+    return generator;
+  }
+  
+  private final static Collection<Rotation4D> generatorPlusIxI60() {
     Collection<Rotation4D> generator = new ArrayList<>();
     generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw));
     generator.add(new Rotation4D(Quaternion.qI, Quaternion.qI));
@@ -65,6 +80,11 @@ public enum Symmetry4D
 
   private final static Collection<Rotation4D> generatorOxO() {
     Collection<Rotation4D> generator = new ArrayList<>();
+    generator.add(new Rotation4D(Quaternion.qO, Quaternion.ONE));
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qO));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw));
+    
     generator.add(new Rotation4D(Quaternion.qO, Quaternion.ONE));
     generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE));
     generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qO));
@@ -131,23 +151,23 @@ public enum Symmetry4D
    */
   @SuppressWarnings("unused")
   private static void createSymgroups() {
-    System.out.println(TxT.schoenflies() + " Start: " + Calendar.getInstance().getTime());
-    createSymgroup(TxT);
+//    System.out.println(TxT.schoenflies() + " Start: " + Calendar.getInstance().getTime());
+//    createSymgroup(TxT);
     System.out.println(TxT12.schoenflies + " Start: " + Calendar.getInstance().getTime());
     createSymgroup(TxT12);
-    System.out.println(TxT3.schoenflies() + " Start: " + Calendar.getInstance().getTime());
-    createSymgroup(TxT3);
-
-    System.out.println(OxO.schoenflies() + " Start: " + Calendar.getInstance().getTime());
-    createSymgroup(OxO);
-    System.out.println(OxO2.schoenflies() + " Start: " + Calendar.getInstance().getTime());
-    createSymgroup(OxO2);
-    System.out.println(OxO6 + " Start: " + Calendar.getInstance().getTime());
-    createSymgroup(OxO6);
-    createSymgroup(OxO24);
-
-    System.out.println(IxI60.schoenflies() + " Start: " + Calendar.getInstance().getTime());
-    createSymgroup(IxI60);
+//    System.out.println(TxT3.schoenflies() + " Start: " + Calendar.getInstance().getTime());
+//    createSymgroup(TxT3);
+//
+//    System.out.println(OxO.schoenflies() + " Start: " + Calendar.getInstance().getTime());
+//    createSymgroup(OxO);
+//    System.out.println(OxO2.schoenflies() + " Start: " + Calendar.getInstance().getTime());
+//    createSymgroup(OxO2);
+//    System.out.println(OxO6 + " Start: " + Calendar.getInstance().getTime());
+//    createSymgroup(OxO6);
+//    createSymgroup(OxO24);
+//
+//    System.out.println(IxI60.schoenflies() + " Start: " + Calendar.getInstance().getTime());
+//    createSymgroup(IxI60);
     //System.out.println(IxI.schoenflies() + " Start: " + Calendar.getInstance().getTime());
     //createSymgroup(IxI);
 
@@ -236,8 +256,8 @@ public enum Symmetry4D
     throws IOException {
     // create a new file with an ObjectOutputStream
     
-    FileOutputStream out = new FileOutputStream(new File(PointGroupsUtility.getResource(
-        sym.filename + ".sym")));
+    FileOutputStream out = new FileOutputStream(new File("Z:\\Uni\\SWP Algo\\point-groups\\src\\main\\resources\\symmetries\\"+sym.filename + ".sym"));
+        //new File(PointGroupsUtility.getResource(sym.filename + ".sym")));
     ObjectOutputStream oout = new ObjectOutputStream(out);
 
     oout.writeObject(groupElems);
@@ -248,7 +268,7 @@ public enum Symmetry4D
   public static Collection<Rotation4D>
       readSymmetryGroup(Symmetry4D sym)
         throws FileNotFoundException, IOException, ClassNotFoundException {
-    File f = new File(PointGroupsUtility.getResource(sym.filename + ".sym"));
+    File f = new File("Z:\\Uni\\SWP Algo\\point-groups\\src\\main\\resources\\symmetries\\"+sym.filename + ".sym");//new File(PointGroupsUtility.getResource(sym.filename + ".sym"));
     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
     Object o = ois.readObject();
     // TODO: ugly
@@ -373,12 +393,21 @@ public enum Symmetry4D
     return groups.keySet();
   }
 
-//   public static void main(String[] args){
+   public static void main(String[] args){
 //     Collection<Symmetry4D> syms = getSymmetries();
 //     for(Symmetry4D sym : syms){
 //         System.out.println("size of "+sym.coxeter()+" / "+sym.schoenflies()+": "+sym.order());
 //     }
-//  // createSymgroups();
+   System.out.println("size of "+TxT12.coxeter()+" / "+TxT12.schoenflies()+": "+TxT12.order());
+
+   createSymgroups();
+   
+   System.out.println("size of "+TxT12.coxeter()+" / "+TxT12.schoenflies()+": "+TxT12.order());
+
+//   syms = getSymmetries();
+//   for(Symmetry4D sym : syms){
+//       System.out.println("size of "+sym.coxeter()+" / "+sym.schoenflies()+": "+sym.order());
 //   }
+   }
 
 }

@@ -69,6 +69,14 @@ public class Quaternion
     return new Quaternion(this.re + b.re, this.i + b.i, this.j + b.j, this.k +
         b.k);
   }
+  
+  /**
+   * a + minus(a) = 0
+   * @return - re, - i, - j, - k
+   */
+  public Quaternion minus(){
+    return new Quaternion(- this.re, - this.i, - this.j, - this.k);
+  }
 
   public Quaternion mult(final Quaternion b) {
     Quaternion a = this;
