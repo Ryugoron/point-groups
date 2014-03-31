@@ -57,6 +57,7 @@ public class SubgroupPanel
         }
       }
     });
+
   }
 
   private static final long serialVersionUID = 7253276154708286652L;
@@ -79,6 +80,7 @@ public class SubgroupPanel
       }
     }
     this.setModel(neu);
+    this.setSelectedIndex(0);
 
   }
 }
