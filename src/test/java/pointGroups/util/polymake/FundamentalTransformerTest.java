@@ -40,7 +40,7 @@ public class FundamentalTransformerTest
     points.add(new Point3D(-1, 1, -1));
     points.add(new Point3D(-1, -1, 1));
     points.add(new Point3D(-1, -1, -1));
-    fT = new FundamentalTransformer(points);
+    fT = null;//new FundamentalTransformer(points);
 
     testCoordinate = new double[] { 0.25, 0.25 };
     inside = new double[] { 0.2, 0.2 };

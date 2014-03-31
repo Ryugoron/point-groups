@@ -315,12 +315,14 @@ public class PointPicker
   @Override
   public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
     this.lastSymmetry4DChooseEvent = event;
+    this.dim = 3;
 
   }
 
   @Override
   public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
     this.lastSymmetry3DChooseEvent = event;
+    this.dim = 2;
   }
 
   @Override

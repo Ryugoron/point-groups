@@ -15,6 +15,9 @@ import pointGroups.util.point.PointUtil;
 /**
  * Takes a Collection of points and builds a script to compute one Voronoi cell
  * and a projection into (n-1) dimensions.
+TODO (31.3)
+
+Besprechung (24.3)
  * 
  * @author Max
  */
