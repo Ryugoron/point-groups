@@ -108,7 +108,9 @@ public class StatusBar
 
   @Override
   public void onSymmetry3DChooseEvent(final Symmetry3DChooseEvent event) {
-    setStatus("Symmetry choosed: " + event.getSymmetry3D().coxeter());
+    setStatus("Symmetry chosen: " + event.getSymmetry3D().schoenflies() +
+        " / " + event.getSymmetry3D().coxeter() + " / " +
+        event.getSymmetry3D().orbifold());
 
   }
 
@@ -133,7 +135,7 @@ public class StatusBar
   public void onShowFundamentalDomainEvent(
       final ShowFundamentalDomainEvent event) {
     if (event.getVisible()) {
-      setStatus("Show Fundamental domain");
+      setStatus("Show fundamental domain");
     }
     else {
       setStatus("Fundamental domain is hidden");
@@ -153,14 +155,18 @@ public class StatusBar
   @Override
   public void onSchlegel4DComputeEvent(final Schlegel4DComputeEvent event) {
     showComputeInfo(event.getPickedPoint().getComponents(),
-        event.getSymmetry4D().coxeter());
+        event.getSymmetry4D().schoenflies() + " / " +
+            event.getSymmetry4D().coxeter() + " / " +
+            event.getSymmetry4D().orbifold());
 
   }
 
   @Override
   public void onSchlegel3DComputeEvent(final Schlegel3DComputeEvent event) {
     showComputeInfo(event.getPickedPoint().getComponents(),
-        event.getSymmetry3D().coxeter());
+        event.getSymmetry3D().schoenflies() + " / " +
+            event.getSymmetry3D().coxeter() + " / " +
+            event.getSymmetry3D().orbifold());
   }
 
   private void showComputeInfo(final double[] coords, final String symgroup) {
@@ -172,8 +178,6 @@ public class StatusBar
     s.delete(s.length() - 2, s.length() - 1);
     s.append(") Symmetry group: ");
     s.append(symgroup);
-    // s.append(" Subroup: ");
-    // s.append(subgroup);
 
     setStatus(s.toString());
   }
@@ -181,19 +185,21 @@ public class StatusBar
   @Override
   public void onChangeCoordinate3DPointEvent(
       final ChangeCoordinate3DPointEvent event) {
-    setStatus("Coordinate choosen");
+    setStatus("Coordinate chosen");
   }
 
   @Override
   public void onChangeCoordinate4DPointEvent(
       final ChangeCoordinate4DPointEvent event) {
-    setStatus("Coordinate choosen");
+    setStatus("Coordinate chosen");
 
   }
 
   @Override
   public void onSymmetry4DChooseEvent(final Symmetry4DChooseEvent event) {
-    setStatus("Symmetry choosed: " + event.getSymmetry4D().coxeter());
+    setStatus("Symmetry chosen: " + event.getSymmetry4D().schoenflies() +
+        " / " + event.getSymmetry4D().coxeter() + " / " +
+        event.getSymmetry4D().orbifold());
 
   }
 
