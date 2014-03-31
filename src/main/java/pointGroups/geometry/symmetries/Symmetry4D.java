@@ -28,18 +28,23 @@ public enum Symmetry4D
   
   
   
- // IxI("+-[IxI]", "[3,3,5]+", "","IxI",generatorIxI()), //
+  IxI("+-[IxI]", "[3,3,5]+", "","IxI",generatorIxI()), //
   IxI60("+- 1/60 [IxI]", "2.[3,5]+", "","IxI60",generatorIxI60()), //
-
+  IxIPlus60("+ 1/60 [IxI]", "[3,5]+", "","IxIPlus60",generatorIxIPlus60()), //
+  
+  
   TxT("+- [TxT]", "[+3,4,3+]", "","TxT",generatorTxT()), //
   TxT3("+- 1/3 [TxT]", "[+3,3,4+]", "","TxT3",generatorTxT3()), //
-  TxT12("+- 1/12 [TxT]", "[2.[3,3]+", "","TxT12",generatorTxT12()), //
-
+  TxT12("+- 1/12 [TxT]", "2.[3,3]+", "","TxT12",generatorTxT12()), //
+  TxTPlus12("+ 1/12 [TxT]", "[3,3]+", "","TxTPlus12",generatorTxTPlus12()), //
+  
   OxO("+-[OxO]", "[3,4,3]+:2", "","OxO",generatorOxO()), //
   OxO2("+- 1/2 [OxO]", "[3,4,3]+", "","OxO2",generatorOxO2()), //
   OxO6("+- 1/6 [OxO]", "[3,3,4]+", "","OxO6",generatorOxO6()), //
-  OxO24("+- 1/24 [OxO]", "2.[3,4]+", "","OxO24",generatorOxO24());//
-
+  OxO24("+- 1/24 [OxO]", "2.[3,4]+", "","OxO24",generatorOxO24()),//
+  OxOQuer24("+ 1/24 [OxOquer]", "[3,4]+", "","OxOQuer24",generatorOxOQuer24());//
+  
+  
   static final Map<Symmetry4D, Collection<Rotation4D>> groups;
   static final Map<Symmetry4D, Collection<Symmetry4D>> subgroups;
   static final Map<Symmetry4D, Point4D> normalPoints;
@@ -71,7 +76,7 @@ public enum Symmetry4D
     return generator;
   }
   
-  private final static Collection<Rotation4D> generatorPlusIxI60() {
+  private final static Collection<Rotation4D> generatorIxIPlus60() {
     Collection<Rotation4D> generator = new ArrayList<>();
     generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw));
     generator.add(new Rotation4D(Quaternion.qI, Quaternion.qI));
@@ -85,10 +90,10 @@ public enum Symmetry4D
     generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qO));
     generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw));
     
-    generator.add(new Rotation4D(Quaternion.qO, Quaternion.ONE));
-    generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE));
-    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qO));
-    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw));
+    generator.add(new Rotation4D(Quaternion.qO, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qO.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw.minus()));
     return generator;
   }
 
@@ -99,6 +104,12 @@ public enum Symmetry4D
     generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I));
     generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw));
     generator.add(new Rotation4D(Quaternion.qO, Quaternion.qO));
+    
+    generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw.minus()));
+    generator.add(new Rotation4D(Quaternion.qO, Quaternion.qO.minus()));
     return generator;
   }
 
@@ -110,6 +121,13 @@ public enum Symmetry4D
     generator.add(new Rotation4D(Quaternion.ONE, Quaternion.J));
     generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw));
     generator.add(new Rotation4D(Quaternion.qO, Quaternion.qO));
+    
+    generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.J, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.J.minus()));
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw.minus()));
+    generator.add(new Rotation4D(Quaternion.qO, Quaternion.qO.minus()));
     return generator;
   }
 
@@ -117,6 +135,18 @@ public enum Symmetry4D
     Collection<Rotation4D> generator = new ArrayList<>();
     generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw));
     generator.add(new Rotation4D(Quaternion.qO, Quaternion.qO));
+    
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw.minus()));
+    generator.add(new Rotation4D(Quaternion.qO, Quaternion.qO.minus()));
+    return generator;
+  }
+  
+  
+  
+  private final static Collection<Rotation4D> generatorOxOQuer24() {
+    Collection<Rotation4D> generator = new ArrayList<>();
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw));
+    generator.add(new Rotation4D(Quaternion.qO, Quaternion.qO.minus()));
     return generator;
   }
 
@@ -126,6 +156,11 @@ public enum Symmetry4D
     generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE));
     generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I));
     generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw));
+    
+    generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw.minus()));
     return generator;
   }
 
@@ -136,6 +171,12 @@ public enum Symmetry4D
     generator.add(new Rotation4D(Quaternion.J, Quaternion.ONE));
     generator.add(new Rotation4D(Quaternion.ONE, Quaternion.J));
     generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw));
+    
+    generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I.minus()));
+    generator.add(new Rotation4D(Quaternion.J, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.J.minus()));
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw.minus()));
     return generator;
   }
 
@@ -143,6 +184,16 @@ public enum Symmetry4D
     Collection<Rotation4D> generator = new ArrayList<>();
     generator.add(new Rotation4D(Quaternion.I, Quaternion.I));
     generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw));
+    
+    generator.add(new Rotation4D(Quaternion.I, Quaternion.I.minus()));
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw.minus()));
+    return generator;
+  }
+  
+  private final static Collection<Rotation4D> generatorTxTPlus12() {
+    Collection<Rotation4D> generator = new ArrayList<>();
+    generator.add(new Rotation4D(Quaternion.I, Quaternion.I));
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.qw));   
     return generator;
   }
 
@@ -151,25 +202,31 @@ public enum Symmetry4D
    */
   @SuppressWarnings("unused")
   private static void createSymgroups() {
-//    System.out.println(TxT.schoenflies() + " Start: " + Calendar.getInstance().getTime());
-//    createSymgroup(TxT);
+    System.out.println(TxT.schoenflies() + " Start: " + Calendar.getInstance().getTime());
+    createSymgroup(TxT);
     System.out.println(TxT12.schoenflies + " Start: " + Calendar.getInstance().getTime());
     createSymgroup(TxT12);
-//    System.out.println(TxT3.schoenflies() + " Start: " + Calendar.getInstance().getTime());
-//    createSymgroup(TxT3);
-//
-//    System.out.println(OxO.schoenflies() + " Start: " + Calendar.getInstance().getTime());
-//    createSymgroup(OxO);
-//    System.out.println(OxO2.schoenflies() + " Start: " + Calendar.getInstance().getTime());
-//    createSymgroup(OxO2);
-//    System.out.println(OxO6 + " Start: " + Calendar.getInstance().getTime());
-//    createSymgroup(OxO6);
-//    createSymgroup(OxO24);
-//
-//    System.out.println(IxI60.schoenflies() + " Start: " + Calendar.getInstance().getTime());
-//    createSymgroup(IxI60);
-    //System.out.println(IxI.schoenflies() + " Start: " + Calendar.getInstance().getTime());
-    //createSymgroup(IxI);
+    System.out.println(TxTPlus12.schoenflies + " Start: " + Calendar.getInstance().getTime());
+    createSymgroup(TxTPlus12);
+    
+    
+    System.out.println(TxT3.schoenflies() + " Start: " + Calendar.getInstance().getTime());
+    createSymgroup(TxT3);
+
+    System.out.println(OxO.schoenflies() + " Start: " + Calendar.getInstance().getTime());
+    createSymgroup(OxO);
+    System.out.println(OxO2.schoenflies() + " Start: " + Calendar.getInstance().getTime());
+    createSymgroup(OxO2);
+    System.out.println(OxO6 + " Start: " + Calendar.getInstance().getTime());
+    createSymgroup(OxO6);
+    createSymgroup(OxO24);
+    createSymgroup(OxOQuer24);
+  
+    System.out.println(IxI60.schoenflies() + " Start: " + Calendar.getInstance().getTime());
+    createSymgroup(IxI60);
+    createSymgroup(IxIPlus60);
+    System.out.println(IxI.schoenflies() + " Start: " + Calendar.getInstance().getTime());
+    createSymgroup(IxI);
 
     System.out.println("Finish: " + Calendar.getInstance().getTime());
 
@@ -177,6 +234,7 @@ public enum Symmetry4D
 
   private static void createSymgroup(Symmetry4D sym) {
     Collection<Rotation4D> group = generateSymmetryGroup4D(sym.getGenerator());
+    System.out.println(sym.schoenflies+" / "+sym.coxeter+" groupsize: "+group.size());
     try {
       writeSymmetryGroup(sym, group);
     }
@@ -285,12 +343,16 @@ public enum Symmetry4D
     
     // load group elems
     try {
-     // groups.put(IxI, readSymmetryGroup(IxI));
+      groups.put(IxI, readSymmetryGroup(IxI));
       groups.put(IxI60, readSymmetryGroup(IxI60));
+      groups.put(IxIPlus60, readSymmetryGroup(IxIPlus60));
+
 
       groups.put(TxT, readSymmetryGroup(TxT));
       groups.put(TxT3, readSymmetryGroup(TxT3));
       groups.put(TxT12, readSymmetryGroup(TxT12));
+      groups.put(TxTPlus12, readSymmetryGroup(TxTPlus12));
+
 
       groups.put(OxO, readSymmetryGroup(OxO));
       groups.put(OxO2, readSymmetryGroup(OxO2));
@@ -301,29 +363,38 @@ public enum Symmetry4D
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    // TODO: IxI 
-    // TODO: What about groups with no subgroup?
-    subgroups.put(IxI60, Arrays.asList(TxT12));
+    subgroups.put(IxI, Arrays.asList(IxI,IxIPlus60, IxI60,TxTPlus12,TxT12,TxT3,TxT));
+    subgroups.put(IxI60, Arrays.asList(IxI60,IxIPlus60,TxTPlus12,TxT12));
+    subgroups.put(IxIPlus60, Arrays.asList(IxIPlus60,TxTPlus12));
 
-    subgroups.put(TxT, Arrays.asList(TxT12, TxT3));
-    subgroups.put(TxT3, Arrays.asList(TxT12));
-
-    subgroups.put(OxO, Arrays.asList(OxO2, OxO6, OxO24, TxT12, TxT3, TxT)); 
-    subgroups.put(OxO2, Arrays.asList(TxT12, TxT3, TxT, OxO24,OxO6)); 
-    subgroups.put(OxO6, Arrays.asList(OxO24, TxT12, TxT3)); 
-    subgroups.put(OxO24, Arrays.asList(TxT12)); 
+    
+    subgroups.put(TxT, Arrays.asList(TxT,TxT12, TxTPlus12, TxT3));
+    subgroups.put(TxT3, Arrays.asList(TxT3, TxT12, TxTPlus12));
+    subgroups.put(TxT12, Arrays.asList(TxT12, TxTPlus12));
+    subgroups.put(TxTPlus12, Arrays.asList(TxTPlus12));
+    
+    subgroups.put(OxO, Arrays.asList(OxO, OxO2, OxO6, OxO24, OxOQuer24, TxT12,TxTPlus12, TxT3, TxT)); 
+    subgroups.put(OxO2, Arrays.asList(OxO2, TxT12, TxT3, TxT, OxO24,OxO6, OxOQuer24, TxTPlus12)); 
+    subgroups.put(OxO6, Arrays.asList(OxO6, OxO24, OxOQuer24, TxT12, TxTPlus12, TxT3)); 
+    subgroups.put(OxO24, Arrays.asList(OxO24, OxOQuer24, TxT12, TxTPlus12)); 
+    subgroups.put(OxOQuer24, Arrays.asList(OxOQuer24, TxTPlus12));
     // TODO: normalPoints?!
-    //normalPoints.put(IxI, new Point4D(0.8, 0.6, 0.3, 0.0));
+    normalPoints.put(IxI, new Point4D(0.8, 0.6, 0.3, 0.0));
     normalPoints.put(IxI60, new Point4D(0.8, 0.6, 0.3, 0.0));
+    normalPoints.put(IxIPlus60, new Point4D(0.8, 0.6, 0.3, 0.0));
+
 
     normalPoints.put(TxT, new Point4D(0.8, 0.6, 0.3, 0.0));
     normalPoints.put(TxT3, new Point4D(0.8, 0.6, 0.3, 0.0));
     normalPoints.put(TxT12, new Point4D(0.8, 0.6, 0.3, 0.0));
+    normalPoints.put(TxTPlus12, new Point4D(0.8, 0.6, 0.3, 0.0));
 
     normalPoints.put(OxO, new Point4D(0.8, 0.6, 0.3, 0.0));
     normalPoints.put(OxO2, new Point4D(0.8, 0.6, 0.3, 0.0));
     normalPoints.put(OxO6, new Point4D(0.8, 0.6, 0.3, 0.0));
     normalPoints.put(OxO24, new Point4D(0.8, 0.6, 0.3, 0.0));
+    normalPoints.put(OxOQuer24, new Point4D(0.8, 0.6, 0.3, 0.0));
+
   }
 
   private final String coxeter;
@@ -398,11 +469,11 @@ public enum Symmetry4D
 //     for(Symmetry4D sym : syms){
 //         System.out.println("size of "+sym.coxeter()+" / "+sym.schoenflies()+": "+sym.order());
 //     }
-   System.out.println("size of "+TxT12.coxeter()+" / "+TxT12.schoenflies()+": "+TxT12.order());
+ //  System.out.println("size of "+TxT12.coxeter()+" / "+TxT12.schoenflies()+": "+TxT12.order());
 
    createSymgroups();
    
-   System.out.println("size of "+TxT12.coxeter()+" / "+TxT12.schoenflies()+": "+TxT12.order());
+ //  System.out.println("size of "+TxT12.coxeter()+" / "+TxT12.schoenflies()+": "+TxT12.order());
 
 //   syms = getSymmetries();
 //   for(Symmetry4D sym : syms){

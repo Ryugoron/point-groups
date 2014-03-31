@@ -43,16 +43,48 @@ public class SubgroupChecker4D
   
   public static void main(String[] args){
     try {
-      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.TxT), "TxT");
-      //symmetryGroups.put(SymmetryGenerated4D.readSymmetryGroup("IxI"), "IxI");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.TxT), "TxT");      
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.TxT3), "TxT3");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.TxT12), "TxT12");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.TxTPlus12), "TxTPlus12");
+
+      
       symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.OxO), "OxO");
       symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.OxO2), "OxO2");
-
-      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.OxO6), "OxO6");
-      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.TxT12), "TxT12");
-      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.TxT3), "TxT3");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.OxO6), "OxO6");      
       symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.OxO24), "OxO24");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.OxOQuer24), "OxOQuer24");
+
+      
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.IxI), "IxI");
       symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.IxI60), "IxI60");
+      symmetryGroups.put(Symmetry4D.readSymmetryGroup(Symmetry4D.IxIPlus60), "IxIPlus60");
+/**
+ * Subgroups of IxIPlus60:
+IxIPlus60,TxTPlus12,-----------
+Subgroups of IxI60:
+IxIPlus60,IxI60,TxTPlus12,TxT12,-----------
+Subgroups of OxOQuer24:
+OxOQuer24,TxTPlus12,-----------
+Subgroups of OxO24:
+OxOQuer24,OxO24,TxTPlus12,TxT12,-----------
+Subgroups of TxTPlus12:
+TxTPlus12,-----------
+Subgroups of TxT12:
+TxTPlus12,TxT12,-----------
+Subgroups of TxT:
+TxTPlus12,TxT12,TxT,TxT3,-----------
+Subgroups of TxT3:
+TxTPlus12,TxT12,TxT3,-----------
+Subgroups of IxI:
+IxIPlus60,IxI60,TxTPlus12,TxT12,TxT,TxT3,IxI,-----------
+Subgroups of OxO2:
+OxOQuer24,OxO24,TxTPlus12,TxT12,TxT,TxT3,OxO2,OxO6,-----------
+Subgroups of OxO:
+OxOQuer24,OxO24,TxTPlus12,TxT12,TxT,TxT3,OxO2,OxO,OxO6,-----------
+Subgroups of OxO6:
+OxOQuer24,OxO24,TxTPlus12,TxT12,TxT3,OxO6,-----------
+ */
 
     }
     catch (FileNotFoundException e) {
