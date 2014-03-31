@@ -1,15 +1,15 @@
 package pointGroups.gui.symchooser.elements;
 
 import java.awt.Color;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JList;
 import javax.swing.ListModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-import pointGroups.geometry.Symmetry;
 import pointGroups.geometry.Point;
+import pointGroups.geometry.Symmetry;
 import pointGroups.gui.symchooser.SubgroupPanel;
-import pointGroups.util.gui.MouseAdapter;
 
 
 public class SymmetryList<P extends Point>
@@ -27,13 +27,10 @@ public class SymmetryList<P extends Point>
     setSelectionBackground(Color.BLUE);
     setBackground(Color.WHITE);
 
-    this.addMouseListener(new MouseAdapter() {
+    addListSelectionListener(new ListSelectionListener() {
       @Override
-      public void mouseClicked(final MouseEvent e) {
-        final SymmetryList<P> list = SymmetryList.this;
-        final int index = list.locationToIndex(e.getPoint());
-        list.setSelectedIndex(index);
-        subgroupPanel.choose(list.getSelectedValue());
+      public void valueChanged(final ListSelectionEvent e) {
+        subgroupPanel.choose(SymmetryList.this.getSelectedValue());
       }
     });
   }
