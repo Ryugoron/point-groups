@@ -33,6 +33,8 @@ public class Quaternion
   public static final Quaternion qO = new Quaternion(0, 0, 1 / Math.sqrt(2),
       1 / Math.sqrt(2));
   public static final Quaternion qT = new Quaternion(0, 1, 0, 0);
+  public static final Quaternion qI2 = new Quaternion((sigma + tau + 1) / 4,
+      (sigma + tau - 1) / 4, (-sigma + tau + 1) / 4, (sigma - tau + 1) / 4);
 
   private final static int digits = 5;
   private final static double r = Math.pow(10, digits);
@@ -69,13 +71,14 @@ public class Quaternion
     return new Quaternion(this.re + b.re, this.i + b.i, this.j + b.j, this.k +
         b.k);
   }
-  
+
   /**
    * a + minus(a) = 0
+   * 
    * @return - re, - i, - j, - k
    */
-  public Quaternion minus(){
-    return new Quaternion(- this.re, - this.i, - this.j, - this.k);
+  public Quaternion minus() {
+    return new Quaternion(-this.re, -this.i, -this.j, -this.k);
   }
 
   public Quaternion mult(final Quaternion b) {
