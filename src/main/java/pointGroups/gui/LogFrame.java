@@ -5,7 +5,9 @@ package pointGroups.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -16,7 +18,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-// import javax.swing.JTextArea;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
@@ -25,6 +26,8 @@ import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ShowLogEvent;
 import pointGroups.gui.event.types.ShowLogHandler;
 
+
+// import javax.swing.JTextArea;
 
 /**
  * @author nadjascharf
@@ -41,7 +44,8 @@ public class LogFrame
   private JScrollPane scrollPane;
   private JTable table;
   TableModel model;
-  private String[] columnNames = { "LoggerName", "Level", "Message" };
+  private final String[] columnNames = { "Time", "Level", "LoggerName",
+      "Message" };
   private List<Object[]> data;
 
   public LogFrame() {
@@ -61,23 +65,31 @@ public class LogFrame
        */
       private static final long serialVersionUID = 7525868394963262424L;
 
+      @Override
       public String getColumnName(int col) {
         return columnNames[col].toString();
       }
 
+      @Override
       public int getRowCount() {
         return data.size();
       }
 
+      @Override
       public int getColumnCount() {
         return columnNames.length;
       }
 
+      @Override
       public Object getValueAt(int row, int col) {
         return data.get(row)[col];
       }
     };
     table = new JTable(model);
+
+    table.getColumnModel().getColumn(0).setPreferredWidth(200);
+    table.getColumnModel().getColumn(0).setMaxWidth(300);
+
     // second column holds log level -> only short strings
     table.getColumnModel().getColumn(1).setMaxWidth(100);
     table.getColumnModel().getColumn(1).setCellRenderer(new LevelRenderer());
@@ -140,10 +152,14 @@ public class LogFrame
       // record.getMessage() + "\n");
       // }
       // else{
+      Date date = new Date(record.getMillis());
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
       Object[] newLog =
-          { record.getLoggerName(), record.getLevel(), record.getMessage() };
+          { sdf.format(date), record.getLevel(), record.getLoggerName(),
+              record.getMessage() };
       data.add(newLog);
-     //TODO is repaint and revalidate enough?
+      // TODO is repaint and revalidate enough?
       // updated->repaint to show new log
       table.repaint();
       // is it necessary to be scrollable?
@@ -181,12 +197,12 @@ public class LogFrame
     public Component getTableCellRendererComponent(JTable table, Object value,
         boolean isSelected, boolean hasFocus, int row, int column) {
       String level = ((Level) value).getName();
-      System.out.println(level);
+
       JLabel label = new JLabel();
-      if (level.equals("WARNING")){
+      if (level.equals("WARNING")) {
         label.setForeground(Color.ORANGE);
       }
-      if (level.equals("SEVERE")){
+      if (level.equals("SEVERE")) {
         label.setForeground(Color.RED);
       }
       label.setText(((Level) value).getName());
