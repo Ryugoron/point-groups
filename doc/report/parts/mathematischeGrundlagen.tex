@@ -1,1 +1,50 @@
+\newtheorem{defdef}{Defintion}[section]
+\newenvironment{definition}[1][]{\begin{defdef}[#1] \normalfont\hspace*{1mm}}{\hfill $\lrcorner$\end{defdef}\vspace{0.2cm}}
+
 \section{Mathematische Grundlagen}
+\subsection{Quaternionen}
+Zur einheitlichen Darstellung von drei- und vierdimensionalen Rotationen und Spiegelungen werden
+sog. \textbf{Quaternionen} benutzt.
+Die Menge der Quaternionen $\mathbb{H}$ bilden einen Erweiterungskörper der komplexen Zahlen $\mathbb{C}$ und besitzen überraschend praktische Eigenschaften für den Einsatz bei geometrischen Anwendungen. Die Algebra der Quaternionen wurde 1843 von Hamilton entwickelt (see Hazewinkel et al. (2004), p. 12).
+
+\begin{definition}[Quaternion]
+Es seien $a,b,c,d \in \mathbb{R}$ und $i,j,k$ imaginäre Einheiten für die gilt:
+\begin{equation*}\begin{split}
+i^2 = j^2 = k^2 = ijk = -1
+\end{split}\end{equation*}
+....
+Dann heißt die Zahl $p = a + bi + cj + dk$ Quaternion. Die Menge der Quaternionen wird mit $\mathbb{H}$ bezeichnet
+und ist äquivalent zu rellen Vektorraum $\mathbb{R}^4$.
+\end{definition}
+....
+\begin{definition}[Kojugiertes Quaternion, Norm, Reziprokwert]
+...
+$q^* := a - bi - cj - dk$ konjugiert
+$\| q \| := \sqrt{q q^*}$ norm
+
+\end{definition}
+
+....
+
+\begin{definition}[Einheitsquaternion]
+Ein Quaternion $q$ heißt Einheitsquaternion falls $\|q\| = 1$.
+\end{definition}
+
+\subsection{Quaternionen und dreidimensionale Symmetrien}
+Verwendung von Einheitsquaternionen für Rotationen 
+Einheitsquaternionen praktisch.
+
+Eulers Rotationstheorem: Jede Drehung oder Folge von Drehungen um einen festen Punkt kann für eine einfache Drehung um einen Winkel $\theta$ und eine Achse (sog. Eulerachse) durch diesen festen Punkt beschrieben werden. Dafür identizifiert man einen 
+Drehwinkel $\theta$ und die Drehachse $\overline{u} = (u_1,u_2,u_3)$.
+Dann beschreibt das Quaternion $q = e^{\frac{1}{2}\theta(u_1i + u_2j + u_3k)}$ diese Drehung.
+Die Rotationsfunktion wird dann von der Abbildung $[q]: p \mapsto q p q^{-1}$ beschrieben (entspricht der konjugation von p durch q).
+Dadurch, dass bei einheitsquaternionen gilt $q^{-1} = q^*$ wird auch rechenaufwand gespart.
+
+\subsection{Quaternionen und vierdimensionale Symmetrien}
+....
+
+\subsection{Punktgruppen}
+...gibts hier was interessantes?
+
+\subsection{Fundamentalbereiche}
+Kurz: Was ist das, wofür braucht man das? Wie kann man es ausrechnen (nicht in polymake oder so, nur rein mathematisch)?
