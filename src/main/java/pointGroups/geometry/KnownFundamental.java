@@ -1,6 +1,5 @@
 package pointGroups.geometry;
 
-
 import java.util.logging.Logger;
 
 import pointGroups.util.LoggerFactory;
@@ -42,8 +41,8 @@ public class KnownFundamental
    */
   private final double[][] finPoints;
 
-  public KnownFundamental(double[][] points, double[][] revertMatrix, double[][] hyperplanes,
-      double[] affine) {
+  public KnownFundamental(double[][] points, double[][] revertMatrix,
+      double[][] hyperplanes, double[] affine) {
 
     // Punkte kopieren
     finPoints = PointUtil.copyPoints(points);
@@ -80,10 +79,10 @@ public class KnownFundamental
     double[] p = this.affinePolytope(point);
     for (double[] hp : this.hPolytope) {
       double val = hp[0];
-      for(int i = 1; i < hp.length; i++){
-        val = p[i-1]*hp[i];
+      for (int i = 1; i < hp.length; i++) {
+        val = p[i - 1] * hp[i];
       }
-      if(val <= EPSILON) return false;
+      if (val <= EPSILON) return false;
     }
     return true;
   }
@@ -104,9 +103,8 @@ public class KnownFundamental
     }
     return p;
   }
-  
+
   /**
-   * 
    * Returns the coordinates in the lifted polytope.
    * 
    * @param point - in fundamental
