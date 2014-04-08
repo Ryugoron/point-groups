@@ -10,10 +10,10 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import pointGroups.geometry.Symmetry;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
+import pointGroups.geometry.Symmetry;
 import pointGroups.geometry.symmetries.Symmetry3D;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.DimensionSwitchEvent;
@@ -89,6 +89,8 @@ public class SymmetryPanel
       this.symmetries3D.addElement(sym);
     }
     // 4D Symmetries
-    // this.symmetries4D.addElement(TxTSymmetry.getSym());
+    // for (Symmetry4D sym : Symmetry4D.getSymmetries()) {
+    // this.symmetries4D.addElement(sym);
+    // }
   }
 }
