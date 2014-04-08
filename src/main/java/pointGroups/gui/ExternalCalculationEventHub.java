@@ -89,8 +89,7 @@ public class ExternalCalculationEventHub
   @Override
   public void onSchlegel4DComputeEvent(final Schlegel4DComputeEvent event) {
     Collection<Point4D> images =
-        event.getSymmetry4D().images(event.getPickedPoint(),
-            event.getSubgroup());
+        event.getSymmetry4D().images(event.getPickedPoint());
     submit(new SchlegelTransformer(images, event.getSymmetry4D(),
         event.getPickedPoint()));
   }
@@ -98,8 +97,7 @@ public class ExternalCalculationEventHub
   @Override
   public void onSchlegel3DComputeEvent(final Schlegel3DComputeEvent event) {
     Collection<Point3D> images =
-        event.getSymmetry3D().images(event.getPickedPoint(),
-            event.getSubgroup());
+        event.getSymmetry3D().images(event.getPickedPoint());
     submit(new SchlegelTransformer(images, event.getSymmetry3D(),
         event.getPickedPoint()));
   }
@@ -116,8 +114,7 @@ public class ExternalCalculationEventHub
   public void onSymmetry3DChooseEvent(final Symmetry3DChooseEvent event) {
     Point3D p = event.getSymmetry3D().getNormalPoint();
     logger.info("Calculating new Fundamental Domain");
-    submit(new FundamentalTransformerTransformer(event.getSymmetry3D().images(p,
-        event.getSubgroup())));
+    submit(new FundamentalTransformerTransformer(event.getSymmetry3D().images(p)));
   }
 
 

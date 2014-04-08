@@ -1,0 +1,146 @@
+\documentclass[a4paper]{scrartcl}
+\usepackage[utf8]{inputenc}  
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}           
+\usepackage[ngerman]{babel}
+
+
+%\usepackage[perpage,bottom]{footmisc} % Footnote configuration.
+
+\usepackage{amsmath} % More math.
+\usepackage{amssymb} % More symbols.
+\usepackage{fancyhdr} % For header and footer format
+%\usepackage{fancyref} % For fancy references
+\usepackage{listings} % For code listings
+\usepackage{booktabs} % For tables
+\usepackage[perpage,bottom]{footmisc} % Footnote configuration
+\usepackage{graphicx} % For includegraphics
+\usepackage[page,titletoc]{appendix} % For appendix in toc
+\usepackage{color} % For colors, not sure if I truly need it anymore
+\usepackage{caption} % For nicer listing captions
+\usepackage{xspace} % For horizontal space.
+\usepackage{pst-gantt} % For GANTT chart.
+\usepackage{subfigure} % For placing figures next to each other.
+\usepackage{wrapfig} % for wraping text around a image
+\usepackage{eso-pic} % for \addtoshipoutpicture
+\usepackage{todonotes} % mark todos
+
+% Keine Ahnung warum, aber "`bla"' funktioniert bei mir nicht.
+\newcommand{\enquote}[1]{\glqq{}#1\grqq{}}
+
+% Big O
+\newcommand{\bigO}{\ensuremath{\mathcal{O}}}
+
+% Convex Hull
+\newcommand{\CH}{\ensuremath{\mathcal{CH}}}
+
+% Lesson learned.
+\newenvironment{lessonlearned}{\vspace{0.3cm}\begin{quotation}}{\end{quotation}\vspace{0.1cm}}
+
+% Hyperref macht Links hinter die Sections und manipuliert PDF-Metadaten:
+\usepackage[
+colorlinks=false,
+pdfborder={0 0 0},
+pdftitle={Zufällige Polygone und kürzeste Wege},
+pdfsubject={Abschlussbericht zum Softwareprojekt \enquote{Visualisierung der 3- und 4-dimensionalen Punktgruppen}},
+pdfauthor={Marcel Ehrhardt, Nadja Scharf, Alexander Steen, Simon Tippenhauer, Oliver Wiese, Maximilian Wisniewski}
+%pdfkeywords={}
+]{hyperref}
+\usepackage{breakurl}
+
+% Pimp my listings environment.
+% Credits go to stackoverflow:
+% http://stackoverflow.com/questions/741985/latex-source-code-listing-like-in-professional-books
+\lstset{
+         basicstyle=\footnotesize\ttfamily, % Standardschrift
+         numberstyle=\tiny,          % Stil der Zeilennummern
+         numbers=left,
+         stepnumber=1,
+         numbersep=7pt,              % Abstand der Nummern zum Text
+         keywordstyle=\bfseries\ttfamily,
+         tabsize=2,                  % Groesse von Tabs
+         extendedchars=true,         %
+         breaklines=true,            % Zeilen werden Umgebrochen       
+         showspaces=false,           % Leerzeichen anzeigen ?
+         showtabs=false,             % Tabs anzeigen ?
+         %frame=b,                   % Linie unten
+         breakatwhitespace=true,
+         xleftmargin=17pt,
+         framexleftmargin=17pt,
+         framexrightmargin=5pt,
+         framexbottommargin=4pt,
+         showstringspaces=false      % Leerzeichen in Strings anzeigen ?      
+ }
+
+% Pimp my captions.
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox[cmyk]{0.43, 0.35, 0.35,0.01}{\parbox{\textwidth}{\hspace{15pt}#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white, singlelinecheck=false, margin=0pt, font={bf}}
+
+% Listing environment for C
+\lstnewenvironment{code}[1][]
+  {\noindent\minipage{\linewidth} 
+   \lstset{language=C,#1}}
+  {\endminipage}
+
+% Konfiguration der Titelseite:
+\newcommand\fulogo{%
+   \put(0,0){%
+      \parbox[b][\paperheight]{\paperwidth}{%
+         \vspace{1.5cm}
+         \begin{center}
+	         \includegraphics[width=0.7\textwidth]{img/fulogo-eps-converted-to.pdf}%
+         \end{center}
+         \vfill{}
+      }
+   }
+}
+\title{
+{\vspace{1.4cm}\normalsize Softwareprojekt über Anwendung effizienter Algorithmen\\Dozent: Prof. Dr. Günter Rote\\Freie Universität Berlin\\Wintersemester 2013/14}
+\\[4ex] 
+{\Large Abschlussbericht zum Softwareprojekt\\ \enquote{Visualisierung der 3-- und 4--dimensionalen Punktgruppen}}
+\author{Marcel Ehrhardt \and Nadja Scharf \and Alexander Steen \and Simon Tippenhauer \and Oliver Wiese \and Maximilian Wisniewski}
+\date{
+\vspace{1.0cm}
+\today{}
+}
+}
+
+\begin{document}
+\begin{titlepage}
+\AddToShipoutPicture*{\fulogo}
+\pagenumbering{alph}
+\maketitle
+\thispagestyle{empty}
+\vfill{}
+\end{titlepage}
+
+\pagestyle{empty}
+\pagenumbering{roman}
+%\include{parts/abstract}
+\tableofcontents
+\clearpage
+
+\pagenumbering{arabic}
+\pagestyle{fancy}
+\lhead[]{}
+\rhead[\nouppercase{\rightmark}]{\nouppercase{\rightmark}}
+\setcounter{page}{1}
+
+% Hier hin unsere Kapitel.
+
+\input{parts/einleitung}
+\input{parts/projektorganisation}
+\input{parts/mathematischeGrundlagen}
+\input{parts/umsetzung}
+\input{parts/fazit}
+
+\cleardoublepage
+\phantomsection
+
+% Bibliography
+\addcontentsline{toc}{section}{Literatur}
+\bibliographystyle{alpha}
+\bibliography{report}
+
+\end{document}

@@ -14,10 +14,7 @@ import pointGroups.geometry.Point;
 import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Symmetry;
-import pointGroups.geometry.symmetries.IcosahedralSymmetry;
-import pointGroups.geometry.symmetries.OctahedralSymmetry;
-import pointGroups.geometry.symmetries.TetrahedralSymmetry;
-import pointGroups.geometry.symmetries.TxTSymmetry;
+import pointGroups.geometry.symmetries.Symmetry3D;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.symchooser.elements.SymmetryList;
@@ -30,10 +27,10 @@ public class SymmetryPanel
   private static final long serialVersionUID = 8455433801260981217L;
   private final Logger logger = LoggerFactory.get(this.getClass());
 
-  protected final JList<Symmetry<Point3D, ?>> symmetries3DPanel;
-  protected final JList<Symmetry<Point4D, ?>> symmetries4DPanel;
-  protected final DefaultListModel<Symmetry<Point3D, ?>> symmetries3D;
-  protected final DefaultListModel<Symmetry<Point4D, ?>> symmetries4D;
+  protected final JList<Symmetry<Point3D>> symmetries3DPanel;
+  protected final JList<Symmetry<Point4D>> symmetries4DPanel;
+  protected final DefaultListModel<Symmetry<Point3D>> symmetries3D;
+  protected final DefaultListModel<Symmetry<Point4D>> symmetries4D;
 
   protected final EventDispatcher dispatcher = EventDispatcher.get();
 
@@ -88,10 +85,12 @@ public class SymmetryPanel
 
   private void fillPanelsWithSymmetries() {
     // 3D Symmetries
-    this.symmetries3D.addElement(TetrahedralSymmetry.get());
-    this.symmetries3D.addElement(OctahedralSymmetry.get());
-    this.symmetries3D.addElement(IcosahedralSymmetry.get());
+    for (Symmetry3D sym : Symmetry3D.getSymmetries()) {
+      this.symmetries3D.addElement(sym);
+    }
     // 4D Symmetries
-    this.symmetries4D.addElement(TxTSymmetry.getSym());
+    // for (Symmetry4D sym : Symmetry4D.getSymmetries()) {
+    // this.symmetries4D.addElement(sym);
+    // }
   }
 }
