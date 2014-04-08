@@ -69,38 +69,99 @@
     
     \subsubsection{Symmetriegruppen}
     \subsubsection{Fundamentalbereich}
-        \subsubsection*{Definition}
-            Der Fundamentalbereich einer Punktgruppe ist ein Repräsentantensystem der Wirkung der konkreten Gruppe auf eine Punktmenge auf der Einheitskugel.
-
-            Die Symmetrien der Gruppe partitioniere so die Oberfläche einer Kugel in einzelne Flächen, von denen keine zwei Punkte auf einander abgebildet werden.
+         In Abschnitt \ref{fundamentalbereich} wurde in Definition \ref{fundamentalbereich:voronoi} der Voronoi-Fundamentalbereich beschrieben. Wir wollen eine dieser Zellen
+         nehmen und Visualisieren. Da wir einen Abschnitt der $S^3$ nicht leicht visualsieren können, benötigen wir zunächst eine Projektion das Vornoi-Fundamentalbereiches auf
+         eine $\mathbb{R}^3$ Ebene.
         \subsubsection*{Idee}
-            Die Partitionierung kann berechnet werden indem man die Gruppe auf einen Punkt wirken lässt und den Schnitt der Kugeloberfläche mit dem Voronoidiagram dieser Punkte zu berechnen. Dabei muss man darauf achten, dass der Punkt, den man gewählt hat auf keiner der Symmetrieachsen liegt, da man sonst die Wirkung dieser Operation vernachlässigen würde.
-        \subsubsection*{Umsetzung}
-            Haben wir eine Voronoizelle zum Punkt $x_1$ mit den Nachbarn $x_2, \dots, x_n$ berechnet, betrachten wir das Ergebnis nun in einer Hyperbolischen Geometrie, d.h. wir betrachten die Kugeloberfläche als gerade. Insbesondere betrachten wir die Ebene, die durch den Kegel $(0, x_2, \dots, x_n)$ mit der Kugeloberfläche gebildet wird.
+            Wir lassen zunächst die Gruppe auf ein Ausgezeichnetes Element $x$ wirken.
 
-            Wir nehmen immer an, dass die Punkte sich in allgemeiner Lage befinden, also wird insbesondere der Schnitt immer ein Simplex ergeben. Das bedeutet ein Dreieck (3D) oder ein Tetraeder(4D).
+            Als erstes Berechnen wir die Voronoi - Zelle für $x$ bezüglich des Orbits von $x$. Alle Punkte die dort drinnen liegen sind Elemente von $S^3$. Da die Gruppe symmet          risch ist, können wir nicht zwei Elemente aus dem selben Orbit haben, da der zweite Punkt näher an einem anderen Element aus $G \rhd x$ liegen müsste.
 
-            Von diesem wissen wir, dass eine orthogonal Transformation existiert, so dass wir das ganze in einer Dimension niedriger Darstellen können.
+         Das einzig wichtige an diesem Punkt ist, dass $x$ nicht auf einer Rotationasachse oder Spiegelebene befindet, da sonst die Voronoizellen zu groß ausfallen.
 
-            Aber diese berechnen wir zur Zeit noch nicht. Sondern benutzen ein Einheitssimplex und projizieren in das berechnete hinein.
-        \subsubsection*{Konstruktion}
-            Haben wir nun die Punkte $x_1, x_2, \dots, x_n$ wählen wir je $d-1$ Punkte $y_1, \dots, y_{d-1}$ aus $[2 \dots n]$ die paarweise verschieden sind und berechnen den Schwerpunkt von $x_1, y_1, \dots, y_{d-1}$. Dieser Punkt liegt auf einer Kante des Kegels $(0, x_2, \dots, x_n)$.
-
-            Haben wir alle diese Punkte können wir daraus ein Simplex erstellen.
-
-            Hinweis: Wir haben $d\choose{d-1}$ viele Punkte erstellt aus denen wir in Allgemeiner Lage immer ein Simplex erstellen können, das $n$ muss $d+1$ sein, da in allgemeiner Lage die Site $x_1$ genau $d$ Nachbarn in $d$ Dimensionen haben muss.
-
-            Haben wir nun die Punkte $y_1, \dots, y_d$ müssen wir diese jetzt in $d - 1$ Dimensionen darstellen. Dies passiert zur Zeit indem das ganze auf den Nullpunkt verschoben wird $y_i^* = y_i - y_1$ wobei nun $y_2^*, \dots, y_d^*$ ein affiner Vektorraum mit $y_1$ als Translation sind um auf den Ursprünglichen zu kommen. Nun wollen wir das ganze auf ein anderes Simplex abbilden bestehend aus $e_1, \dots, e_{d-1}$ Einheitsvektoren darstellen. Da es sich bei beiden um ein Simplex handelte sind die Ecken eine Basis des $\mathbb{R}^{d-1}$. Bilden wir also die lineare Abbildung $f(e_1) = y_{i+1}^*$ so wissen wir das nach Abbildung wiederum ein Simplex heraus kommt.
-
-            Die Matrix einer solchen Abbildung ist leicht zu bestimmen:
-
-            $A_f = ( y_2^*, ..., y_d^* )$ Spaltenmatrix
-
-            Die Abbildung die wir erreicht haben ist nun nicht mehr orthogonal, da sie die Länge von Vektoren verändert, aber wir findet für jeden Punkt im Einheitssimplex einen eindeutigen Punkt im Ursprünglichen Simplex.
+         Haben wir diese Zelle, nehmen wir eine beliebige Ebene, die tangential auf dem Kugelsegment ist und projezieren darauf. Die spezielle Ebene, die wir wählen
+         ist die Ebene $h \, : \, [t - x] \cdot x = 0$ in Normalendarstellung, da wir wissen, dass $x$ auf der Kugeloberfläche im Kreissegment liegt und $x$ auch ein
+          Normalenvektor ist.
             
+        \subsubsection*{Umsetzung}
+         Eine Voronoizelle von $x$ für eine Menge von Sites $S$ ist definiert als 
+         $$ VC(x) = \bigcap_{s \in S \setminus \{ x \}} h^+_{x,s}$$
+         Wobei $h^+_{x,s}$ der Halbraum ist, der rechts von der Hyperebene liegt, die zu $x$ und $y$ in jedem Punkt den selben Abstand hat.\\
+
+         Polymake hat die Möglichkeit ein Polytope, das die Voronoizelle ja ist, gerade über den Schnitt von Halbräumen zu definieren. Dies geht über
+
+         \begin{code}
+            new Polytope(INEQUALITIES=>\$hyperplanes)
+         \end{code}
+
+         wobei \$hyperplanes eine Menge von Hyperebenen ist. Falls ein affines Polytope vorliegt, wie in unserem Fall in der Ebene $h$, die wie im letzten Abschnitt
+         definiert ist, können wir auch dies mit in die Erzeugung eingeben mittels
+
+         \begin{code}
+            new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>{h})
+         \end{code}
+
+         und haben so $VC(x)$ berechnet. Da die konkrete Berechnung über den Schnitt von allen Hyperebenen zu lange dauert, filtern wir die in frage kommenden Hyperebenen vor
+         über die Nachbern des Voronoi Diagrams. Dummerweise konnten wir nicht ermitteln, wie man in Polymake sich direkt eine Voronoizelle ausgeben lassen kann und
+         haben daher diesen Umweg gewählt.\\
+
+         Haben wir nun das Polytope in der Ebene, müssen wir zur Darstellung in $n-1$ Dimensionen noch eine geeignete Basis berechnen, so dass wir
+         die Eckpunkte des Polytopes durch $n-1$ Koordinaten darstellen können. Wir wissen schon, dass $x$ senkrecht auf der Ebene steht, also für unsere Darstellung 
+         unerheblich ist. Wir berechnen eine Orthonormalbasis für die Ebene mit $x$ als erstem Basisvektor. Nun können wir leicht eine Basiswechselmatrix angeben,
+         da wir ja die Bilder der neuen Basis in der alten kennen. Darüber hinaus ist diese Matrix orthogonal -- da die Spalten ja eine orthogonal Basis waren -- und
+         kann daher durch transponieren invertiert werden.
+
+         Wir haben nun also zwei Matrizen um beide Darstellungen in einander umzurechnen. In der neuen Basis können wir nun die erste Komponente weg lassen,
+         da diese nach Projektion nur genullt wird und haben so eine Darstellung in $n-1$ Dimensionen.
+
+         Beim zurückrechnen müssen wir uns nur erinnern, dass wir uns in einer affinen Ebene mit Stützvektor $x$ befinden.
+
         \subsubsection*{Berechnung}
-            Bekommen wir nun einen Punkt x aus dem Simplex $e_1, ..., e_{d-1}$ gegeben, so können wir ihn in den Fundamentalbereich Abbilden mit der Berechnung
 
-            $x_f = normalize((A_f x) + y_1)$
+         Die Hyperebenen Definition in Polymake hat die Darstellung
+         $$
+            h \, : \, [a_0, ..., a_n] \rightsquigarrow a_0 + a_1 x_1 + \cdots + a_n x_n = 0
+         $$
+         und Halbräume ebenso mit $\geq 0$.\\
 
-            Wir bilden also zunächst vom Einheitssimplex in das verschobene Simplex ab, dann verschieben wir den Punkt wieder zurück mit dem affinen Vektor $y_1$. Zum Schluss müssen wir den Vektor noch normalisieren, da wir den Simplex ja mit einem Hyperebenen schnitt berechnet haben, der eigentliche Fundamentalbereich aber auf der Kugeloberfläche war.
+         Die Halbräume für unser Polytope genügen der Gleichung
+         $$
+            t \cdot (x - s) \geq 0 \Leftrightarrow 0 + (x_1-s_1)\cdot t_1 + \cdots + (x_n -s_n)t_n \geq 0
+         $$
+         wobei $x$ der gewählte Vektor war und $s \not x$ aus dem Orbit von $x$ stammt.
+
+         Damit können wir alle Halbräume aus dem Orbit berechnen. Die affine Ebene genügt der Gleichung
+         $$
+            (t - x) \cdot x = 0 \Leftrightarrow - \left( \sum_{i=1}^n x_i^2 \right) + t_1 x_1 + \cdots t_n x_n = 0
+         $$
+         und kann auch leicht erstellt werden. Um an unser Polytope heran zu kommen, benutzen wir das folgende Polymake-Script
+
+         \begin{code}
+            my \$poly = new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>\$affine);
+            print \$poly->VERTICES;
+            print \$poly->EDGES;
+            print \$poly->FACETS;
+         \end{code}
+
+         Mit diesen Ergebnissen können wir nun die Basiswechselmatrizen berechnen und so die Vertices umrechnen. Das Object Fundamental ist somit
+         eine Sammlung dieser Eigenschaften.
+
+         \begin{code}
+            public interface Fundamental {
+               public double[][] getVertices();
+               
+               public Edge<Integer,Integer>[] getEdges();
+
+               public double[] revertPoint(double[] point);
+
+               public boolean inFundamental(double[] point);
+            }
+         \end{code}
+         
+         Die ersten beiden Funktionen sind selbst erklärend. Die dritte methode \emph{revertPoint} nimmt einen Punkt in $\mathbb{R}^{n-1}$ und
+         liftet ihn auf die Oberfläche der $S^{n-1}$ zurück. Die letzte Methode überprüft, ob ein angegebener Punkt überhaupt in der Voronoizelle lag.
+         Diese Methode wird bei der anzeige beötigt um bei der Punktauswahl keine Punkte außerhalb das Polytops zuzulassen.\\
+
+         Das ganze ist ein interface, da wir als Fallback-case, falls die Berechnung das Fundamentalbereichs einmal fehl schlägt immer noch 
+         den Bereich $S^{n-2}$ benutzen können. Dies ist kein Fundamentalbereich, da wir alle Orbite mehrfach treffen, allerdings werden wir außer im Falle
+         der Identität wirklich jeden Orbit mindestens einmal treffen.
