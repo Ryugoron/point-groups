@@ -7,8 +7,8 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import pointGroups.geometry.Edge;
 import pointGroups.geometry.Fundamental;
-import pointGroups.geometry.KnownFundamental;
 import pointGroups.geometry.Point3D;
 import pointGroups.util.point.PointUtil;
 
@@ -25,17 +25,22 @@ public class FundamentalTransformerTest
 
   public static final double EPSILON = 0.00001;
   
-  public static final double[][] FUND_VERTICES = new double[][]{ new double[] {Math.sqrt(3), -Math.sqrt(3/2), 3 / Math.sqrt(2)}, new double[] {Math.sqrt(3), Math.sqrt(6), 0}, new double[] {Math.sqrt(3), -Math.sqrt(3/2), -3 / Math.sqrt(2)} };
+  public static final double[][] FUND_VERTICES = new double[][]{ new double[] {-Math.sqrt(3d/2d), 3 / Math.sqrt(2)}, new double[] {Math.sqrt(6), 0}, new double[] {-Math.sqrt(3d/2d), -3 / Math.sqrt(2)} };
 
+  public static List<Edge<Integer,Integer>> edges;
+  
   List<Point3D> points;
   Point3D center;
 
   FundamentalTransformer fT;
+  
+  Fundamental fund;
+  
   double[] testCoordinate;
   double[] outside;
   double[] inside;
 
-  Fundamental fund;
+  
 
   @Override
   public void setUp() {
@@ -44,20 +49,17 @@ public class FundamentalTransformerTest
     points.add(new Point3D(1.0, 0.0, 1.0));
     points.add(new Point3D(1.0, 1.0, 0.0));
     points.add(new Point3D(0.0, 1.0, 1.0));
+    
+    edges = new ArrayList<Edge<Integer, Integer>>();
+    edges.add(new Edge<Integer, Integer>(0, 1));
+    edges.add(new Edge<Integer, Integer>(0, 2));
+    edges.add(new Edge<Integer, Integer>(1, 2));
 
     fT = new FundamentalTransformer(center, points);
     fT.setResultString(POLYMAKE_RESULT);
+    fund = fT.transformResultString();
   }
 
-  @Test
-  public void testNormalize() {
-    // Vectoren konkret angeben
-    double[][] base = fT.baseTransformation();
-    for (double[] v : base) {
-      System.out.println("Normal Base Vector : " + PointUtil.showPoint(v));
-    }
-    assert (true);
-  }
 
   @Test
   public void testScript() {
@@ -66,24 +68,50 @@ public class FundamentalTransformerTest
 
   @Test
   public void testNormalVector() {
-    fT.transformResultString();
     double[] normalInFun =
         PointUtil.applyMatrix(fT.n2f, center.getComponents());
 
     // The normalvector should be (1,0,0)
     for (int i = 1; i < normalInFun.length; i++) {
-      assert (normalInFun[i] < EPSILON);
+      assertTrue (normalInFun[i] < EPSILON);
     }
   }
   
   @Test
   public void testVertices() {
-    Fundamental f = fT.transformResultString();
-    double[][] vert = f.getVertices();
+    double[][] vert = fund.getVertices();
     for(int i = 0; i < vert.length; i++){
       for(int j = 0; j < vert[i].length; j++) {
-        assert(Math.abs(vert[i][j] - FUND_VERTICES[i][j]) < EPSILON);
+        assertTrue(Math.abs(vert[i][j] - FUND_VERTICES[i][j]) < EPSILON);
       }
+    }
+  }
+  
+  @Test
+  public void testRevertPoint() {
+    double[] testPoint = new double[] {0.5, 0.5}; 
+    double[] revertedPoint = new double[] {0.23643130220223896, 0.7527403740608412, 0.6143957752114663};
+    
+    double[] realRevert = fund.revertPoint(testPoint);
+    
+    for(int j = 0; j < realRevert.length; j++) {
+      assertTrue(Math.abs(realRevert[j] - revertedPoint[j]) < EPSILON);
+    }
+  }
+  
+  @Test
+  public void testInside() {
+    double[] outside = new double[] {2.0, 2.0};
+    double[] inside = new double[] {0.5, 0.5};
+    
+    assertTrue(fund.inFundamental(inside));
+    assertFalse(fund.inFundamental(outside));
+  }
+  
+  @Test
+  public void testEdges() {
+    for(Edge<Integer,Integer> ed : fund.getEdges()) {
+      edges.contains(ed);
     }
   }
 

@@ -166,9 +166,13 @@ public class FundamentalTransformer
       hyper[i] = hyperPlanes.get(i);
     }
 
-    return new KnownFundamental(normPoints, f2n, hyper, center.getComponents());
+    return new KnownFundamental(normPoints, f2n, hyper, center.getComponents(), edges);
   }
 
+  
+  /**
+   * Parses a coordinate 
+   */
   private double parseCoordinate(String s) {
     if (s.contains("/")) {
       String[] both = s.split("/");

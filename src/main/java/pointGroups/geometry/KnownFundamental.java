@@ -1,5 +1,7 @@
 package pointGroups.geometry;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import pointGroups.util.LoggerFactory;
@@ -40,9 +42,10 @@ public class KnownFundamental
    * V-Polytope of the fundamental domain.
    */
   private final double[][] finPoints;
+  private final List<Edge<Integer,Integer>> edges;
 
   public KnownFundamental(double[][] points, double[][] revertMatrix,
-      double[][] hyperplanes, double[] affine) {
+      double[][] hyperplanes, double[] affine, List<Edge<Integer,Integer>> edges) {
 
     // Punkte kopieren
     finPoints = PointUtil.copyPoints(points);
@@ -50,6 +53,8 @@ public class KnownFundamental
     this.revertMatrix = revertMatrix;
     this.affine = affine;
     this.hPolytope = hyperplanes;
+    this.edges = (new ArrayList<Edge<Integer, Integer>>());
+    this.edges.addAll(edges);
   }
 
   /**
@@ -71,6 +76,14 @@ public class KnownFundamental
     return PointUtil.copyPoints(finPoints);
   }
 
+  @SuppressWarnings("unchecked")
+  @Override
+  public Edge<Integer,Integer>[] getEdges(){
+    // Copying for safety
+    Edge<Integer,Integer>[] ed = this.edges.toArray(new Edge[this.edges.size()]);
+    return ed;
+  }
+  
   /**
    * Checks for every hyperplane after back transformation
    */
@@ -80,7 +93,7 @@ public class KnownFundamental
     for (double[] hp : this.hPolytope) {
       double val = hp[0];
       for (int i = 1; i < hp.length; i++) {
-        val = p[i - 1] * hp[i];
+        val += p[i - 1] * hp[i];
       }
       if (val <= EPSILON) return false;
     }
@@ -112,7 +125,7 @@ public class KnownFundamental
    */
   private double[] affinePolytope(double[] point) {
     double[] p = PointUtil.addZero(point);
-    p = PointUtil.applyMatrix(revertMatrix, point);
+    p = PointUtil.applyMatrix(revertMatrix, p);
     p = PointUtil.add(p, this.affine);
     return p;
   }

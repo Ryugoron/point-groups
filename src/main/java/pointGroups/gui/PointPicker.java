@@ -66,31 +66,10 @@ public class PointPicker
     public final Appearance pointAppearance = new Appearance();
     public final SceneGraphComponent fundamental = new SceneGraphComponent();
 
-    /*
-    public void testShow() {
-      Collection<Point3D> points = new ArrayList<Point3D>();
-      points.add(new Point3D(1, 1, 1));
-      points.add(new Point3D(1, 1, -1));
-      points.add(new Point3D(1, -1, 1));
-      points.add(new Point3D(-1, 1, 1));
-      points.add(new Point3D(1, -1, -1));
-      points.add(new Point3D(-1, 1, -1));
-      points.add(new Point3D(-1, -1, 1));
-      points.add(new Point3D(-1, -1, -1));
-      FundamentalTransformer fT = new FundamentalTransformer(points);
-      fT.setResultString("1 0 0 0\n&\n1 1 0 0\n1 0 0 1\n1 0 1 0\n1 0 0 0\n");
-      dispatcher.fireEvent(new FundamentalResultEvent(
-          fT.transformResultString()));
-    }*/
-
     @Override
     public void onInitialized() {
       SceneGraphComponent root = getSceneRoot();
 
-      // Test for Fundamental
-      //testShow();
-
-      // fundamental.setGeometry(Primitives.cylinder(15));
       point.setGeometry(Primitives.point(new double[] { 0, 0, 0 }));
 
       setPointAppearance(pointAppearance);
@@ -276,7 +255,7 @@ public class PointPicker
     Geometry g;
     // Calculate the new fundamental
     if (this.fundamental.isKnown()) {
-      g = JRealityUtility.generateCompleteGraph(this.fundamental.getVertices());
+      g = JRealityUtility.generateGraph(this.fundamental.getVertices(), JRealityUtility.convertEdges(this.fundamental.getEdges()));
     }
     else {
       if (this.dim == 2) g = JRealityUtility.circle(0, 0, 1);

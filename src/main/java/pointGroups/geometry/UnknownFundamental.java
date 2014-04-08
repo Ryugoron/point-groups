@@ -1,5 +1,7 @@
 package pointGroups.geometry;
 
+import java.util.List;
+
 import pointGroups.util.point.PointUtil;
 
 
@@ -22,6 +24,11 @@ public class UnknownFundamental
    */
   @Override
   public double[][] getVertices() {
+    return null;
+  }
+  
+  @Override
+  public Edge<Integer,Integer>[] getEdges(){
     return null;
   }
 
