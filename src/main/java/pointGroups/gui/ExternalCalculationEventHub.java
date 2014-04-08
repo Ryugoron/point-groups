@@ -104,10 +104,9 @@ public class ExternalCalculationEventHub
 
   @Override
   public void onSymmetry4DChooseEvent(final Symmetry4DChooseEvent event) {
-    // Point4D p = event.getSymmetry4D().getNormalPoint();
-    // submit(new FundamentalTransformer(event.getSymmetry4D().images(p,
-    // event.getSubgroup())));
-    dispatcher.fireEvent(new FundamentalResultEvent(new UnknownFundamental()));
+    Point4D p = event.getSymmetry4D().getNormalPoint();
+    logger.info("Calculating new Fundamental Domain");
+    submit(new FundamentalTransformerTransformer(event.getSymmetry4D().images(p)));
   }
 
   @Override

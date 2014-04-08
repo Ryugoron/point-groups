@@ -44,6 +44,7 @@ public class FundamentalTransformerTransformer
     sb.append("]);");
     sb.append("my $v = new VoronoiDiagram(SITES=>$points);");
     sb.append("print $v->DUAL_GRAPH->ADJACENCY->adjacent_nodes(0);");
+    sb.append("print \"\\n\"");
     this.script = sb.toString();
     return this.script;
   }
@@ -52,12 +53,14 @@ public class FundamentalTransformerTransformer
   protected FundamentalTransformer transformResultString() {
     if(this.answer != null) return this.answer;
     
-    String[] adjstring = this.resultString.substring(1, this.resultString.length()-1).split(" ");
+    String[] adjstring = this.resultString.substring(1, this.resultString.length()-2).split(" ");
+    
+    System.out.println("");
     
     // The last entry is the infinity facette
     int[] adj = new int[adjstring.length-1];
     
-    for(int i = 0; i < adjstring.length; i++){
+    for(int i = 0; i < adjstring.length-1; i++){
       adj[i] = Integer.parseInt(adjstring[i]);
     }
     
