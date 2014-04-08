@@ -2,7 +2,6 @@ package pointGroups.geometry.symmetries;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -235,19 +234,19 @@ public enum Symmetry3D
     normalPoints = new HashMap<>();
 
     // C1 group
-    rotations.put(C1, Collections.singleton(id));
-    subgroups.put(C1, Arrays.asList(C1));
-    normalPoints.put(C1, new Point3D(0.8, 0.6, 0.0));
+    // rotations.put(C1, Collections.singleton(id));
+    // subgroups.put(C1, Arrays.asList(C1));
+    // normalPoints.put(C1, new Point3D(0.8, 0.6, 0.0));
 
     // C2 group
     rotations.put(C2, Arrays.asList(id, faceAxisJ_180));
-    subgroups.put(C2, Arrays.asList(C1, C2));
+    subgroups.put(C2, Arrays.asList(C2));
     normalPoints.put(C2, new Point3D(0.8, 0.6, 0.0));
 
     // D2 group
     rotations.put(D2,
         Arrays.asList(id, faceAxisJ_180, faceAxisI_180, faceAxisK_180));
-    subgroups.put(D2, Arrays.asList(D2, C2, C1));
+    subgroups.put(D2, Arrays.asList(D2, C2));
     normalPoints.put(D2, new Point3D(0.8, 0.6, 0.0));
 
     // C3
@@ -257,7 +256,7 @@ public enum Symmetry3D
     // C4
     rotations.put(C4,
         Arrays.asList(id, faceAxisK_180, faceAxisK_90, faceAxisK_270));
-    subgroups.put(C4, Arrays.asList(C4, C2, C1));
+    subgroups.put(C4, Arrays.asList(C4, C2));
     normalPoints.put(C4, new Point3D(0.8, 0.6, 0.0));
 
     // D4
@@ -265,7 +264,7 @@ public enum Symmetry3D
     rotations.get(D4).addAll(rotations.get(D2));
     rotations.get(D4).addAll(rotations.get(C4));
     rotations.get(D4).addAll(Arrays.asList(edgeAxis_1, edgeAxis_2));
-    subgroups.put(D4, Arrays.asList(D4, C4, D2, C2, C1));
+    subgroups.put(D4, Arrays.asList(D4, C4, D2, C2));
     normalPoints.put(D4, new Point3D(0.8, 0.6, 0.0));
 
     // D3
@@ -277,7 +276,7 @@ public enum Symmetry3D
         faceAxisK_180, diagonalAxis1_120, diagonalAxis1_240, diagonalAxis2_120,
         diagonalAxis2_240, diagonalAxis3_120, diagonalAxis3_240,
         diagonalAxis4_120, diagonalAxis4_240));
-    subgroups.put(T, Arrays.asList(T, D2, C2, C1));
+    subgroups.put(T, Arrays.asList(T, D2, C2));
     normalPoints.put(T, new Point3D(0.8, 0.6, 0.0));
 
     // Th
@@ -295,7 +294,7 @@ public enum Symmetry3D
         Arrays.asList(faceAxisI_90, faceAxisI_270, faceAxisJ_90, faceAxisJ_270,
             faceAxisK_270, faceAxisK_270, edgeAxis_1, edgeAxis_2, edgeAxis_3,
             edgeAxis_4, edgeAxis_5, edgeAxis_6));
-    subgroups.put(O, Arrays.asList(O, T, D4, C4, D2, C2, C1));
+    subgroups.put(O, Arrays.asList(O, T, D4, C4, D2, C2));
     normalPoints.put(O, new Point3D(0.8, 0.6, 0.0));
 
     // I
@@ -312,7 +311,7 @@ public enum Symmetry3D
             snubAxis_35, snubAxis_36, snubAxis_37, snubAxis_38, snubAxis_39,
             snubAxis_40, snubAxis_41, snubAxis_42, snubAxis_43, snubAxis_44,
             snubAxis_45, snubAxis_46, snubAxis_47, snubAxis_48));
-    subgroups.put(I, Arrays.asList(I, T, D2, C2, C1));
+    subgroups.put(I, Arrays.asList(I, T, D2, C2));
     normalPoints.put(I, new Point3D(0.8, 0.6, 0.0));
   }
 
