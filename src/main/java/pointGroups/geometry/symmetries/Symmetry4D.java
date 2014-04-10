@@ -415,10 +415,7 @@ public enum Symmetry4D
       // Add all tested elems to the group
       for (Rotation4D g : currentToTest) {
         groupElems.add(g);
-        //System.out.println(g.left.re + "\t " + g.left.i + "\t " + g.left.j + "\t " + g.left.k + " ; " + g.right.re + "\t " + g.right.i + "\t " + g.right.j + "\t " + g.right.k);
-
       }
-      //System.out.println();
       currentToTest.clear();
 
       // Now test all new found group elems
@@ -428,16 +425,27 @@ public enum Symmetry4D
       newGroupelem.clear();
     }
     while (newElems != 0);
-    boolean istwice = false;
+    Collection<Rotation4D> dou = new ArrayList<>();
     for (Rotation4D g : groupElems) {
+      int equals = 0;
+      Collection<Rotation4D> e = new ArrayList<>();
       for (Rotation4D f : groupElems) {
-        if (g.equals(f) && g != f){
-          istwice = true;
-          break;
+        if (g.equals(f)){
+          equals++;
+          e.add(f);
+          dou.add(g);
+       }
+      }
+      if(equals > 1){
+        System.out.println("---------------");
+        System.out.println(g+" #: " + equals);
+        for(Rotation4D r : e){
+          System.out.println(g.left.re + ", " + g.left.i + ", " + g.left.j + ", " + g.left.k + "; " + g.right.re + ", " + g.right.i + ", " + g.right.j + ", " + g.right.k);
         }
+        System.out.println("---------------");
       }
     }
-    System.out.println(istwice);
+    System.out.println("funky elems #"+dou.size());
     return groupElems;
   }
 

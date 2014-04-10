@@ -43,7 +43,16 @@ public class Rotation4D
      * See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 42
      * [-l,-r] = [l,r] and [-l,r]=[l,-r]=-[l,r]
      */
-    if (left.re <= 0) { 
+    double firstValUnequalZero = left.re;
+    if (firstValUnequalZero == 0) firstValUnequalZero = left.i;
+    else if (firstValUnequalZero == 0) firstValUnequalZero = left.j;
+    else if (firstValUnequalZero == 0) firstValUnequalZero = left.k;
+    else if (firstValUnequalZero == 0) firstValUnequalZero = right.re;
+    else if (firstValUnequalZero == 0) firstValUnequalZero = right.i;
+    else if (firstValUnequalZero == 0) firstValUnequalZero = right.j;
+    else if (firstValUnequalZero == 0) firstValUnequalZero = right.k;
+    
+    if (firstValUnequalZero <= 0) { 
       return left.minus().hashCode() ^ right.minus().hashCode(); 
       }
     return left.hashCode() ^ right.hashCode();
