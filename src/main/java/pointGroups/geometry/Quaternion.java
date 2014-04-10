@@ -36,7 +36,7 @@ public class Quaternion
   public static final Quaternion qI2 = new Quaternion((sigma + tau + 1) / 4,
       (sigma + tau - 1) / 4, (-sigma + tau + 1) / 4, (sigma - tau + 1) / 4);
 
-  private final static int digits = 50;
+  private final static int digits = 5;
   private final static double r = Math.pow(10, digits);
 
   public final double i, j, k, re;
@@ -200,10 +200,10 @@ public class Quaternion
     double y1 = signum(i) * Math.round(Math.abs(r * i)) / r;
     double z1 = signum(j) * Math.round(Math.abs(r * j)) / r;
     double w1 = signum(k) * Math.round(Math.abs(r * k)) / r;
-    double x2 = signum(re)* Math.round(Math.abs(r * other.re)) / r;
-    double y2 = signum(i) * Math.round(Math.abs(r * other.i)) / r;
-    double z2 = signum(j) * Math.round(Math.abs(r * other.j)) / r;
-    double w2 = signum(k) * Math.round(Math.abs(r * other.k)) / r;
+    double x2 = signum(other.re)* Math.round(Math.abs(r * other.re)) / r;
+    double y2 = signum(other.i) * Math.round(Math.abs(r * other.i)) / r;
+    double z2 = signum(other.j) * Math.round(Math.abs(r * other.j)) / r;
+    double w2 = signum(other.k) * Math.round(Math.abs(r * other.k)) / r;
 
     if (x1 == x2 && y1 == y2 && z1 == z2 && w1 == w2) return true;
     return false;
@@ -214,7 +214,7 @@ public class Quaternion
    * @param d
    * @return
    */
-  private int signum(double d){
+  private double signum(double d){
     if (d == 0) return 0;
     if (d < 0) return -1;
     return 1;
