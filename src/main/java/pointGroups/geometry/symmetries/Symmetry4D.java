@@ -230,13 +230,13 @@ public enum Symmetry4D
     Collection<Rotation4D> generator = new ArrayList<>();
     generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE));
     generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE));
-    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I));
-    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw));
+//    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I));
+//    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw));
 
-    generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE.minus()));
-    generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE.minus()));
-    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I.minus()));
-    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw.minus()));
+//    generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE.minus()));
+//    generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE.minus()));
+//    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I.minus()));
+//    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw.minus()));
     return generator;
   }
 
@@ -395,11 +395,11 @@ public enum Symmetry4D
       Collection<Rotation4D> generator) {
     int newElems = 0;
     // All known group elems
-    Set<Rotation4D> groupElems = new HashSet<>();
+    Set<Rotation4D> groupElems = new HashSet<Rotation4D>();
     // All new group elems. Test them for new elems.
-    Set<Rotation4D> currentToTest = new HashSet<>(generator);
+    Set<Rotation4D> currentToTest = new HashSet<Rotation4D>(generator);
     // All new found group elems.
-    Set<Rotation4D> newGroupelem = new HashSet<>();
+    Set<Rotation4D> newGroupelem = new HashSet<Rotation4D>();
 
     // Test for new elems since there are no more new elems....
     do {
@@ -415,7 +415,10 @@ public enum Symmetry4D
       // Add all tested elems to the group
       for (Rotation4D g : currentToTest) {
         groupElems.add(g);
+        System.out.println(g.left.re + "\t " + g.left.i + "\t " + g.left.j + "\t " + g.left.k);
+
       }
+      System.out.println();
       currentToTest.clear();
 
       // Now test all new found group elems
@@ -434,8 +437,7 @@ public enum Symmetry4D
     // create a new file with an ObjectOutputStream
 
     FileOutputStream out =
-        new FileOutputStream(new File(
-            PointGroupsUtility.getResource(sym.filename + ".sym")));
+        new FileOutputStream(new File("target/classes/symmetries/" + sym.filename + ".sym"));
     ObjectOutputStream oout = new ObjectOutputStream(out);
 
     oout.writeObject(groupElems);
@@ -445,7 +447,7 @@ public enum Symmetry4D
 
   public static Collection<Rotation4D> readSymmetryGroup(Symmetry4D sym)
     throws FileNotFoundException, IOException, ClassNotFoundException {
-    File f = new File(PointGroupsUtility.getResource(sym.filename + ".sym"));
+    File f = new File(PointGroupsUtility.getResource("symmetries/" + sym.filename + ".sym"));
     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
     Object o = ois.readObject();
     // TODO: ugly

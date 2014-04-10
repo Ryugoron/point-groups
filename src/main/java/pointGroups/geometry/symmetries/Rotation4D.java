@@ -24,7 +24,7 @@ public class Rotation4D
 
   public Rotation4D nextRotation(Rotation4D r2) {
     Rotation4D r1 = this;
-    return new Rotation4D(r1.left.mult(r2.left), r1.right.mult(r2.right));
+    return new Rotation4D(r1.left.mult(r2.left), r2.right.mult(r1.right));
   }
 
   public Quaternion rotate(Quaternion q) {
