@@ -44,17 +44,28 @@ public class Rotation4D
      * [-l,-r] = [l,r] and [-l,r]=[l,-r]=-[l,r]
      */
     double firstValUnequalZero = left.re;
-    if (firstValUnequalZero == 0) firstValUnequalZero = left.i;
-    else if (firstValUnequalZero == 0) firstValUnequalZero = left.j;
-    else if (firstValUnequalZero == 0) firstValUnequalZero = left.k;
-    else if (firstValUnequalZero == 0) firstValUnequalZero = right.re;
-    else if (firstValUnequalZero == 0) firstValUnequalZero = right.i;
-    else if (firstValUnequalZero == 0) firstValUnequalZero = right.j;
-    else if (firstValUnequalZero == 0) firstValUnequalZero = right.k;
-    
-    if (firstValUnequalZero <= 0) { 
-      return left.minus().hashCode() ^ right.minus().hashCode(); 
+    if (firstValUnequalZero == 0) {
+      firstValUnequalZero = left.i;
+      if (firstValUnequalZero == 0) {
+        firstValUnequalZero = left.j;
+        if (firstValUnequalZero == 0) {
+          firstValUnequalZero = left.k;
+          if (firstValUnequalZero == 0) {
+            firstValUnequalZero = right.re;
+            if (firstValUnequalZero == 0) {
+              firstValUnequalZero = right.i;
+              if (firstValUnequalZero == 0) {
+                firstValUnequalZero = right.j;
+                if (firstValUnequalZero == 0) firstValUnequalZero = right.k;
+              }
+            }
+          }
+        }
       }
+    }
+
+    if (firstValUnequalZero <= 0) { return left.minus().hashCode() ^
+        right.minus().hashCode(); }
     return left.hashCode() ^ right.hashCode();
   }
 
