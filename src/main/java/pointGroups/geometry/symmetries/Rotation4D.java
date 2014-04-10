@@ -61,5 +61,11 @@ public class Rotation4D
     return (r.left.equals(this.left) && r.right.equals(this.right)) ||
         (r.left.equals(this.left.minus()) && r.right.equals(this.right.minus()));
 
+  
+  }
+  
+  
+  public String toString(){
+    return "["+left+", "+right+"]";
   }
 }
