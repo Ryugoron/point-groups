@@ -43,8 +43,9 @@ public class Rotation4D
      * See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 42
      * [-l,-r] = [l,r] and [-l,r]=[l,-r]=-[l,r]
      */
-    if (left.re < 0) { return left.minus().hashCode() ^
-        right.minus().hashCode(); }
+    if (left.re <= 0) { 
+      return left.minus().hashCode() ^ right.minus().hashCode(); 
+      }
     return left.hashCode() ^ right.hashCode();
   }
 

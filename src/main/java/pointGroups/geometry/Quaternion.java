@@ -36,7 +36,7 @@ public class Quaternion
   public static final Quaternion qI2 = new Quaternion((sigma + tau + 1) / 4,
       (sigma + tau - 1) / 4, (-sigma + tau + 1) / 4, (sigma - tau + 1) / 4);
 
-  private final static int digits = 5;
+  private final static int digits = 50;
   private final static double r = Math.pow(10, digits);
 
   public final double i, j, k, re;
@@ -168,10 +168,10 @@ public class Quaternion
   @Override
   public int hashCode() {
 
-    double x = Math.round(r * re) / r;
-    double y = Math.round(r * i) / r;
-    double z = Math.round(r * j) / r;
-    double w = Math.round(r * k) / r;
+    double x = signum(re)* Math.round(Math.abs(r * re)) / r;
+    double y = signum(i) * Math.round(Math.abs(r * i)) / r;
+    double z = signum(j) * Math.round(Math.abs(r * j)) / r;
+    double w = signum(k) * Math.round(Math.abs(r * k)) / r;
 
     final int PRIME = 31;
     int result = 1;
@@ -196,17 +196,27 @@ public class Quaternion
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;
     final Quaternion other = (Quaternion) obj;
-    double x1 = Math.round(r * re) / r;
-    double y1 = Math.round(r * i) / r;
-    double z1 = Math.round(r * j) / r;
-    double w1 = Math.round(r * k) / r;
-    double x2 = Math.round(r * other.re) / r;
-    double y2 = Math.round(r * other.i) / r;
-    double z2 = Math.round(r * other.j) / r;
-    double w2 = Math.round(r * other.k) / r;
+    double x1 = signum(re)* Math.round(Math.abs(r * re)) / r;
+    double y1 = signum(i) * Math.round(Math.abs(r * i)) / r;
+    double z1 = signum(j) * Math.round(Math.abs(r * j)) / r;
+    double w1 = signum(k) * Math.round(Math.abs(r * k)) / r;
+    double x2 = signum(re)* Math.round(Math.abs(r * other.re)) / r;
+    double y2 = signum(i) * Math.round(Math.abs(r * other.i)) / r;
+    double z2 = signum(j) * Math.round(Math.abs(r * other.j)) / r;
+    double w2 = signum(k) * Math.round(Math.abs(r * other.k)) / r;
 
     if (x1 == x2 && y1 == y2 && z1 == z2 && w1 == w2) return true;
     return false;
   }
-
+  
+  /**
+   * this should return 0 if d is zero, even if its +0 or -0 (other than Math.signum)
+   * @param d
+   * @return
+   */
+  private int signum(double d){
+    if (d == 0) return 0;
+    if (d < 0) return -1;
+    return 1;
+  }
 }

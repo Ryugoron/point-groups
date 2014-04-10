@@ -230,13 +230,13 @@ public enum Symmetry4D
     Collection<Rotation4D> generator = new ArrayList<>();
     generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE));
     generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE));
-//    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I));
-//    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw));
 
-//    generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE.minus()));
-//    generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE.minus()));
-//    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I.minus()));
-//    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw.minus()));
+    generator.add(new Rotation4D(Quaternion.I, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.qw, Quaternion.ONE.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.I.minus()));
+    generator.add(new Rotation4D(Quaternion.ONE, Quaternion.qw.minus()));
     return generator;
   }
 
@@ -415,10 +415,10 @@ public enum Symmetry4D
       // Add all tested elems to the group
       for (Rotation4D g : currentToTest) {
         groupElems.add(g);
-        System.out.println(g.left.re + "\t " + g.left.i + "\t " + g.left.j + "\t " + g.left.k);
+        //System.out.println(g.left.re + "\t " + g.left.i + "\t " + g.left.j + "\t " + g.left.k + " ; " + g.right.re + "\t " + g.right.i + "\t " + g.right.j + "\t " + g.right.k);
 
       }
-      System.out.println();
+      //System.out.println();
       currentToTest.clear();
 
       // Now test all new found group elems
@@ -428,6 +428,16 @@ public enum Symmetry4D
       newGroupelem.clear();
     }
     while (newElems != 0);
+    boolean istwice = false;
+    for (Rotation4D g : groupElems) {
+      for (Rotation4D f : groupElems) {
+        if (g.equals(f) && g != f){
+          istwice = true;
+          break;
+        }
+      }
+    }
+    System.out.println(istwice);
     return groupElems;
   }
 
