@@ -27,7 +27,7 @@ public class PointGroupsUtility
     throws FileNotFoundException {
 
     try {
-      return PointGroups.class.getClassLoader().getResource(file).toURI();
+      return PointGroups.class.getClassLoader().getSystemResource(file).toURI();
     }
     catch (URISyntaxException e) {
       throw new FileNotFoundException("File " + e.getMessage() +
