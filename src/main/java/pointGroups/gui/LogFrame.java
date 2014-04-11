@@ -87,8 +87,8 @@ public class LogFrame
     };
     table = new JTable(model);
 
-    table.getColumnModel().getColumn(0).setPreferredWidth(200);
-    table.getColumnModel().getColumn(0).setMaxWidth(300);
+    table.getColumnModel().getColumn(0).setPreferredWidth(100);
+    table.getColumnModel().getColumn(0).setMaxWidth(200);
 
     // second column holds log level -> only short strings
     table.getColumnModel().getColumn(1).setMaxWidth(100);
@@ -153,7 +153,7 @@ public class LogFrame
       // }
       // else{
       Date date = new Date(record.getMillis());
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
       Object[] newLog =
           { sdf.format(date), record.getLevel(), record.getLoggerName(),
