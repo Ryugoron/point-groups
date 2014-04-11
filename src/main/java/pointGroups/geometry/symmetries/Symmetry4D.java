@@ -424,27 +424,6 @@ public enum Symmetry4D
       newGroupelem.clear();
     }
     while (newElems != 0);
-    Collection<Rotation4D> dou = new ArrayList<>();
-    for (Rotation4D g : groupElems) {
-      int equals = 0;
-      Collection<Rotation4D> e = new ArrayList<>();
-      for (Rotation4D f : groupElems) {
-        if (g.equals(f)){
-          equals++;
-          e.add(f);
-          dou.add(g);
-       }
-      }
-      if(equals >= 2){
-        System.out.println("---------------");
-        System.out.println(g+" #: " + equals);
-        for(Rotation4D r : e){
-          System.out.println(r.left.re + ", " + r.left.i + ", " + r.left.j + ", " + r.left.k + "; " + r.right.re + ", " + r.right.i + ", " + r.right.j + ", " + r.right.k + " : " + r.hashCode());
-        }
-        System.out.println("---------------");
-      }
-    }
-    System.out.println("funky elems #"+dou.size());
     return groupElems;
   }
 
@@ -514,15 +493,16 @@ public enum Symmetry4D
         TxT12, TxTQuerPlus12, TxTQuer3, TxT));
     subgroups.put(IxO, Arrays.asList(IxT, TxTPlus12, TxT3, TxTQuer12, TxT12,
         TxTQuerPlus12, TxTQuer3, TxT));
-    subgroups.put(IxT, Arrays.asList(OxT, TxTPlus12, TxT3, TxTQuer12, TxT12,
+    subgroups.put(OxT, Arrays.asList(OxT, TxTPlus12, TxT3, TxTQuer12, TxT12,
         TxTQuerPlus12, TxTQuer3, TxT));
 
     subgroups.put(IxI, Arrays.asList(IxI, IxIQuer60, IxIQuerPlus60, IxIPlus60,
         IxI60, TxTPlus12, TxT12, TxT3, TxT, TxTQuer3, TxTQuer12, TxTQuerPlus12,
         IxT));
-    subgroups.put(IxIQuer60, Arrays.asList(IxIQuer60));
-    subgroups.put(IxI60, Arrays.asList(IxI60, IxIPlus60, TxTPlus12, TxT12)); // check
-    subgroups.put(IxIPlus60, Arrays.asList(IxIPlus60, TxTPlus12)); // check
+    subgroups.put(IxIQuer60, Arrays.asList(IxIQuer60,IxIQuerPlus60,TxTQuer12,TxTQuerPlus12));
+    subgroups.put(IxIQuerPlus60, Arrays.asList(IxIQuerPlus60,TxTQuerPlus12));
+    subgroups.put(IxI60, Arrays.asList(IxI60, IxIPlus60)); // check
+    subgroups.put(IxIPlus60, Arrays.asList(IxIPlus60)); // check
 
     subgroups.put(TxT, Arrays.asList(TxT, TxT12, TxTPlus12, TxT3, TxTQuer3,
         TxTQuer12, TxTQuerPlus12)); // check
@@ -531,6 +511,7 @@ public enum Symmetry4D
     subgroups.put(TxTPlus12, Arrays.asList(TxTPlus12)); // check
     subgroups.put(TxTQuer3, Arrays.asList(TxTQuer3, TxTQuer12, TxTQuerPlus12)); // check
     subgroups.put(TxTQuer12, Arrays.asList(TxTQuerPlus12, TxTQuer12)); // check
+    subgroups.put(Symmetry4D.TxTQuerPlus12, Arrays.asList(TxTQuerPlus12));
 
     subgroups.put(OxO, Arrays.asList(OxO, OxO2, OxO6, OxO24, OxOPlus24,
         OxOQuerPlus24, TxT12, TxTPlus12, TxT3, TxTQuer3, TxT, TxTQuer12,
