@@ -121,11 +121,32 @@ public enum Symmetry4DReflection
     // Subgroups
     
     subgroups.put(IxIm2, Arrays.asList(IxIm2, IxI60m2, IxIQuer60m2, IxIQuerPlus60m2_3,TxTm2,TxTQuer3m2,TxT12m2, TxTm2,TxTQuer12m2, TxTQuer3m2,TxTPlus12m2_1));
-    subgroups.put(IxIQuer60m2, Arrays.asList(IxIQuer60m2));
-    subgroups.put((Ix, value)
-    subgroups.put(IxI60m2, Arrays.asList(IxI60m2,IxIPlus60m2_3,TxT12m2,TxTPlus12m2_3));
-    subgroups.put(IxIPlus60m2_1, value)
+    subgroups.put(IxIQuer60m2, Arrays.asList(IxIQuer60m2,IxIQuerPlus60m2_3,TxTQuer12m2,TxTQuerPlus12m2_3));
+    subgroups.put(IxIPlus60m2_1, Arrays.asList(IxIPlus60m2_1)); // minusStar
+    subgroups.put(IxIPlus60m2_3, Arrays.asList(IxIPlus60m2_3));
+    subgroups.put(IxI60m2, Arrays.asList(IxI60m2,IxIPlus60m2_3));
+    subgroups.put(IxIQuerPlus60m2_1, Arrays.asList(IxIQuerPlus60m2_1,TxTPlus12m2_1)); // minusStar
+    subgroups.put(IxIQuerPlus60m2_3, Arrays.asList(IxIQuerPlus60m2_3,TxTQuerPlus12m2_3));
     
+    subgroups.put(OxO2m2Quer, Arrays.asList(OxO2m2Quer)); // *[1,qo]
+    subgroups.put(OxOQuerPlus24m2_1, Arrays.asList(OxOQuerPlus24m2_1, TxTQuerPlus12m2_1));  // minusStar
+    subgroups.put(OxOQuerPlus24m2_3, Arrays.asList(OxOQuerPlus24m2_3, TxTQuerPlus12m2_3));    
+    subgroups.put(OxO24m2, Arrays.asList(OxO24m2,OxOQuerPlus24m2_3,OxOPlus24m2_3,TxT12m2, TxTQuerPlus12m2_3));
+    subgroups.put(OxO2m2, Arrays.asList(OxO2m2,OxOPlus24m2_3,TxT12m2,TxT3m2,TxTm2,OxO24m2,OxO6m2,OxOQuerPlus24m2_3,TxTPlus12m2_3,TxTQuer3m2,TxTQuerPlus12m2_3,TxTQuer12m2));
+    subgroups.put(OxO6m2, Arrays.asList(OxO6m2,OxOQuerPlus24m2_3,OxO24m2,OxOQuerPlus24m2_3,TxT12m2,TxTPlus12m2_3,TxT3m2));
+    subgroups.put(OxOm2, Arrays.asList(OxOm2, OxO2m2, OxO6m2,OxO24m2,OxOPlus24m2_3,OxOQuerPlus24m2_3,TxT12m2,TxTPlus12m2_3,TxT3m2,TxTQuer3m2,TxTQuer12m2,TxTQuerPlus12m2_3));
+    subgroups.put(OxOPlus24m2_1, Arrays.asList(OxOPlus24m2_1,TxTPlus12m2_1));  // minusStar
+    subgroups.put(OxOPlus24m2_3, Arrays.asList(OxOPlus24m2_3, TxTPlus12m2_3));
+
+    subgroups.put(TxTQuer12m2, Arrays.asList(TxTQuer12m2, TxTQuerPlus12m2_3));
+    subgroups.put(TxT12m2, Arrays.asList(TxT12m2, TxTPlus12m2_3));
+    subgroups.put(TxT3m2, Arrays.asList(TxT3m2, TxT12m2, TxTPlus12m2_3));
+    subgroups.put(TxTPlus12m2_1, Arrays.asList(TxTPlus12m2_1));  // minusStar
+    subgroups.put(TxTPlus12m2_3, Arrays.asList(TxTPlus12m2_3));
+    subgroups.put(TxTm2, Arrays.asList(TxTm2,TxT12m2,TxTPlus12m2_3,TxT3m2,TxTQuer3m2,TxTQuer12m2,TxTQuerPlus12m2_3));
+    subgroups.put(TxTQuerPlus12m2_1, Arrays.asList(TxTQuerPlus12m2_1));  // minusStar
+    subgroups.put(TxTQuerPlus12m2_3, Arrays.asList(TxTQuerPlus12m2_3));
+    subgroups.put(TxTQuer3m2, Arrays.asList(TxTQuer3m2, TxTQuer12m2,TxTQuerPlus12m2_3));
     
     
 
