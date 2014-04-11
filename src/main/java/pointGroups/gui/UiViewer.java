@@ -74,6 +74,7 @@ public class UiViewer
 
           Viewer view = viewer.getViewer();
 
+          component.setLayout(new BorderLayout());
           component.add((Component) view.getViewingComponent(),
               BorderLayout.CENTER);
           component.validate();
