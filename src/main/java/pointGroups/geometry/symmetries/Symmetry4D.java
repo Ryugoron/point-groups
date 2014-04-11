@@ -313,39 +313,38 @@ public enum Symmetry4D
    * Add new symmetry groups here
    */
   private static void createSymgroups() {
-//    System.out.println("Kreuz-Gruppe Start: " +
-//        Calendar.getInstance().getTime());
-//    createSymgroup(IxO);
-//    createSymgroup(IxT);
-//    createSymgroup(OxT);
-//
-//    System.out.println("T-Gruppe Start: " + Calendar.getInstance().getTime());
+    System.out.println("Kreuz-Gruppe Start: " +
+        Calendar.getInstance().getTime());
+    createSymgroup(IxO);
+    createSymgroup(IxT);
+    createSymgroup(OxT);
 
-    System.out.println("TxT: "+TxT.filename+" "+TxT.schoenflies);
+    System.out.println("T-Gruppe Start: " + Calendar.getInstance().getTime());
+
     createSymgroup(TxT);
-//    createSymgroup(TxT3);
-//    createSymgroup(Symmetry4D.TxTQuer3);
-//    createSymgroup(TxT12);
-//    createSymgroup(TxTQuer12);
-//    createSymgroup(TxTPlus12);
-//    createSymgroup(TxTQuerPlus12);
-//
-//    System.out.println("O-Gruppen Start: " + Calendar.getInstance().getTime());
-//
-//    createSymgroup(OxO);
-//    createSymgroup(OxO2);
-//    createSymgroup(OxO6);
-//    createSymgroup(OxO24);
-//    createSymgroup(OxOPlus24);
-//    createSymgroup(OxOQuerPlus24);
-//
-//    System.out.println("I-Gruppen Start: " + Calendar.getInstance().getTime());
-//
-//    createSymgroup(IxIQuerPlus60);
-//    createSymgroup(IxIPlus60);
-//    createSymgroup(IxIQuer60);
-//    createSymgroup(IxI60);
-//    createSymgroup(IxI);
+    createSymgroup(TxT3);
+    createSymgroup(Symmetry4D.TxTQuer3);
+    createSymgroup(TxT12);
+    createSymgroup(TxTQuer12);
+    createSymgroup(TxTPlus12);
+    createSymgroup(TxTQuerPlus12);
+
+    System.out.println("O-Gruppen Start: " + Calendar.getInstance().getTime());
+
+    createSymgroup(OxO);
+    createSymgroup(OxO2);
+    createSymgroup(OxO6);
+    createSymgroup(OxO24);
+    createSymgroup(OxOPlus24);
+    createSymgroup(OxOQuerPlus24);
+
+    System.out.println("I-Gruppen Start: " + Calendar.getInstance().getTime());
+
+    createSymgroup(IxIQuerPlus60);
+    createSymgroup(IxIPlus60);
+    createSymgroup(IxIQuer60);
+    createSymgroup(IxI60);
+    createSymgroup(IxI);
 
     System.out.println("Finish: " + Calendar.getInstance().getTime());
 
@@ -436,11 +435,11 @@ public enum Symmetry4D
           dou.add(g);
        }
       }
-      if(equals > 1){
+      if(equals >= 2){
         System.out.println("---------------");
         System.out.println(g+" #: " + equals);
         for(Rotation4D r : e){
-          System.out.println(g.left.re + ", " + g.left.i + ", " + g.left.j + ", " + g.left.k + "; " + g.right.re + ", " + g.right.i + ", " + g.right.j + ", " + g.right.k);
+          System.out.println(r.left.re + ", " + r.left.i + ", " + r.left.j + ", " + r.left.k + "; " + r.right.re + ", " + r.right.i + ", " + r.right.j + ", " + r.right.k + " : " + r.hashCode());
         }
         System.out.println("---------------");
       }
