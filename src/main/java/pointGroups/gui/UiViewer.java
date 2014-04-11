@@ -29,6 +29,7 @@ import de.jreality.shader.DefaultLineShader;
 import de.jreality.shader.DefaultPointShader;
 import de.jreality.shader.DefaultPolygonShader;
 import de.jreality.shader.RenderingHintsShader;
+import de.jreality.shader.RootAppearance;
 import de.jreality.shader.ShaderUtility;
 import de.jreality.softviewer.SoftViewer;
 import de.jreality.tools.AnimatorTool;
@@ -45,7 +46,7 @@ import de.jtem.jrworkspace.plugin.Plugin;
  * parent Component. Due to the long startup time of jReality, {@link UiViewer}
  * will load jReality via a SwingWorker Thread, s.t. the Event Dispatch Thread
  * won't be blocked during the Startup-Process to keep Swing responsive.
- * 
+ *
  * @author Marcel Ehrhardt
  */
 public class UiViewer
@@ -74,11 +75,16 @@ public class UiViewer
 
           Viewer view = viewer.getViewer();
 
+          Appearance ap = view.getSceneRoot().getAppearance();
+          setupAppearance(ap);
+
           component.setLayout(new BorderLayout());
           component.add((Component) view.getViewingComponent(),
               BorderLayout.CENTER);
+
           component.validate();
           component.repaint();
+
 
           onInitialized();
         };
@@ -87,7 +93,8 @@ public class UiViewer
 
   protected final Container component;
   protected final SceneGraphComponent sceneRoot = new SceneGraphComponent();
-  protected final Appearance appearanceRoot = setupAppearance(new Appearance());
+  // protected final Appearance appearanceRoot = setupAppearance(new
+  // Appearance());
   protected final UiViewerToolsPlugin toolsPlugin = new UiViewerToolsPlugin();
 
   /**
@@ -97,7 +104,7 @@ public class UiViewer
     this.component = component;
     worker.execute();
 
-    sceneRoot.setAppearance(appearanceRoot);
+    // sceneRoot.setAppearance(appearanceRoot);
   }
 
   public void set2DMode() {
@@ -119,7 +126,7 @@ public class UiViewer
   /**
    * Returns the global scene root, which contains the geometry, sub scenes, the
    * appearance and other informations related to the rendering of a scene.
-   * 
+   *
    * @return the global scene root
    */
   public SceneGraphComponent getSceneRoot() {
@@ -128,7 +135,7 @@ public class UiViewer
 
   /**
    * Get the current rendered geometry.
-   * 
+   *
    * @return
    */
   public Geometry getGeometry() {
@@ -137,7 +144,7 @@ public class UiViewer
 
   /**
    * Set the current geometry.
-   * 
+   *
    * @return
    */
   public void setGeometry(Geometry geometry) {
@@ -148,7 +155,7 @@ public class UiViewer
    * Get the asynchronous loaded JRViewer instance from UiViewer. <br>
    * <b>Note</b>: This method will block until the JRViewer was completely
    * loaded.
-   * 
+   *
    * @throws RuntimeException The {@link InterruptedException} and
    *           {@link ExecutionException} thrown by {@link SwingWorker#get()}
    *           will be re-thrown as {@link RuntimeException}
@@ -167,7 +174,7 @@ public class UiViewer
    * Get the {@link Viewer} of jReality. This is the Renderer that will be used
    * by jReality, i.e. the {@link SoftViewer} for software rendering or the
    * {@link JOGLViewer} for hardware rendering (OpenGL).
-   * 
+   *
    * @return
    */
   public Viewer getViewer() {
@@ -196,7 +203,7 @@ public class UiViewer
 
   /**
    * Initialize jReality
-   * 
+   *
    * @return
    */
   protected JRViewer startupViewer() {
@@ -215,6 +222,9 @@ public class UiViewer
     DefaultLineShader dls;
     DefaultPointShader dpts;
     RenderingHintsShader rhs;
+
+    // RootAppearance rootAp = ShaderUtility.createRootAppearance(ap);
+    // rootAp.setBackgroundColor(Color.blue);
 
     // ap.setAttribute(CommonAttributes.POLYGON_SHADER + "." +
     // CommonAttributes.DIFFUSE_COLOR, Color.yellow);
