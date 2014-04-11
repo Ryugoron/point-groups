@@ -1,6 +1,7 @@
 package pointGroups.geometry.symmetries;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,14 +28,13 @@ public enum Symmetry4DReflection
           getStar()), //
  IxIQuerPlus60m2_1("+ 1/60 [IxIQuer]*2_1", "[3,3,3]", "", Symmetry4D.IxIQuerPlus60,
               getMinusstar()), //
+              
   OxOm2("+-[OxO]*2", "[3,4,3]:2", "", Symmetry4D.OxO, getStar()), //
   OxO2m2("+- 1/2 [OxO]*2", "[3,4,3]", "", Symmetry4D.OxO2, getStar()), //
   OxO2m2Quer("+- 1/2 [OxO]*2Quer", "[3,4,3]+*2", "", Symmetry4D.OxO2,
       getOnexio()), //
-
   OxO6m2("+- 1/6 [OxO]*2", "[3,3,4]", "", Symmetry4D.OxO6, getStar()), //
   OxO24m2("+- 1/24 [OxO]*2", "2.[3,4]", "", Symmetry4D.OxO24, getStar()), //
-
   OxOPlus24m2_3("+ 1/24 [OxO]*2_3", "[3,4]", "", Symmetry4D.OxOPlus24,
       getStar()), //
   OxOPlus24m2_1("+ 1/24 [OxO]*2_1", "[3,4]°", "", Symmetry4D.OxOPlus24,
@@ -48,16 +48,13 @@ public enum Symmetry4DReflection
   TxT3m2("+- 1/3 [TxT]*2", "[+3,3,4]", "", Symmetry4D.TxT3, getStar()), //
   TxTQuer3m2("+- 1/3 [TxTquer]*2", "[3,3,4+]", "", Symmetry4D.TxTQuer3,
       getStar()), //
-
   TxT12m2("+- 1/12 [TxT]*2", "2.[+3,4]", "", Symmetry4D.TxT12, getStar()), //
   TxTQuer12m2("+- 1/12 [TxTquer]*2", "2.[3,3]", "", Symmetry4D.TxTQuer12,
       getStar()), //
-
   TxTPlus12m2_3("+ 1/12 [TxT]*2_3", "[+3,4]", "", Symmetry4D.TxTPlus12,
       getStar()), //
   TxTPlus12m2_1("+ 1/12 [TxT]*2_1", "[+3,4]°", "", Symmetry4D.TxTPlus12,
       getMinusstar()), //
-
   TxTQuerPlus12m2_3("+ 1/12 [TxTquer]*2_3", "[3,3]°", "",
       Symmetry4D.TxTQuerPlus12, getStar()), //
   TxTQuerPlus12m2_1("+ 1/12 [TxTquer]*2_1", "[3,3]", "",
@@ -66,7 +63,6 @@ public enum Symmetry4DReflection
 
   static final Set<Symmetry4DReflection> groups;
   static final Map<Symmetry4DReflection, Collection<Symmetry4DReflection>> subgroups;
-  static final Map<Symmetry4DReflection, Point4D> normalPoints;
 
   /**
    * extending element: * = [1,1]
@@ -93,26 +89,45 @@ public enum Symmetry4DReflection
   static {
     groups = new HashSet<>();
     subgroups = new HashMap<>();
-    normalPoints = new HashMap<>();
 
+    groups.add(IxIm2);
+    groups.add(IxI60m2);
     groups.add(IxIQuer60m2);
+    groups.add(IxIPlus60m2_1);
+    groups.add(IxIPlus60m2_3); 
+    groups.add(IxIQuerPlus60m2_1);
+    groups.add(IxIQuerPlus60m2_3);
+    
     groups.add(OxO2m2Quer);
     groups.add(OxOQuerPlus24m2_1);
-    groups.add(OxOQuerPlus24m2_3);
-    groups.add(TxTQuer12m2);
-    groups.add(IxI60m2);
-    groups.add(IxIPlus60m2_1);
-    groups.add(IxIPlus60m2_3);
-    groups.add(IxIm2);
+    groups.add(OxOQuerPlus24m2_3);    
     groups.add(OxO24m2);
     groups.add(OxO2m2);
     groups.add(OxO6m2);
     groups.add(OxOm2);
+    groups.add(OxOPlus24m2_1);
+    groups.add(OxOPlus24m2_3);
+    
+    groups.add(TxTQuer12m2);
     groups.add(TxT12m2);
     groups.add(TxT3m2);
     groups.add(TxTPlus12m2_1);
     groups.add(TxTPlus12m2_3);
     groups.add(TxTm2);
+    groups.add(TxTQuerPlus12m2_1);
+    groups.add(TxTQuerPlus12m2_3);
+    groups.add(TxTQuer3m2);
+    
+    // Subgroups
+    
+    subgroups.put(IxIm2, Arrays.asList(IxIm2, IxI60m2, IxIQuer60m2, IxIQuerPlus60m2_3,TxTm2,TxTQuer3m2,TxT12m2, TxTm2,TxTQuer12m2, TxTQuer3m2,TxTPlus12m2_1));
+    subgroups.put(IxIQuer60m2, Arrays.asList(IxIQuer60m2));
+    subgroups.put((Ix, value)
+    subgroups.put(IxI60m2, Arrays.asList(IxI60m2,IxIPlus60m2_3,TxT12m2,TxTPlus12m2_3));
+    subgroups.put(IxIPlus60m2_1, value)
+    
+    
+    
 
   }
 
