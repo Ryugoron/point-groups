@@ -16,6 +16,8 @@ public class Symmetry4DReflectionTest
     assertEquals(240, Symmetry4DReflection.IxI60m2.images(point).size(), 0);
     assertEquals(120, Symmetry4DReflection.IxIPlus60m2_3.images(point).size(), 0);
     assertEquals(120, Symmetry4DReflection.IxIPlus60m2_1.images(point).size(), 0);
+    assertEquals(120, Symmetry4DReflection.IxIQuerPlus60m2_3.images(point).size(), 0);
+    assertEquals(120, Symmetry4DReflection.IxIQuerPlus60m2_1.images(point).size(), 0);
     assertEquals(240, Symmetry4DReflection.IxIQuer60m2.images(point).size(), 0);
     assertEquals(2304, Symmetry4DReflection.OxOm2.images(point).size(), 0);
     assertEquals(1152, Symmetry4DReflection.OxO2m2.images(point).size(), 0);
