@@ -21,9 +21,12 @@ public enum Symmetry4DReflection
       getStar()), //
   IxIPlus60m2_1("+ 1/60 [IxI]*2_1", "[3,5]°", "", Symmetry4D.IxIPlus60,
       getMinusstar()), //
-  IxIQuer60m2("+ 1/60 [IxIQuer]*2", "2.[3,3,3]", "", Symmetry4D.IxIQuer60,
+  IxIQuer60m2("+- 1/60 [IxIQuer]*2", "2.[3,3,3]", "", Symmetry4D.IxIQuer60,
       getStar()), //
-
+  IxIQuerPlus60m2_3("+ 1/60 [IxIQuer]*2_3", "[3,3,3]°", "", Symmetry4D.IxIQuerPlus60,
+          getStar()), //
+ IxIQuerPlus60m2_1("+ 1/60 [IxIQuer]*2_1", "[3,3,3]", "", Symmetry4D.IxIQuerPlus60,
+              getMinusstar()), //
   OxOm2("+-[OxO]*2", "[3,4,3]:2", "", Symmetry4D.OxO, getStar()), //
   OxO2m2("+- 1/2 [OxO]*2", "[3,4,3]", "", Symmetry4D.OxO2, getStar()), //
   OxO2m2Quer("+- 1/2 [OxO]*2Quer", "[3,4,3]+*2", "", Symmetry4D.OxO2,
