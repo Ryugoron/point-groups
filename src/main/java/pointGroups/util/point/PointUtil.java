@@ -1,5 +1,10 @@
 package pointGroups.util.point;
 
+import pointGroups.geometry.Point;
+import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Point4D;
+
+
 public class PointUtil
 {
   /**
@@ -179,6 +184,23 @@ public class PointUtil
     return m2;
   }
 
+  public static double[] addZero(double[] p) {
+    double[] p1 = new double[p.length + 1];
+    p1[0] = 0;
+    for (int i = 0; i < p.length; i++) {
+      p1[i + 1] = p[i];
+    }
+    return p1;
+  }
+
+  public static double[] rmFst(double[] p) {
+    double[] p1 = new double[p.length - 1];
+    for (int i = 1; i < p.length; i++) {
+      p1[i - 1] = p[i];
+    }
+    return p1;
+  }
+
   public static String showPoint(double[] p) {
     String erg = "(" + p[0];
     for (int i = 1; i < p.length; i++) {
@@ -186,5 +208,37 @@ public class PointUtil
     }
     erg += ")";
     return erg;
+  }
+
+  /*
+   * public static Point[] gramSchmitt(Point[] base){ double[][] gram = new
+   * double[base.length][]; Point[] res = new Point[base.length]; for(int i = 0;
+   * i < base.length; i++){ double[] p = base[i].getComponents(); for(int j = 0;
+   * j < i; j++){ p = add(p, mult(stScalarProd(p, gram[j]), gram[j])); } p =
+   * normalize(p); gram[i] = p; res[i] = doubleToPoint(p); } return res; }
+   */
+
+  public static double[][] gramSchmitt(double[][] base) {
+    double[][] gram = new double[base.length][];
+    for (int i = 0; i < base.length; i++) {
+      double[] p = base[i];
+      for (int j = 0; j < i; j++) {
+        p = subtract(p, mult(stScalarProd(p, gram[j]), gram[j]));
+      }
+      p = normalize(p);
+      gram[i] = p;
+    }
+    return gram;
+  }
+
+  public static Point doubleToPoint(double[] p) {
+    Point ret;
+    if (p.length == 3) {
+      ret = new Point3D(p);
+    }
+    else {
+      ret = new Point4D(p[0], p[1], p[2], p[3]);
+    }
+    return ret;
   }
 }

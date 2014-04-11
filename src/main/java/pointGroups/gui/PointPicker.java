@@ -2,14 +2,11 @@ package pointGroups.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
 import pointGroups.geometry.Fundamental;
-import pointGroups.geometry.Point3D;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointEvent;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointHandler;
@@ -69,30 +66,10 @@ public class PointPicker
     public final Appearance pointAppearance = new Appearance();
     public final SceneGraphComponent fundamental = new SceneGraphComponent();
 
-    public void testShow() {
-      Collection<Point3D> points = new ArrayList<Point3D>();
-      points.add(new Point3D(1, 1, 1));
-      points.add(new Point3D(1, 1, -1));
-      points.add(new Point3D(1, -1, 1));
-      points.add(new Point3D(-1, 1, 1));
-      points.add(new Point3D(1, -1, -1));
-      points.add(new Point3D(-1, 1, -1));
-      points.add(new Point3D(-1, -1, 1));
-      points.add(new Point3D(-1, -1, -1));
-      FundamentalTransformer fT = new FundamentalTransformer(points);
-      fT.setResultString("1 0 0 0\n&\n1 1 0 0\n1 0 0 1\n1 0 1 0\n1 0 0 0\n");
-      dispatcher.fireEvent(new FundamentalResultEvent(
-          fT.transformResultString()));
-    }
-
     @Override
     public void onInitialized() {
       SceneGraphComponent root = getSceneRoot();
 
-      // Test for Fundamental
-      testShow();
-
-      // fundamental.setGeometry(Primitives.cylinder(15));
       point.setGeometry(Primitives.point(new double[] { 0, 0, 0 }));
 
       setPointAppearance(pointAppearance);
@@ -206,7 +183,7 @@ public class PointPicker
   }
 
   @Override
-  public void onSchlegelResultEvent(FundamentalResultEvent event) {
+  public void onFundamentalResultEvent(FundamentalResultEvent event) {
     this.isSet = true;
     this.fundamental = event.getResult();
     // Maybe check for dimension
@@ -278,7 +255,7 @@ public class PointPicker
     Geometry g;
     // Calculate the new fundamental
     if (this.fundamental.isKnown()) {
-      g = JRealityUtility.generateCompleteGraph(this.fundamental.getVertices());
+      g = JRealityUtility.generateGraph(this.fundamental.getVertices(), JRealityUtility.convertEdges(this.fundamental.getEdges()));
     }
     else {
       if (this.dim == 2) g = JRealityUtility.circle(0, 0, 1);
@@ -317,12 +294,14 @@ public class PointPicker
   @Override
   public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
     this.lastSymmetry4DChooseEvent = event;
+    this.dim = 3;
 
   }
 
   @Override
   public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
     this.lastSymmetry3DChooseEvent = event;
+    this.dim = 2;
   }
 
   @Override

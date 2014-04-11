@@ -1,7 +1,9 @@
 package pointGroups.util.polymake;
 
-import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
+import pointGroups.geometry.Edge;
 import pointGroups.geometry.Fundamental;
 import pointGroups.geometry.KnownFundamental;
 import pointGroups.geometry.Point;
@@ -12,7 +14,7 @@ import pointGroups.util.point.PointUtil;
 
 /**
  * Takes a Collection of points and builds a script to compute one Voronoi cell
- * and a projection into (n-1) dimensions.
+ * and a projection into (n-1) dimensions. TODO (31.3) Besprechung (24.3)
  * 
  * @author Max
  */
@@ -21,71 +23,93 @@ public class FundamentalTransformer
 {
 
   private String script = null;
-  private final Collection<? extends Point> points;
+  private final List<? extends Point> points;
+  private final Point center;
   private final int dim;
 
-  public FundamentalTransformer(Collection<? extends Point> points) {
+  private Fundamental f;
+
+  // For testing issus
+  protected double[][] n2f;
+  protected double[][] f2n;
+
+  public FundamentalTransformer(Point center, List<? extends Point> points) {
     this.points = points;
+    this.center = center;
     this.dim = this.points.iterator().next().getComponents().length;
   }
 
   @Override
   public String toScript() {
     if (script != null) return script;
-    int size = 0;
-    // The more points the larger the scirpt
+
     StringBuilder sb = new StringBuilder(1000);
-    sb.append("my $points = new Matrix<Rational>([");
+
+    // Build all hyperplanes x*(p-q) >= 0
+    sb.append("my $hyper = new Matrix<Rational>([");
+
     boolean first = true;
     for (Point point : this.points) {
+      // Corrects some problems for bad voronoi cells
+      if (!this.orientationCheck(point)) continue;
+
       if (!first) {
         sb.append(",");
-        size = point.getComponents().length;
       }
       else {
         first = false;
       }
-      sb.append("[1.0");
-      for (double comp : point.getComponents()) {
-        sb.append(", " + comp);
+      sb.append("[0.0");
+      for (int i = 0; i < dim; i++) {
+
+        sb.append(", " +
+            (this.center.getComponents()[i] - point.getComponents()[i]));
       }
       sb.append("]");
     }
     sb.append("]);");
-    sb.append("my $v = new VoronoiDiagram(SITES=>$points);");
-    sb.append("print $v->VORONOI_VERTICES->[0];");
-    sb.append("print \"\\n\";");
-    sb.append("my $adj = $v->DUAL_GRAPH->ADJACENCY->adjacent_nodes(0);");
-    sb.append("my $s0 = $points->[0];");
-    sb.append("my $s1 = $points->[$adj->[0]];");
-    sb.append("my $s2 = $points->[$adj->[1]];");
-    sb.append("my $s3 = $points->[$adj->[2]];");
-    if (size == 4) sb.append("my $s4 = $points->[$adj->[3]];");
-    sb.append("print \"&\\n\";");
-    sb.append("print $s0;print \"\\n\";");
-    sb.append("print $s1; print \"\\n\";");
-    sb.append("print $s2; print \"\\n\";");
-    sb.append("print $s3; print \"\\n\";");
-    if (size == 4) sb.append("print $s4; print \"\\n\";");
+
+    // Build the affine hyperplane (x-p)*p = 0
+    sb.append("my $aff = new Matrix<Rational>([");
+    double val = 0;
+    for (double c : this.center.getComponents())
+      val -= c * c;
+    sb.append("[" + val);
+    for (int i = 0; i < this.center.getComponents().length; i++) {
+      sb.append(" , " + this.center.getComponents()[i]);
+    }
+    sb.append("]]);");
+
+    sb.append("my $poly = new Polytope(INEQUALITIES=>$hyper, EQUATIONS=>$aff);");
+    sb.append("print $poly->VERTICES;");
+    sb.append("print \"-----\\n\";");
+    sb.append("print $poly->GRAPH->EDGES;");
+    sb.append("print \"-----\\n\";");
+    sb.append("print $poly->FACETS;");
+
     this.script = sb.toString();
     return this.script;
   }
 
+  /**
+   * This method checks, whether the point lies on the right side of the
+   * hyperplane
+   * 
+   * @param p - The point to check
+   * @return true if c*p > 0
+   */
+  private boolean orientationCheck(Point p) {
+    double val = 0;
+    for (int j = 0; j < this.dim; j++) {
+      val += this.center.getComponents()[j] * p.getComponents()[j];
+    }
+    return val > 0;
+  }
+
   @Override
   public Fundamental transformResultString() {
-    // StringBuilder regex = new StringBuilder();
-    // minimum one 3D point followed by...
-    // regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+|");
-    // or one 4D point
-    // regex.append("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)? [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?\\n)+)");
 
-    // TODO Should be extended to the following matrix
-
-    // if (!resultString.matches(regex.toString())) { throw new
-    // PolymakeOutputException(
-    // "String set by setResultString() does not match defined format for fundamental domain.");
-    // }
-
+    if (this.f != null) return this.f;
     Fundamental res;
     try {
       // Tries to transform a Fundamental Region.
@@ -96,106 +120,59 @@ public class FundamentalTransformer
       logger.info("Could not transform Fundamental Result String, given trivial Fundamental instead.");
       res = new UnknownFundamental();
     }
+    this.f = res;
     return res;
   }
 
   private Fundamental transformHelper() {
-    String[] pointString = this.resultString.split("\n");
-    double[][] prePoints = new double[pointString.length - 1][];
+    String[] answer = this.resultString.split("\n");
 
-    // First point
-    String[] coords = pointString[0].split(" ");
-    prePoints[0] = new double[coords.length - 1];
-    for (int j = 1; j < coords.length; j++) {
-      prePoints[0][j - 1] = this.parseCoordinate(coords[j]);
+    List<double[]> points = new LinkedList<double[]>();
+    List<Edge<Integer, Integer>> edges =
+        new LinkedList<Edge<Integer, Integer>>();
+    List<double[]> hyperPlanes = new LinkedList<double[]>();
+    int pos = 0;
+    // The first ones are Vertices
+    while (!answer[pos].equals("-----")) {
+      points.add(parsePoint(answer[pos]));
+      pos++;
+    }
+    pos++;
+    // The second ones are Edges
+    while (!answer[pos].equals("-----")) {
+      edges.add(parseEdge(answer[pos]));
+      pos++;
+    }
+    pos++;
+    // The last ones are hyperplanes for testing bounds
+    while (pos < answer.length) {
+      hyperPlanes.add(parseHyper(answer[pos]));
+      pos++;
+    }
+    n2f = baseTransformation();
+    f2n = PointUtil.transpose(n2f);
+
+    // Points normalizing
+    double[][] normPoints = new double[points.size()][];
+    for (int i = 0; i < points.size(); i++) {
+      double[] p = PointUtil.applyMatrix(n2f, points.get(i));
+      p = PointUtil.rmFst(p);
+      normPoints[i] = p;
     }
 
-    // The next points
-    for (int i = 1; i < prePoints.length; i++) {
-      String[] cords = pointString[i + 1].split(" ");
-      prePoints[i] = new double[cords.length - 1];
-      // Drop first coordinate for it is only one
-      for (int j = 1; j < cords.length; j++) {
-        prePoints[i][j - 1] = this.parseCoordinate(cords[j]);
-      }
-    }
-    // The first point point can be used to check, if the Voronoi Was
-    // Correct.
-    //
-    // if (nearNull(prePoints[0]))
-    // throw new Exception("Voronoi not correct");
-    //
-
-    double[][] points = new double[prePoints.length - 2][];
-
-    // Build every dimension - 1 kombination of the later points with the first
-    // one
-
-    if (this.dim == 3) {
-      points[0] =
-          PointUtil.div(3, PointUtil.add(
-              PointUtil.add(prePoints[1], prePoints[2]), prePoints[3]));
-      points[1] =
-          PointUtil.div(3, PointUtil.add(
-              PointUtil.add(prePoints[1], prePoints[2]), prePoints[4]));
-
-      points[2] =
-          PointUtil.div(3, PointUtil.add(
-              PointUtil.add(prePoints[1], prePoints[3]), prePoints[4]));
-
-    }
-    else {
-      points[0] =
-          PointUtil.add(PointUtil.add(
-              PointUtil.add(prePoints[1], prePoints[2]), prePoints[3]),
-              prePoints[4]);
-      points[1] =
-          PointUtil.add(PointUtil.add(
-              PointUtil.add(prePoints[1], prePoints[2]), prePoints[3]),
-              prePoints[5]);
-      points[2] =
-          PointUtil.add(
-              PointUtil.add(PointUtil.add(points[1], points[2]), points[4]),
-              points[5]);
-      points[3] =
-          PointUtil.mult(1 / 4, PointUtil.add(
-              PointUtil.add(PointUtil.add(points[1], points[3]), points[4]),
-              points[5]));
-
+    // Hyperplanes to right format
+    double[][] hyper = new double[hyperPlanes.size()][];
+    for (int i = 0; i < hyper.length; i++) {
+      hyper[i] = hyperPlanes.get(i);
     }
 
-    //
-    // The second point is the affine translation
-    //
-    double[] aff = points[0];
-    //
-    // The Matrix is build of the last n-1 points
-    // The first one is the voronoi vertex
-    // the second one is the affine translation
-    // the last one is a point at infinity
-    //
-    double[][] mat = new double[points.length - 1][];
-    for (int i = 1; i < points.length; i++) {
-      mat[i - 1] = new double[points[i].length];
-      mat[i - 1] = PointUtil.subtract(points[i], aff);
-    }
-
-    //
-    // Lastly the boundary points of this construction are the unit base for
-    // the
-    // goal dimension
-    //
-    double[][] boundary;
-    boundary = new double[points.length][points[1].length - 1];
-
-    for (int i = 0; i < boundary.length; i++) {
-      boundary[i] = PointUtil.unit(i, points[1].length - 1);// points[i + 2];
-      // System.out.println((showPoint(boundary[i])));
-    }
-
-    return new KnownFundamental(boundary, PointUtil.transpose(mat), aff);
+    return new KnownFundamental(normPoints, f2n, hyper, center.getComponents(), edges);
   }
 
+  
+  /**
+   * Parses a coordinate 
+   */
   private double parseCoordinate(String s) {
     if (s.contains("/")) {
       String[] both = s.split("/");
@@ -207,6 +184,84 @@ public class FundamentalTransformer
     else {
       return Double.parseDouble(s);
     }
+  }
+
+  /**
+   * <p> Parses a polymake point in String representation. A point as the form n
+   * a b c, where n is a normalizing faktor. </p>
+   * 
+   * @param s - Stringrepresentation of the point
+   * @return the point as double string
+   */
+  private double[] parsePoint(String s) {
+    String[] pS = s.split(" ");
+
+    // Normalising Factor
+    double norm = parseCoordinate(pS[0]);
+
+    double[] point = new double[pS.length - 1];
+    for (int i = 1; i < pS.length; i++) {
+      point[i - 1] = parseCoordinate(pS[i]) / norm;
+    }
+    return point;
+  }
+
+  /**
+   * <p> Parses a Stringrepresentation of polymake in the form { a b } </p>
+   * 
+   * @param s - Stringrepresentation of an edge
+   * @return an edge object
+   */
+  private Edge<Integer, Integer> parseEdge(String s) {
+    String[] ends = s.substring(1, s.length() - 1).split(" ");
+    int[] endi = new int[2];
+    endi[0] = Integer.parseInt(ends[0]);
+    endi[1] = Integer.parseInt(ends[1]);
+
+    return new Edge<Integer, Integer>(endi[0], endi[1]);
+  }
+
+  /**
+   * <p> Returns a hyperplane representation in the form a0 a1 a2 a3 with the
+   * meaning a0 + a1x1 + a2x2 + a3x3 >= 0. </p>
+   * 
+   * @param s - Stringrepresentation of a hyperplane
+   * @return the hyperplane as double list
+   */
+  private double[] parseHyper(String s) {
+    String[] pS = s.split(" ");
+
+    double[] point = new double[pS.length];
+    for (int i = 0; i < pS.length; i++) {
+      point[i] = parseCoordinate(pS[i]);
+    }
+    return point;
+  }
+
+  /**
+   * Calculates a base transformation for the current normalvector this.center.
+   * Due to the fact, that this is a orthogonal Matrix, it can be inverted by
+   * transposing. It calculates the transformation back into the standard basis.
+   * 
+   * @return Base transformation matrix
+   */
+  protected double[][] baseTransformation() {
+    double scal = 0;
+    int i = 0;
+    while (scal == 0) {
+      i++;
+      scal =
+          PointUtil.stScalarProd(PointUtil.unit(i, this.dim),
+              center.getComponents());
+    }
+    double[][] base = new double[this.dim][];
+    base[0] = center.getComponents();
+    for (int j = 1; j < this.dim; j++) {
+      base[j] =
+          (j < i) ? PointUtil.unit(j, this.dim) : PointUtil.unit(j + 1,
+              this.dim);
+    }
+    return PointUtil.gramSchmitt(base);
   }
 
 }

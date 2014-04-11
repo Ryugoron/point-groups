@@ -1,1 +1,95 @@
+\newtheorem{defdef}{Defintion}[section]
+\newenvironment{definition}[1][]{\begin{defdef}[#1] \normalfont\hspace*{1mm}}{\hfill $\lrcorner$\end{defdef}\vspace{0.2cm}}
+
 \section{Mathematische Grundlagen}
+\subsection{Quaternionen}\label{quaternionen}
+Zur einheitlichen Darstellung von drei- und vierdimensionalen Rotationen und Spiegelungen werden
+sog. \textbf{Quaternionen} benutzt.
+Die Menge der Quaternionen $\mathbb{H}$ bilden einen Erweiterungskörper der komplexen Zahlen $\mathbb{C}$ und besitzen überraschend praktische Eigenschaften für den Einsatz bei geometrischen Anwendungen. Die Algebra der Quaternionen wurde 1843 von Hamilton entwickelt~\cite{hazewinkel2004algebras}.
+
+\begin{definition}[Quaternion]
+Es seien $a,b,c,d \in \mathbb{R}$ und $i,j,k$ imaginäre Einheiten für die gilt:
+\begin{equation*}\begin{split}
+i^2 = j^2 = k^2 = ijk = -1
+\end{split}\end{equation*}
+....
+Dann heißt die Zahl $p = a + bi + cj + dk$ Quaternion. Die Menge der Quaternionen wird mit $\mathbb{H}$ bezeichnet
+und ist äquivalent zu rellen Vektorraum $\mathbb{R}^4$.
+\end{definition}
+....
+\begin{definition}[Kojugiertes Quaternion, Norm, Reziprokwert]
+...
+$q^* := a - bi - cj - dk$ konjugiert
+$\| q \| := \sqrt{q q^*}$ norm
+
+\end{definition}
+
+....
+
+\begin{definition}[Einheitsquaternion]
+Ein Quaternion $q$ heißt Einheitsquaternion falls $\|q\| = 1$.
+\end{definition}
+
+\subsection{Quaternionen und dreidimensionale Symmetrien}
+Verwendung von Einheitsquaternionen für Rotationen 
+Einheitsquaternionen praktisch.
+
+Eulers Rotationstheorem: Jede Drehung oder Folge von Drehungen um einen festen Punkt kann für eine einfache Drehung um einen Winkel $\theta$ und eine Achse (sog. Eulerachse) durch diesen festen Punkt beschrieben werden. Dafür identizifiert man einen 
+Drehwinkel $\theta$ und die Drehachse $\overline{u} = (u_1,u_2,u_3)$.
+Dann beschreibt das Quaternion $q = e^{\frac{1}{2}\theta(u_1i + u_2j + u_3k)}$ diese Drehung.
+Die Rotationsfunktion wird dann von der Abbildung $[q]: p \mapsto q p q^{-1}$ beschrieben (entspricht der Konjugation von p durch q).
+Dadurch, dass bei Einheitsquaternionen gilt $q^{-1} = q^*$, wird auch Rechenaufwand gespart.
+
+\subsection{Quaternionen und vierdimensionale Symmetrien}
+....
+
+\subsection{Punktgruppen}
+...gibts hier was interessantes?
+
+\subsection{Fundamentalbereiche}\label{fundamentalbereich}
+
+Wie bereits erwähnt wurde, ist eine Punktegruppe die Gruppenwirkung einer Symmetriegruppe auf ein gegebenes Element im zu grundeliegendem Raum der Symmetrieoperationen.
+Für eine Gruppenwirkung können wir zunächst die Verallgemeinerung der Punktegruppe definiere.
+
+\begin{definition}[Gruppenwirkung]\label{fundamentalbereich:wirking} \mbox{}\\
+ Eine (Links-)Wirkung einer Gruppe $(G, \star)$ auf eine Menge $X$ is eine Funktion
+   $$
+      \rhd \, : \, G \times X \longrightarrow X
+   $$
+   mit den Eigenschaften
+   \begin{itemize}
+      \item $(g \star h) \rhd x = g \rhd (h \rhd x)$ für alle $g,h \in G$ und $x \in X$.
+      \item $e \rhd x = x$ für alle $x \in X$ und $e$ neutrales Element von $G$.
+   \end{itemize}
+\end{definition}
+
+\begin{definition}[Orbit] \label{fundamentalbereich:orbit} \mbox{}\\
+  Für eine Gruppe $(G, \star)$ mit Gruppenwirkung $\rhd$ auf $X$ ist für ein Element $x \in X$ die \emph{Bahn von $x$ bezüglich $G$} definiert als
+   $$
+      G \rhd x := \left\{ g \rhd x \, | \, g \in G \right\}
+   $$
+\end{definition}
+
+Über die Orbite können wir eine Äquivalenzrelation beschreiben, mit $x_1 \sim x_2$ genau dann wenn $x_2 \in G \rhd x_1$ und $G \setminus X$ ist die Menge der Representanten.\\
+
+Nun ist $G \setminus X$ schon annährend ein Fundamentalbereich falls $G$ eine Symmetriegruppe ist. Da Symmetrien auf $\mathbb{R}^n$ nun aber Isometrien sind, wissen wir, dass die Länge unserer Vektoren immer erhalten bleibt. Daher interessieren uns bei der Betrachtung nur Vektoren gleicher Länge. Wir definieren daher den Fundamentalbereich wie folgt.\\
+
+\begin{definition}[Fundamentalbereich]\label{fundamentalbereich:def} \mbox{}\\
+   Sei $G \subseteq O(n)$ eine Symmetriegruppe auf $\mathbb{R}^n$.\\
+
+   Dann ist ein Fundamentalbereich $G \setminus S^{n-1}$ -- ein Representatensystem für die Wirkung auf die $n-1$ - Sphäre.
+\end{definition}
+
+Für die Darstellung der Fundamentalbereiche, wählen wir nur spezielle zusammenhängende Representanten. Wir wählen die folgenden Representanten.
+
+\begin{definition}[Voronoi - Fundamentalbereich]\label{fundamentalbereich:voronoi} \mbox{}\\
+   Sei $O \subset 2^{S^{n-1}}$ die Menge der Orbits der Gruppenwirkung von $G$ auf $S^{n-1}$ und $x \in S^{n-1}$ ein ausgezeichneter Punkt.\\
+
+   Dann ist der Voronoi - Fundamentalbereich die Menge
+   $$
+      VF(x) := \left\{ \underset{y\in o}{\text{argmin}} \, d(x,y) \, |  o \in O\right\}.
+   $$
+   Damit ist die Menge der $VF(y)$ mit $y \in G \rhd x$ eine Voronoidiagram, da wir jeweils die Punkte mit Minimalem Abstand genommen haben.
+\end{definition}
+
+

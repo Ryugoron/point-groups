@@ -20,7 +20,7 @@ public class PointGroupsUtility
    * Get the location of the resource relative to the binaries of point groups.
    * 
    * @param file
-   * @return
+   * @returned.addAll(this.edges);
    * @throws FileNotFoundException
    */
   public static URI getResource(String file)
