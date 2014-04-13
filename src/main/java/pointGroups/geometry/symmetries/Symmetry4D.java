@@ -454,12 +454,8 @@ public enum Symmetry4D
     ois.close();
     return group;
   }
-
-  static {
-    groups = new HashMap<>();
-    subgroups = new HashMap<>();
-
-    // load group elems
+  
+  private static void loadSymGroups(){
     try {
       groups.put(IxO, readSymmetryGroup(IxO));
       groups.put(IxT, readSymmetryGroup(IxT));
@@ -490,6 +486,21 @@ public enum Symmetry4D
     catch (ClassNotFoundException | IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
+    }
+  }
+
+  static {
+    groups = new HashMap<>();
+    subgroups = new HashMap<>();
+
+    // load group elems
+    try {
+      loadSymGroups();
+    }
+    catch (NullPointerException e) {
+      e.printStackTrace();
+      createSymgroups();
+      loadSymGroups();
     }
 
     subgroups.put(IxO, Arrays.asList(IxO, IxT, TxTPlus12, TxT3, TxTQuer12,
