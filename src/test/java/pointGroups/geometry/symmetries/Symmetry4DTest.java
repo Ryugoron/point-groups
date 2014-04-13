@@ -56,9 +56,11 @@ public class Symmetry4DTest
     int subgroupCounter;
     boolean isSubgroup;
     Collection<Rotation4D> groupMembers;
+    Collection<? extends Symmetry<Point4D>> subgroups;
 
     for (Symmetry4D g : groups) {
       subgroupCounter = 0;
+      subgroups = g.subgroups();
       groupMembers = Symmetry4D.groups.get(g);
       for (Symmetry4D f : groups) {
         isSubgroup = true;
@@ -68,7 +70,10 @@ public class Symmetry4DTest
             break;
           }
         }
-        if (isSubgroup) subgroupCounter++;
+        if (isSubgroup){
+          subgroupCounter++;
+          assertTrue(subgroups.contains(f));
+        }
       }
       assertEquals(subgroupCounter, g.subgroups().size());
     }

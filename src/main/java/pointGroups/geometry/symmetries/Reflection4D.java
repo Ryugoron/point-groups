@@ -28,4 +28,9 @@ public class Reflection4D
     return leftCon.mult(xCon).mult(right);
   }
 
+  public boolean equals(Object o){
+    if (!o.getClass().isInstance(this)) return false;
+    Reflection4D r = (Reflection4D) o;
+    return r.left.equals(left) && r.right.equals(right);
+  }
 }

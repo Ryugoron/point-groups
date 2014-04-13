@@ -2,9 +2,12 @@ package pointGroups.geometry.symmetries;
 
 import static org.junit.Assert.*;
 
+import java.util.Collection;
+
 import org.junit.Test;
 
 import pointGroups.geometry.Point4D;
+import pointGroups.geometry.Symmetry;
 
 public class Symmetry4DReflectionTest
 {
@@ -37,7 +40,53 @@ public class Symmetry4DReflectionTest
     assertEquals(24, Symmetry4DReflection.TxTPlus12m2_3.images(point).size(), 0);
     assertEquals(24, Symmetry4DReflection.TxTQuerPlus12m2_1.images(point).size(), 0);
     assertEquals(24, Symmetry4DReflection.TxTQuerPlus12m2_3.images(point).size(), 0);
-
+    
+    assertEquals(25, Symmetry4DReflection.getSymmetries().size());
+  }
+  
+  @Test
+  public void testSubgroupsAreSubgroups(){
+    Symmetry4DReflection s;
+    for (Symmetry4DReflection g : Symmetry4DReflection.getSymmetries()) {
+      for (Symmetry<Point4D> sym : g.subgroups()) {
+        // if sym is a Symmetry4DReflection
+        if (sym.getClass().isInstance(g)){
+          s = (Symmetry4DReflection) sym;
+          assertEquals(g.getExtendingElem(), s.getExtendingElem());
+          assertTrue(g.getRotationsym().subgroups().contains(s.getRotationsym()));
+        }
+        else{
+          assertTrue(g.getRotationsym().subgroups().contains(sym));
+        }
+      }
+    }
+  }
+  
+  @Test
+  public void testSubgroupsOrder(){
+    Collection<? extends Symmetry<Point4D>> subgroups;
+    Collection<? extends Symmetry<Point4D>> rotationsymsub;
+    Reflection4D extEl;
+    int subgroupCounter;
+    for (Symmetry4DReflection g : Symmetry4DReflection.getSymmetries()) {
+      subgroupCounter = 0;
+      subgroups = g.subgroups();
+      rotationsymsub = g.getRotationsym().subgroups();
+      extEl = g.getExtendingElem();
+      for (Symmetry4D sym : Symmetry4D.getSymmetries()) {
+        if (rotationsymsub.contains(sym)) {
+          assertTrue(subgroups.contains(sym));
+          subgroupCounter ++;
+        }
+      }
+      for (Symmetry4DReflection sym : Symmetry4DReflection.getSymmetries()) {
+        if (rotationsymsub.contains(sym.getRotationsym()) && extEl.equals(sym.getExtendingElem())) {
+          assertTrue(subgroups.contains(sym));
+          subgroupCounter ++;
+        }
+      }
+      assertEquals(subgroupCounter, subgroups.size());
+    }
   }
 
 }
