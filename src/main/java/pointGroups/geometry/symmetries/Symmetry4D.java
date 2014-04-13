@@ -433,7 +433,8 @@ public enum Symmetry4D
     // create a new file with an ObjectOutputStream
 
     FileOutputStream out =
-        new FileOutputStream(new File("target/classes/symmetries/" + sym.filename + ".sym"));
+        new FileOutputStream(new File("target/classes/symmetries/" +
+            sym.filename + ".sym"));
     ObjectOutputStream oout = new ObjectOutputStream(out);
 
     oout.writeObject(groupElems);
@@ -443,7 +444,9 @@ public enum Symmetry4D
 
   public static Collection<Rotation4D> readSymmetryGroup(Symmetry4D sym)
     throws FileNotFoundException, IOException, ClassNotFoundException {
-    File f = new File(PointGroupsUtility.getResource("symmetries/" + sym.filename + ".sym"));
+    File f =
+        new File(PointGroupsUtility.getResource("symmetries/" + sym.filename +
+            ".sym"));
     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
     Object o = ois.readObject();
     // TODO: ugly
@@ -491,16 +494,18 @@ public enum Symmetry4D
 
     subgroups.put(IxO, Arrays.asList(IxO, IxT, TxTPlus12, TxT3, TxTQuer12,
         TxT12, TxTQuerPlus12, TxTQuer3, TxT));
-    subgroups.put(IxO, Arrays.asList(IxT, TxTPlus12, TxT3, TxTQuer12, TxT12,
-        TxTQuerPlus12, TxTQuer3, TxT));
     subgroups.put(OxT, Arrays.asList(OxT, TxTPlus12, TxT3, TxTQuer12, TxT12,
         TxTQuerPlus12, TxTQuer3, TxT));
+
+    subgroups.put(IxT, Arrays.asList(IxT, TxT, TxT3, TxTQuer3, TxT12,
+        TxTQuer12, TxTPlus12, TxTQuerPlus12));
 
     subgroups.put(IxI, Arrays.asList(IxI, IxIQuer60, IxIQuerPlus60, IxIPlus60,
         IxI60, TxTPlus12, TxT12, TxT3, TxT, TxTQuer3, TxTQuer12, TxTQuerPlus12,
         IxT));
-    subgroups.put(IxIQuer60, Arrays.asList(IxIQuer60,IxIQuerPlus60,TxTQuer12,TxTQuerPlus12));
-    subgroups.put(IxIQuerPlus60, Arrays.asList(IxIQuerPlus60,TxTQuerPlus12));
+    subgroups.put(IxIQuer60,
+        Arrays.asList(IxIQuer60, IxIQuerPlus60, TxTQuer12, TxTQuerPlus12));
+    subgroups.put(IxIQuerPlus60, Arrays.asList(IxIQuerPlus60, TxTQuerPlus12));
     subgroups.put(IxI60, Arrays.asList(IxI60, IxIPlus60)); // check
     subgroups.put(IxIPlus60, Arrays.asList(IxIPlus60)); // check
 
@@ -602,7 +607,8 @@ public enum Symmetry4D
     // }
     // System.out.println("size of "+TxT12.coxeter()+" / "+TxT12.schoenflies()+": "+TxT12.order());
 
-    createSymgroups();
+    // createSymgroups();
+    createSymgroup(TxT);
 
     // System.out.println("size of "+TxT12.coxeter()+" / "+TxT12.schoenflies()+": "+TxT12.order());
 
