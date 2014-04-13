@@ -575,7 +575,7 @@ public enum Symmetry4D
 
   @Override
   public Collection<Point4D> images(Point4D p) {
-    Collection<Point4D> rotatedPointcollection = new ArrayList<>();
+    Collection<Point4D> rotatedPointcollection = new HashSet<>();
     for (Rotation4D r : groups.get(this)) {
       rotatedPointcollection.add(r.rotate(p).asPoint4D());
     }
