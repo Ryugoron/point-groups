@@ -8,27 +8,40 @@ sog. \textbf{Quaternionen} benutzt.
 Die Menge der Quaternionen $\mathbb{H}$ bilden einen Erweiterungskörper der komplexen Zahlen $\mathbb{C}$ und besitzen überraschend praktische Eigenschaften für den Einsatz bei geometrischen Anwendungen. Die Algebra der Quaternionen wurde 1843 von Hamilton entwickelt~\cite{hazewinkel2004algebras}.
 
 \begin{definition}[Quaternion]
-Es seien $a,b,c,d \in \mathbb{R}$ und $i,j,k$ imaginäre Einheiten für die gilt:
+Es seien $a,b,c,d \in \mathbb{R}$ und $i,j,k$ imaginäre Einheiten (durch Adjunktion) für die gilt:
 \begin{equation*}\begin{split}
 i^2 = j^2 = k^2 = ijk = -1
 \end{split}\end{equation*}
-....
-Dann heißt die Zahl $p = a + bi + cj + dk$ Quaternion. Die Menge der Quaternionen wird mit $\mathbb{H}$ bezeichnet
-und ist äquivalent zu rellen Vektorraum $\mathbb{R}^4$.
+Dann heißt die Zahl $q = a + bi + cj + dk$ Quaternion.
 \end{definition}
-....
-\begin{definition}[Kojugiertes Quaternion, Norm, Reziprokwert]
-...
-$q^* := a - bi - cj - dk$ konjugiert
-$\| q \| := \sqrt{q q^*}$ norm
+Dabei sind die Bezeichnungen $Re(.)$ und $Im(.)$ für den Real- und Imiginärteil eines Quaternions wie üblich definiert.
+Die Menge der Quaternionen wird mit $\mathbb{H}$ bezeichnet und ist äquivalent zu reellen Vektorraum $\mathbb{R}^4$.
+Man kann sich also ein Quaternion $q \in \mathbb{H}$ als Vektor auffassen; dies ist speziell für die Interpretation
+von Quaternionen als Rotationsoperatoren hilfreich.
 
+Wie auch bei den komplexen Zahlen $\mathbb{C}$, können die üblichen Rechnenoperationen auf Quaternionen erweitert werden:
+
+\begin{definition}[Kojugiertes Quaternion, Norm, Betrag]
+Sei $q = a + bi + cj + dk \in \mathbb{H}$. Dann heißt das Quaternion
+\begin{equation*}
+\overline{q} := a - bi - cj - dk
+\end{equation*} das zu $q$ konjugierte Quaternion.
+Die Norm von $q$ ist gegeben durch $Norm(q) := a^2 + b^2 + c^2 + d^2 = q\overline{q} = \overline{q}q$, der Wert
+$\| q \| := \sqrt{Norm(q)} = \sqrt{q q^*}$ wird Betrag (oder Länge) von $q$ genannt.
 \end{definition}
 
-....
+Die Norm $\|q\|$ eines Quaternions $q = a + bi + cj + dk$ ist identisch mit der (euklidischen) Norm des Vektors $(a,b,c,d) \in \mathbb{R}^4$.
+Quaternionen mit Norm 1 spielen im Folgenden eine besondere Bedeutung.
 
-\begin{definition}[Einheitsquaternion]
-Ein Quaternion $q$ heißt Einheitsquaternion falls $\|q\| = 1$.
+\begin{definition}[Einheitsquaternion, Reines Quaternion]
+Ein Quaternion $q$ heißt 
+\begin{itemize}
+\item Einheitsquaternion, falls $\|q\| = 1$
+\item Reines Quaternion, falls $Re(q) = 0$
+\end{itemize}\vspace{-0.9cm}
 \end{definition}
+Wegen $\|q\| = 1$ folgt für das Inverse von Einheitsquaternionen dass $q^{-1} = \overline{q}$. Das ist sehr praktisch,
+da somit eine effiziente Berechnungsvorschrift für das Invertieren von Einheitsquaternionen vorliegt.
 
 \subsection{Quaternionen und dreidimensionale Symmetrien}
 Verwendung von Einheitsquaternionen für Rotationen 
