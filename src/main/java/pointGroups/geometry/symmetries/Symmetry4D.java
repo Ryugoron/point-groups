@@ -19,6 +19,7 @@ import java.util.Set;
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Quaternion;
 import pointGroups.geometry.Symmetry;
+import pointGroups.util.LoggerFactory;
 import pointGroups.util.PointGroupsUtility;
 
 
@@ -347,10 +348,12 @@ public enum Symmetry4D
     createSymgroup(IxI);
 
     System.out.println("Finish: " + Calendar.getInstance().getTime());
+    LoggerFactory.get(Symmetry4D.class).info(
+        "Symmetry data calculation finished.");
 
   }
 
-  private static void createSymgroup(Symmetry4D sym) {
+  private static void createSymgroup(final Symmetry4D sym) {
     Collection<Rotation4D> group = generateSymmetryGroup4D(sym.getGenerator());
     System.out.println(sym.schoenflies + " / " + sym.coxeter + " groupsize: " +
         group.size());
@@ -373,9 +376,9 @@ public enum Symmetry4D
    * @param dist
    * @return #new group elems
    */
-  private static int calculate(Collection<Rotation4D> group,
-      Collection<Rotation4D> arg1, Collection<Rotation4D> arg2,
-      Collection<Rotation4D> dist) {
+  private static int calculate(final Collection<Rotation4D> group,
+      final Collection<Rotation4D> arg1, final Collection<Rotation4D> arg2,
+      final Collection<Rotation4D> dist) {
     int newElems = 0;
     Rotation4D z;
     for (Rotation4D x : arg1) {
@@ -391,7 +394,7 @@ public enum Symmetry4D
   }
 
   private static Collection<Rotation4D> generateSymmetryGroup4D(
-      Collection<Rotation4D> generator) {
+      final Collection<Rotation4D> generator) {
     int newElems = 0;
     // All known group elems
     Set<Rotation4D> groupElems = new HashSet<Rotation4D>();
@@ -427,8 +430,8 @@ public enum Symmetry4D
     return groupElems;
   }
 
-  private static void writeSymmetryGroup(Symmetry4D sym,
-      Collection<Rotation4D> groupElems)
+  private static void writeSymmetryGroup(final Symmetry4D sym,
+      final Collection<Rotation4D> groupElems)
     throws IOException {
     // create a new file with an ObjectOutputStream
 
@@ -442,7 +445,7 @@ public enum Symmetry4D
     oout.close();
   }
 
-  public static Collection<Rotation4D> readSymmetryGroup(Symmetry4D sym)
+  public static Collection<Rotation4D> readSymmetryGroup(final Symmetry4D sym)
     throws FileNotFoundException, IOException, ClassNotFoundException {
     File f =
         new File(PointGroupsUtility.getResource("symmetries/" + sym.filename +
@@ -454,8 +457,8 @@ public enum Symmetry4D
     ois.close();
     return group;
   }
-  
-  private static void loadSymGroups(){
+
+  private static void loadSymGroups() {
     try {
       groups.put(IxO, readSymmetryGroup(IxO));
       groups.put(IxT, readSymmetryGroup(IxT));
@@ -498,7 +501,8 @@ public enum Symmetry4D
       loadSymGroups();
     }
     catch (NullPointerException e) {
-      e.printStackTrace();
+      LoggerFactory.get(Symmetry4D.class).warning(
+          "Symmetry group data not found. Starting one-time calculation now (this may take a long time).");
       createSymgroups();
       loadSymGroups();
     }
@@ -585,7 +589,7 @@ public enum Symmetry4D
   }
 
   @Override
-  public Collection<Point4D> images(Point4D p) {
+  public Collection<Point4D> images(final Point4D p) {
     Collection<Point4D> rotatedPointcollection = new HashSet<>();
     for (Rotation4D r : groups.get(this)) {
       rotatedPointcollection.add(r.rotate(p).asPoint4D());
@@ -611,7 +615,7 @@ public enum Symmetry4D
     return groups.keySet();
   }
 
-  public static void main(String[] args) {
+  public static void main(final String[] args) {
     // Collection<Symmetry4D> syms = getSymmetries();
     // for(Symmetry4D sym : syms){
     // System.out.println("size of "+sym.coxeter()+" / "+sym.schoenflies()+": "+sym.order());
