@@ -10,6 +10,7 @@ import javax.swing.event.ListSelectionListener;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Symmetry;
 import pointGroups.gui.symchooser.SubgroupPanel;
+import pointGroups.gui.symchooser.SymmetryChooser;
 
 
 public class SymmetryList<P extends Point>
@@ -24,7 +25,7 @@ public class SymmetryList<P extends Point>
 
     this.setCellRenderer(new SymmetryListCellRenderer());
 
-    setSelectionBackground(Color.BLUE);
+    setSelectionBackground(SymmetryChooser.SelectionBackground);
     setBackground(Color.WHITE);
 
     addListSelectionListener(new ListSelectionListener() {

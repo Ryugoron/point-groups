@@ -13,7 +13,7 @@ public class SymmetryChooser
 {
 
   private static final long serialVersionUID = -4774655588276858307L;
-  protected static final Color SelectionBackground = new Color(208,225,248);
+  public static final Color SelectionBackground = new Color(208, 225, 248);
 
   public SymmetryChooser() {
     super();
