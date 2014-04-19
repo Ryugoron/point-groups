@@ -13,12 +13,14 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Quaternion;
 import pointGroups.geometry.Symmetry;
+import pointGroups.util.HashMapKeysLikeInserted;
 import pointGroups.util.LoggerFactory;
 import pointGroups.util.PointGroupsUtility;
 
@@ -466,8 +468,8 @@ public enum Symmetry4D
 
       groups.put(IxI, readSymmetryGroup(IxI));
       groups.put(IxI60, readSymmetryGroup(IxI60));
-      groups.put(IxIPlus60, readSymmetryGroup(IxIPlus60));
       groups.put(IxIQuer60, readSymmetryGroup(IxIQuer60));
+      groups.put(IxIPlus60, readSymmetryGroup(IxIPlus60));
       groups.put(IxIQuerPlus60, readSymmetryGroup(IxIQuerPlus60));
 
       groups.put(OxO, readSymmetryGroup(OxO));
@@ -493,7 +495,7 @@ public enum Symmetry4D
   }
 
   static {
-    groups = new HashMap<>();
+    groups = new HashMapKeysLikeInserted<Symmetry4D, Collection<Rotation4D>>();
     subgroups = new HashMap<>();
 
     // load group elems
@@ -507,39 +509,41 @@ public enum Symmetry4D
       loadSymGroups();
     }
 
-    subgroups.put(IxO, Arrays.asList(IxO, IxT, TxTPlus12, TxT3, TxTQuer12,
-        TxT12, TxTQuerPlus12, TxTQuer3, TxT));
-    subgroups.put(OxT, Arrays.asList(OxT, TxTPlus12, TxT3, TxTQuer12, TxT12,
-        TxTQuerPlus12, TxTQuer3, TxT));
+    subgroups.put(IxO, Arrays.asList(IxO, IxT, TxT, TxT3, TxTQuer3, TxT12,
+        TxTQuer12, TxTPlus12, TxTQuerPlus12));
+    subgroups.put(OxT, Arrays.asList(OxT, TxT, TxT3, TxTQuer3, TxT12, TxTQuer12, TxTPlus12,
+        TxTQuerPlus12));
 
     subgroups.put(IxT, Arrays.asList(IxT, TxT, TxT3, TxTQuer3, TxT12,
         TxTQuer12, TxTPlus12, TxTQuerPlus12));
 
-    subgroups.put(IxI, Arrays.asList(IxI, IxIQuer60, IxIQuerPlus60, IxIPlus60,
-        IxI60, TxTPlus12, TxT12, TxT3, TxT, TxTQuer3, TxTQuer12, TxTQuerPlus12,
-        IxT));
+    subgroups.put(IxI, Arrays.asList(IxI, IxI60, IxIQuer60, IxIPlus60, IxIQuerPlus60, IxT,
+        TxT, TxT3, TxTQuer3, TxT12, TxTQuer12, TxTPlus12, TxTQuerPlus12));
+    
     subgroups.put(IxIQuer60,
         Arrays.asList(IxIQuer60, IxIQuerPlus60, TxTQuer12, TxTQuerPlus12));
+    
     subgroups.put(IxIQuerPlus60, Arrays.asList(IxIQuerPlus60, TxTQuerPlus12));
     subgroups.put(IxI60, Arrays.asList(IxI60, IxIPlus60)); // check
     subgroups.put(IxIPlus60, Arrays.asList(IxIPlus60)); // check
 
-    subgroups.put(TxT, Arrays.asList(TxT, TxT12, TxTPlus12, TxT3, TxTQuer3,
-        TxTQuer12, TxTQuerPlus12)); // check
+    subgroups.put(TxT, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12, TxTPlus12,
+        TxTQuerPlus12)); // check
     subgroups.put(TxT3, Arrays.asList(TxT3, TxT12, TxTPlus12)); // check
     subgroups.put(TxT12, Arrays.asList(TxT12, TxTPlus12)); // check
     subgroups.put(TxTPlus12, Arrays.asList(TxTPlus12)); // check
     subgroups.put(TxTQuer3, Arrays.asList(TxTQuer3, TxTQuer12, TxTQuerPlus12)); // check
-    subgroups.put(TxTQuer12, Arrays.asList(TxTQuerPlus12, TxTQuer12)); // check
+    subgroups.put(TxTQuer12, Arrays.asList(TxTQuer12, TxTQuerPlus12)); // check
     subgroups.put(Symmetry4D.TxTQuerPlus12, Arrays.asList(TxTQuerPlus12));
 
     subgroups.put(OxO, Arrays.asList(OxO, OxO2, OxO6, OxO24, OxOPlus24,
-        OxOQuerPlus24, TxT12, TxTPlus12, TxT3, TxTQuer3, TxT, TxTQuer12,
-        TxTQuerPlus12, OxT)); // check
-    subgroups.put(OxO2, Arrays.asList(OxOPlus24, OxO2, TxT12, TxT3, TxT, OxO24,
-        OxO6, OxOQuerPlus24, TxTPlus12, TxTQuer3, TxTQuer12, TxTQuerPlus12)); // check
-    subgroups.put(OxO6, Arrays.asList(OxO6, OxOPlus24, OxO24, OxOQuerPlus24,
-        TxT12, TxTPlus12, TxT3)); // check
+        OxOQuerPlus24, OxT, TxT, TxT3, TxTQuer3, TxT12, TxTQuer12, TxTPlus12,
+        TxTQuerPlus12)); // check
+    
+    subgroups.put(OxO2, Arrays.asList(OxO2, OxO6, OxO24, OxOPlus24, OxOQuerPlus24, TxT, TxT3, TxTQuer3, TxT12,
+        TxTQuer12, TxTPlus12, TxTQuerPlus12)); // check
+    subgroups.put(OxO6, Arrays.asList(OxO6, OxO24, OxOPlus24, OxOQuerPlus24,
+        TxT3, TxT12, TxTPlus12)); // check
     subgroups.put(OxO24,
         Arrays.asList(OxO24, OxOPlus24, OxOQuerPlus24, TxT12, TxTPlus12)); // check
     subgroups.put(OxOPlus24, Arrays.asList(OxOPlus24, TxTPlus12)); // check
