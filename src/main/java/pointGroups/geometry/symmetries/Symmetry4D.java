@@ -13,7 +13,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -449,9 +448,9 @@ public enum Symmetry4D
 
   public static Collection<Rotation4D> readSymmetryGroup(final Symmetry4D sym)
     throws FileNotFoundException, IOException, ClassNotFoundException {
-    File f =
-        new File(PointGroupsUtility.getResource("symmetries/" + sym.filename +
-            ".sym"));
+
+    File f = PointGroupsUtility.getSymmetry(sym.filename + ".sym");
+
     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
     Object o = ois.readObject();
     // TODO: ugly
