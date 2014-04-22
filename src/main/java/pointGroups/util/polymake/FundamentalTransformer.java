@@ -115,6 +115,9 @@ public class FundamentalTransformer
       // Tries to transform a Fundamental Region.
       // System.out.println(this.script);
       res = transformHelper();
+      if(res.getEdges().length < 2) {
+        res = new UnknownFundamental();
+      }
     }
     catch (Exception e) {
       logger.info("Could not transform Fundamental Result String, given trivial Fundamental instead.");
