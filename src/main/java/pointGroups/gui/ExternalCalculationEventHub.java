@@ -204,6 +204,7 @@ public class ExternalCalculationEventHub
         } else if (transformerType == FundamentalTransformerTransformer.class) {
           // Two step Transformer, unpack it and resend it
           submit((FundamentalTransformer) result);
+          return null;
         }
         else if (transformerType == FundamentalTransformer.class) {
           // Second step Transform, broadcast real result
