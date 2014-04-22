@@ -38,9 +38,6 @@ public class SchlegelView
   private final EventDispatcher dispatcher = EventDispatcher.get();
 
   protected final UiViewer uiViewer;
-  protected Schlegel lastSchlegel;
-
-  protected SchlegelViewMode viewMode = SchlegelViewMode.VIEW_SCHLEGEL;
 
   protected JPanel buttonGroup = new JPanel();
   protected JPanel schlegelRenderer = new JPanel();
@@ -64,8 +61,8 @@ public class SchlegelView
     uiViewer = new UiViewer(viewerPanel);
 
     dispatcher.addHandler(SchlegelResultHandler.class, this);
-    dispatcher.addHandler(DimensionSwitchHandler.class, this);
     dispatcher.addHandler(SchlegelViewModeChangedHandler.class, this);
+    dispatcher.addHandler(DimensionSwitchHandler.class, this);
   }
 
   protected void initViewButton() {
@@ -79,17 +76,9 @@ public class SchlegelView
     uiViewer.dispose();
   }
 
-  public void setViewMode(SchlegelViewMode viewMode) {
-    this.viewMode = viewMode;
-
-    redrawSchlegel();
-  }
-
-  public SchlegelViewMode getViewMode() {
-    return viewMode;
-  }
-
   public void redrawSchlegel() {
+    Schlegel lastSchlegel = uiViewer.uiState.getLastSchlegel();
+
     Point3D[] points = lastSchlegel.points;
     Edge[] edges = lastSchlegel.edges;
     Face[] faces = null;
@@ -100,37 +89,30 @@ public class SchlegelView
     }
 
     // only in view 3d mode use the original points
-    if (getViewMode() == SchlegelViewMode.VIEW_3D) {
+    if (uiViewer.uiState.getSchlegelViewMode() == SchlegelViewMode.VIEW_3D) {
       points = lastSchlegel.polytope.points;
     }
 
     Geometry geom = JRealityUtility.generateGraph(points, edges, faces);
 
     uiViewer.setGeometry(geom);
+    uiViewer.setDimensionMode(uiViewer.uiState.isSchlegel3DMode());
   }
 
   @Override
   public void onSchlegelResultEvent(SchlegelResultEvent event) {
-    lastSchlegel = event.getResult();
+    redrawSchlegel();
+  }
+
+  @Override
+  public void onSchlegelViewModeChanged(SchlegelViewModeChangedEvent event) {
     redrawSchlegel();
   }
 
   @Override
   public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
-    if (event.switchedTo3D()) {
-      uiViewer.set2DMode();
-    }
-
-    if (event.switchedTo4D()) {
-      // we can't support the 3d mode in the 4d case
-      viewMode = SchlegelViewMode.VIEW_SCHLEGEL;
-      uiViewer.set3DMode();
-    }
-  }
-
-  @Override
-  public void onSchlegelViewModeChanged(SchlegelViewModeChangedEvent event) {
-    setViewMode(event.getViewMode());
+    // show SchlegelViewModeButton only in 3D Mode
+    buttonGroup.setVisible(event.switchedTo3D());
   }
 
 
