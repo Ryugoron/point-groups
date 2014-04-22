@@ -32,8 +32,8 @@ public class PointGroupsUtility
       return url.toURI();
     }
     catch (NullPointerException | URISyntaxException e) {
-      throw new FileNotFoundException("File " + e.getMessage() +
-          " couldn't be found.");
+      throw new FileNotFoundException("File " + file +
+          " couldn't be found. Error-Message: " + e.getMessage());
     }
   }
 
