@@ -49,7 +49,7 @@ public class UnknownFundamental
     // Nur zur sicherheit
     p = PointUtil.normalize(p);
 
-    return p;
+    return lift;
   }
 
   @Override
