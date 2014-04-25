@@ -9,12 +9,22 @@
     \end{itemize}
     
 \subsection{Softwarearchitektur}
+     \begin{figure}[tbh]
+            \centering
+            \fbox{\includegraphics[width=0.7\textwidth]{img/architecture}}
+            \caption{Grobübersicht über die Architektur des Projekts}
+        \end{figure}
     \begin{itemize}
         \item Eventsystem (Eventstruktur)
         \item Pipeline (Symmetriegruppe wählen, Fundamentalbereich berechnen und anzeigen, Punkt im Fundamentalbereich auswählen, Punkt unter Symmetrien abbilden, konvexe Hülle Berechnen, im 3--dimensionalen konvexe Hülle anzeigen/im 4--dimensionalen Schlegeldiagram berechnen, anzeigen)
         \item GUI
     \end{itemize}
     \subsubsection{Eventssystem}
+        \begin{figure}[tbh]
+            \centering
+            \includegraphics[width=0.8\textwidth]{img/event_classdiagram2}
+            \caption{Klassendiagramm des Eventsystems}
+        \end{figure}
         \subsubsection*{Events}
             Events sind konkrete Reaktionen auf bestimmte Ereignisse und enthalten entsprechende Kontextinformationen. Alle Typen von Events erben von der abstrakten Klasse Event<H extends EventHandler>. Klassen, die auf bestimmte Event-Typen reagieren wollen, implementieren das zum Event zugeordnete Interface EventHandler.
 
