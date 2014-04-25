@@ -43,7 +43,7 @@ da somit eine effiziente Berechnungsvorschrift für das Invertieren von Einheits
 
 \subsection{Quaternionen und dreidimensionale Symmetrien}
 Die Benutzung von Quaternionen für dreidimensionale Symmetrien ist zwar nicht so intuitiv wie z.B. die Benutzung von Matrizen,
-erlaubt einem jedoch eine sehr elegante und schlanke Darstellung von Rotationen: 
+erlaubt einem jedoch eine sehr elegante und schlanke Darstellung von Rotationen~\cite{conway2003}~\cite{du1964}: 
 
 Nach Eulers Rotationstheorem kann jede Drehung oder Folge von Drehungen um einen festen Punkt durch eine einzige Drehung beschrieben werden.
 Hierfür benötigen wir zum einen den Drehwinkel $\theta$ und eine Achse (die sog. Euler-Achse) die durch eben den festen Punkt geht.
@@ -67,7 +67,7 @@ Diese Berechnung ist mit zwei Quaternionen-Multiplikationen nicht besonders aufw
 Da es sich bei $p$ um ein Einheitsquaternion handelt, gilt außerdem $q^{-1} = \overline{q}$ -- dieser Berechnungsaufwand
 kann also beinahe vernachlässigt werden. \\
 
-\noindent Für Spiegelungen können Quaternionen ebenso elegant benutzt werden: Soll ein Punkt  $(p_x, p_y, p_z) \in \mathbb{R}^3$
+\noindent Für Spiegelungen können Quaternionen ebenso elegant benutzt werden~\cite{1946}: Soll ein Punkt  $(p_x, p_y, p_z) \in \mathbb{R}^3$
 an einer Ebene $\Pi: vn = 0$ durch den Ursprung mit Normalenvektor $n$ gespielt werden, so wird dies durch die Funktionsvorschrift $].[$ mit
 \begin{equation*}
 ]n[: p \mapsto n p n
