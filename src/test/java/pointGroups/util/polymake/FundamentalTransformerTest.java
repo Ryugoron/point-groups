@@ -18,10 +18,10 @@ public class FundamentalTransformerTest
 {
 
   public static final String POLYMAKE_RESULT =
-      "1 0 0 3\n1 0 3 0\n1 3 0 0\n-----\n{0 1}\n{0 2}\n{1 2}\n-----\n0 0 1 0\n0 0 0 1\n0 1 0 0";
+      "1\n1 0 0 3\n1 0 3 0\n1 3 0 0\n-----\n{0 1}\n{0 2}\n{1 2}\n-----\n0 0 1 0\n0 0 0 1\n0 1 0 0";
 
   public static final String POLYMAKE_SCRIPT =
-      "my $hyper = new Matrix<Rational>([[0.0, 0.0, 1.0, 0.0],[0.0, 0.0, 0.0, 1.0],[0.0, 1.0, 0.0, 0.0]]);my $aff = new Matrix<Rational>([[-3.0 , 1.0 , 1.0 , 1.0]]);my $poly = new Polytope(INEQUALITIES=>$hyper, EQUATIONS=>$aff);print $poly->VERTICES;print \"-----\\n\";print $poly->GRAPH->EDGES;print \"-----\\n\";print $poly->FACETS;";
+      "my $hyper = new Matrix<Rational>([[0.0, 0.0, 1.0, 0.0],[0.0, 0.0, 0.0, 1.0],[0.0, 1.0, 0.0, 0.0]]);my $aff = new Matrix<Rational>([[-3.0 , 1.0 , 1.0 , 1.0]]);my $poly = new Polytope(INEQUALITIES=>$hyper, EQUATIONS=>$aff);print $poly->BOUNDED;print \"\\n\";print $poly->VERTICES;print \"-----\\n\";print $poly->GRAPH->EDGES;print \"-----\\n\";print $poly->FACETS;";
 
   public static final double EPSILON = 0.00001;
   
