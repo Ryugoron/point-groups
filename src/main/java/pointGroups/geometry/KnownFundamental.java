@@ -42,10 +42,10 @@ public class KnownFundamental
    * V-Polytope of the fundamental domain.
    */
   private final double[][] finPoints;
-  private final List<Edge<Integer,Integer>> edges;
+  private final List<Edge> edges;
 
   public KnownFundamental(double[][] points, double[][] revertMatrix,
-      double[][] hyperplanes, double[] affine, List<Edge<Integer,Integer>> edges) {
+      double[][] hyperplanes, double[] affine, List<Edge> edges) {
 
     // Punkte kopieren
     finPoints = PointUtil.copyPoints(points);
@@ -53,7 +53,7 @@ public class KnownFundamental
     this.revertMatrix = revertMatrix;
     this.affine = affine;
     this.hPolytope = hyperplanes;
-    this.edges = (new ArrayList<Edge<Integer, Integer>>());
+    this.edges = (new ArrayList<Edge>());
     this.edges.addAll(edges);
   }
 
@@ -76,11 +76,10 @@ public class KnownFundamental
     return PointUtil.copyPoints(finPoints);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
-  public Edge<Integer,Integer>[] getEdges(){
+  public Edge[] getEdges() {
     // Copying for safety
-    Edge<Integer,Integer>[] ed = this.edges.toArray(new Edge[this.edges.size()]);
+    Edge[] ed = this.edges.toArray(new Edge[this.edges.size()]);
     return ed;
   }
   

@@ -9,6 +9,17 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
 
+import pointGroups.geometry.Point;
+import pointGroups.geometry.Schlegel;
+import pointGroups.geometry.Symmetry;
+import pointGroups.gui.SchlegelView.SchlegelViewMode;
+import pointGroups.gui.event.EventDispatcher;
+import pointGroups.gui.event.types.DimensionSwitchEvent;
+import pointGroups.gui.event.types.DimensionSwitchHandler;
+import pointGroups.gui.event.types.SchlegelResultEvent;
+import pointGroups.gui.event.types.SchlegelResultHandler;
+import pointGroups.gui.event.types.gui.SchlegelViewModeChangedEvent;
+import pointGroups.gui.event.types.gui.SchlegelViewModeChangedHandler;
 import de.jreality.jogl.JOGLViewer;
 import de.jreality.math.Pn;
 import de.jreality.plugin.JRViewer;
@@ -74,8 +85,13 @@ public class UiViewer
 
           Viewer view = viewer.getViewer();
 
+          Appearance ap = view.getSceneRoot().getAppearance();
+          setupAppearance(ap);
+
+          component.setLayout(new BorderLayout());
           component.add((Component) view.getViewingComponent(),
               BorderLayout.CENTER);
+
           component.validate();
           component.repaint();
 
@@ -84,9 +100,12 @@ public class UiViewer
 
       };
 
+  public final UiState uiState = new UiState();
+
   protected final Container component;
   protected final SceneGraphComponent sceneRoot = new SceneGraphComponent();
-  protected final Appearance appearanceRoot = setupAppearance(new Appearance());
+  // protected final Appearance appearanceRoot = setupAppearance(new
+  // Appearance());
   protected final UiViewerToolsPlugin toolsPlugin = new UiViewerToolsPlugin();
 
   /**
@@ -96,22 +115,51 @@ public class UiViewer
     this.component = component;
     worker.execute();
 
-    sceneRoot.setAppearance(appearanceRoot);
+    // sceneRoot.setAppearance(appearanceRoot);
   }
 
-  public void set2DMode() {
+  /**
+   * Force the dimension according to the dimension of the state.
+   */
+  public void forceDimensionMode(boolean is3DMode) {
+    if (!is3DMode) {
+      set2DMode();
+    }
+
+    if (is3DMode) {
+      set3DMode();
+    }
+  }
+
+  /**
+   * Lazily switch the dimension of UiViewer only if the dimension in the state
+   * really changed.
+   */
+  public void setDimensionMode(boolean is3DMode) {
+    // currently the ui is in 3D mode, but it should be in 2D mode
+    if (is3DMode() && !is3DMode) {
+      set2DMode();
+    }
+
+    // currently the ui is in 2D mode, but it should be in 3D mode
+    if (is2DMode() && is3DMode) {
+      set3DMode();
+    }
+  }
+
+  private void set2DMode() {
     toolsPlugin.set2DMode();
   }
 
-  public void set3DMode() {
+  private void set3DMode() {
     toolsPlugin.set3DMode();
   }
 
-  public boolean is2DMode() {
+  private boolean is2DMode() {
     return toolsPlugin.is2DMode();
   }
 
-  public boolean is3DMode() {
+  private boolean is3DMode() {
     return toolsPlugin.is3DMode();
   }
 
@@ -215,6 +263,9 @@ public class UiViewer
     DefaultPointShader dpts;
     RenderingHintsShader rhs;
 
+    // RootAppearance rootAp = ShaderUtility.createRootAppearance(ap);
+    // rootAp.setBackgroundColor(Color.blue);
+
     // ap.setAttribute(CommonAttributes.POLYGON_SHADER + "." +
     // CommonAttributes.DIFFUSE_COLOR, Color.yellow);
     //
@@ -267,7 +318,7 @@ public class UiViewer
   }
 
 
-  protected static class UiViewerToolsPlugin
+  protected class UiViewerToolsPlugin
     extends Plugin
   {
     protected Content content;
@@ -310,7 +361,9 @@ public class UiViewer
 
       content = JRViewerUtility.getContentPlugin(c);
 
-      set2DMode();
+      // set the currently selected dimension, which could have be set during
+      // the rather long loading time of jReality
+      forceDimensionMode(is3DMode());
     }
 
     @Override
@@ -575,6 +628,92 @@ public class UiViewer
         rootScene = comp;
         resetTool.setLastToolContext(tc);
       }
+    }
+  }
+
+
+  public class UiState
+    implements DimensionSwitchHandler, SchlegelResultHandler,
+    SchlegelViewModeChangedHandler
+  {
+    protected final EventDispatcher dispatcher = EventDispatcher.get();
+
+    protected Schlegel lastSchlegel;
+    protected Point lastPickedPoint;
+    protected Symmetry<? extends Point> lastPickedSymmetry;
+    protected SchlegelViewMode lastSchlegelViewMode =
+        SchlegelViewMode.VIEW_SCHLEGEL;
+
+    protected boolean is4D = false;
+
+    public UiState() {
+      dispatcher.addHandler(DimensionSwitchHandler.class, this);
+      dispatcher.addHandler(SchlegelResultHandler.class, this);
+      dispatcher.addHandler(SchlegelViewModeChangedHandler.class, this);
+    }
+
+    public boolean is3DMode() {
+      return !is4D;
+    }
+
+    public boolean is4DMode() {
+      return is4D;
+    }
+
+    public boolean isPointPicker2DMode() {
+      return is3DMode();
+    }
+
+    public boolean isPointPicker3DMode() {
+      return is4DMode();
+    }
+
+    public boolean isSchlegel2DMode() {
+      return is3DMode() &&
+          getSchlegelViewMode() == SchlegelViewMode.VIEW_SCHLEGEL;
+    }
+
+    public boolean isSchlegel3DMode() {
+      return is4DMode() || getSchlegelViewMode() == SchlegelViewMode.VIEW_3D;
+    }
+
+    public SchlegelViewMode getSchlegelViewMode() {
+      return lastSchlegelViewMode;
+    }
+
+    public Schlegel getLastSchlegel() {
+      return lastSchlegel;
+    }
+
+    public Point getLastPickedPoint() {
+      return lastPickedPoint;
+    }
+
+    public Symmetry<? extends Point> getLastPickedSymmetry() {
+      return lastPickedSymmetry;
+    }
+
+    @Override
+    public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
+      if (event.switchedTo3D()) {
+        is4D = false;
+      }
+
+      if (event.switchedTo4D()) {
+        is4D = true;
+      }
+    }
+
+    @Override
+    public void onSchlegelResultEvent(SchlegelResultEvent event) {
+      lastSchlegel = event.getResult();
+      lastPickedPoint = event.getPickedPoint();
+      lastPickedSymmetry = event.getPickedSymmetry();
+    }
+
+    @Override
+    public void onSchlegelViewModeChanged(SchlegelViewModeChangedEvent event) {
+      lastSchlegelViewMode = event.getViewMode();
     }
   }
 }

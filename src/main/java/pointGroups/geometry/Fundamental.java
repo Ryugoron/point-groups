@@ -1,6 +1,5 @@
 package pointGroups.geometry;
 
-import java.util.List;
 
 /**
  * Interface to the Fundamental Domain. It supports the translation of a point
@@ -35,7 +34,7 @@ public interface Fundamental
    *  
    * @return Edges of the fundamental region
    */
-  public Edge<Integer,Integer>[] getEdges();
+  public Edge[] getEdges();
   
   /**
    * Accepts a point of the fundamental domain representation and translates it

@@ -27,7 +27,6 @@ import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.util.LoggerFactory;
 import pointGroups.util.jreality.JRealityUtility;
 import pointGroups.util.point.PointUtil;
-import pointGroups.util.polymake.FundamentalTransformer;
 import de.jreality.geometry.Primitives;
 import de.jreality.scene.Appearance;
 import de.jreality.scene.Geometry;
@@ -193,6 +192,8 @@ public class PointPicker
   // Maybe i need this.
   @Override
   public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
+    uiViewer.setDimensionMode(uiViewer.uiState.isPointPicker3DMode());
+
     if (event.switchedTo3D()) {
       logger.fine("Point Picker switched to 2D Mode.");
       this.dim = 2;
@@ -255,7 +256,11 @@ public class PointPicker
     Geometry g;
     // Calculate the new fundamental
     if (this.fundamental.isKnown()) {
-      g = JRealityUtility.generateGraph(this.fundamental.getVertices(), JRealityUtility.convertEdges(this.fundamental.getEdges()));
+      double[][] points = this.fundamental.getVertices();
+      int[][] edges = JRealityUtility.convertEdges(this.fundamental.getEdges());
+      int[][] faces = null;
+
+      g = JRealityUtility.generateGraph(points, edges, faces);
     }
     else {
       if (this.dim == 2) g = JRealityUtility.circle(0, 0, 1);

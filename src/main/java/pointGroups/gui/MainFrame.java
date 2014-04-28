@@ -32,8 +32,8 @@ public class MainFrame
   private static final long serialVersionUID = 1886397100814345247L;
 
   protected JMenuBar menuBar;
-  protected JPanel schlegelView;
-  protected JPanel pointPicker;
+  protected SchlegelView schlegelView;
+  protected PointPicker pointPicker;
   protected JPanel symmetryChooser;
   protected JSlider scaling;
   protected JPanel coordinates;
@@ -100,13 +100,14 @@ public class MainFrame
 
     leftTopComponent =
         new JSplitPane(JSplitPane.VERTICAL_SPLIT, symmetryChooser, pointPicker);
-    
-    leftBottomComponent = new JPanel(new GridLayout(2,1));
+
+    leftBottomComponent = new JPanel(new GridLayout(2, 1));
     leftBottomComponent.add(scaling);
     leftBottomComponent.add(coordinates);
-    
+
     leftComponent =
-        new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent, leftBottomComponent);
+        new JSplitPane(JSplitPane.VERTICAL_SPLIT, leftTopComponent,
+            leftBottomComponent);
 
     leftComponent.setBorder(BorderFactory.createEmptyBorder());
     leftTopComponent.setBorder(BorderFactory.createEmptyBorder());
