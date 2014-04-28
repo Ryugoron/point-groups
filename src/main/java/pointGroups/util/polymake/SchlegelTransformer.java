@@ -28,18 +28,23 @@ public class SchlegelTransformer
   private final Collection<? extends Point> points;
   private final Point p;
   private final Symmetry<?> sym;
+  protected boolean is3D = true;
 
   public SchlegelTransformer(final Collection<? extends Point> points,
       final Symmetry<?> sym, final Point p) {
     this.points = points;
     this.sym = sym;
     this.p = p;
+
+    // determine the dimension of the points
+    if (points.size() > 0) {
+      Point point = points.iterator().next();
+      is3D = point.getComponents().length == 3;
+    }
   }
 
   public SchlegelTransformer(final Collection<? extends Point> points) {
-    this.points = points;
-    this.p = null;
-    this.sym = null;
+    this(points, null, null);
   }
 
   @Override
@@ -59,7 +64,17 @@ public class SchlegelTransformer
     script.append("my $sep = \"\\$\\n\";");
 
     script.append("my $n = $p->N_VERTICES;");
-    script.append("my $f = $p->RIF_CYCLIC_NORMAL;");
+
+    // use RIF_CYCLIC_NORMAL only id 3d mode, because it is not available
+    // otherwise
+    if (is3D) {
+      // this retrieves all the faces of the polyhedron in a order, which
+      // can be handled by jReality
+      script.append("my $f = $p->RIF_CYCLIC_NORMAL;");
+    }
+    else {
+      script.append("my $f = \"\";");
+    }
     script.append("my $v = $schlegelverts;");
     script.append("my $e = $edges;");
 
@@ -170,8 +185,19 @@ public class SchlegelTransformer
     return faces;
   }
 
+  /**
+   * Build the original polytope of the schlegel-diagram. But only in the 3D
+   * case.
+   * 
+   * @param edges
+   * @param faces
+   * @param numberOfPoints
+   * @return
+   */
   protected Polytope<Point3D> buildPolytope(Edge[] edges, Face[] faces,
       int numberOfPoints) {
+
+    if (faces == null) return null;
 
     @SuppressWarnings("unchecked")
     Collection<Point3D> points = (Collection<Point3D>) this.points;
@@ -207,13 +233,17 @@ public class SchlegelTransformer
     int numberOfPoints = 0;
     String pointsString;
     String edgesString;
-    String facesString;
+    String facesString = "";
     try {
       String[] pointsAndEdges = resultString.split("\\$\n");
       numberOfPoints = Integer.parseInt(pointsAndEdges[0]);
       pointsString = pointsAndEdges[1];
       edgesString = pointsAndEdges[2];
-      facesString = pointsAndEdges[3];
+
+      // faces are only available in 3d
+      if (is3D) {
+        facesString = pointsAndEdges[3];
+      }
     }
     catch (Exception e) {
       logger.severe("Wrong Format of resultString. Probably missing \\$\n");
@@ -245,9 +275,12 @@ public class SchlegelTransformer
       throw new PolymakeOutputException("Wrong Format of resultString.");
     }
 
-    Face[] faces;
+    Face[] faces = null;
     try {
-      faces = parseFaces(facesString);
+      // faces are only available in 3d
+      if (is3D) {
+        faces = parseFaces(facesString);
+      }
     }
     catch (Exception e) {
       logger.severe("Can't parse faces in resultString.");
