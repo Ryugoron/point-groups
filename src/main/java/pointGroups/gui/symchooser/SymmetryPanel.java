@@ -16,6 +16,7 @@ import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Symmetry;
 import pointGroups.geometry.symmetries.Symmetry3D;
 import pointGroups.geometry.symmetries.Symmetry4D;
+import pointGroups.geometry.symmetries.Symmetry4DReflection;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.symchooser.elements.SymmetryList;
@@ -89,8 +90,12 @@ public class SymmetryPanel
     for (Symmetry3D sym : Symmetry3D.getSymmetries()) {
       this.symmetries3D.addElement(sym);
     }
-    // 4D Symmetries
+    // 4D Symmetries for rotations
     for (Symmetry4D sym : Symmetry4D.getSymmetries()) {
+      this.symmetries4D.addElement(sym);
+    }
+    // 4D Symmetries for reflections
+    for (Symmetry4DReflection sym : Symmetry4DReflection.getSymmetries()) {
       this.symmetries4D.addElement(sym);
     }
   }
