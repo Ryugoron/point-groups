@@ -55,6 +55,9 @@ public class PointPicker
   private final boolean responsive;
   private double scale = 1; // TODO Initialize ändern
 
+  private final double SHOWSIZE = 3.0;
+  private double showScale = 1; // Wird von einer neuen Symmetrie geändert.
+
   private Symmetry3DChooseEvent lastSymmetry3DChooseEvent;
   private Symmetry4DChooseEvent lastSymmetry4DChooseEvent;
 
@@ -226,6 +229,8 @@ public class PointPicker
     double[] selComp = new double[this.dim];
     for (int i = 0; i < this.dim; i++)
       selComp[i] = point[i];
+    // Show Scale revert
+    if (fundamental.isKnown()) selComp = PointUtil.div(showScale, selComp);
     double[] resP = this.fundamental.revertPoint(selComp);
 
     logger.fine("Point Picker calculated Point (" + resP[0] + "," + resP[1] +
@@ -253,12 +258,19 @@ public class PointPicker
 
   protected void showFundamental() {
     logger.info("Showing new Fundamental Domain.");
+
     Geometry g;
     // Calculate the new fundamental
     if (this.fundamental.isKnown()) {
       double[][] points = this.fundamental.getVertices();
+      double dia = PointUtil.diameter(points);
+      showScale = SHOWSIZE / dia;
       int[][] edges = JRealityUtility.convertEdges(this.fundamental.getEdges());
       int[][] faces = null;
+
+      for (int i = 0; i < points.length; i++) {
+        points[i] = PointUtil.mult(showScale, points[i]);
+      }
 
       g = JRealityUtility.generateGraph(points, edges, faces);
     }
