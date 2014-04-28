@@ -11,7 +11,7 @@
 \subsection{Softwarearchitektur}
      \begin{figure}[tbh]
             \centering
-            \fbox{\includegraphics[width=0.7\textwidth]{img/architecture}}
+            \includegraphics[width=0.85\textwidth]{img/architecture}
             \caption{Grobübersicht über die Architektur des Projekts}
         \end{figure}
     \begin{itemize}
@@ -26,48 +26,59 @@
             \caption{Klassendiagramm des Eventsystems}
         \end{figure}
         \subsubsection*{Events}
-            Events sind konkrete Reaktionen auf bestimmte Ereignisse und enthalten entsprechende Kontextinformationen. Alle Typen von Events erben von der abstrakten Klasse Event<H extends EventHandler>. Klassen, die auf bestimmte Event-Typen reagieren wollen, implementieren das zum Event zugeordnete Interface EventHandler.
+            Events sind konkrete Reaktionen auf bestimmte Ereignisse und enthalten je nach Ereignis entsprechende Kontextinformationen.
+            Alle Typen von Events erben von der abstrakten Klasse \lstinline|Event<H extends EventHandler>| und stellen einen
+            zugehörigen \lstinline|EventHandler|-Typen bereit.
+            Komponenten, die auf ein bestimmtes Event reagieren sollen, realisieren das zum Event zugeordnete
+            \lstinline|EventHandler|-Interface und implementieren damit eine Reaktionsmethode mit komponentenspezifischem
+            Code.
 
-            Jede Klasse, die Events abfeuern möchte, muss einen Verweis auf den EventDispatcher besitzen. Ein Singleton von diesem Dispatcher kann mittels EventDispatcher.get() eingeholt werden. Soll ein konkretes Event e gefeuert werden, wird dies via dispatcher.fireEvent(e) erledigt. Alle Klassen, die sich vor dem Feuern eines Events via dispatcher.addHandler(eventType, handler) registriert haben, werden die Events vom Typ eventType erhalten. Der Event-Typ sollte, via Konvention, durch KonkretesEvent.TYPE gegeben sein (wobei KonkretesEvent eine Implementieren von Event ist).
-        \subsubsection*{Eventimplementierung}
-            Event-Typen werden durch Anlegen einer Event-Klasse und einer EventHandler-Klasse hinzugefügt.
+            Eine zentrale Singleton-Instanz, der \lstinline|EventDispatcher|, koordiniert dann das Absenden und Empfangen von Events
+            und verteilt die Ereignismeldungen an Interessenten.
+            Hierfür muss jede an einem spezifischen Event interessierte Komponente sich als solche beim
+            \lstinline|EventDispatcher| registrieren (\lstinline|addHandler(Class<H> eventType, H handler)|).
+            Eine designierte Eventquelle hält ebenfalls einen Verweis, um mittels dessen
+            \lstinline|fireEvent(Event<?> e)|-Methode im Zuge einer Reaktion ein Event abzufeuern.
 
-            Das EventHandler-Template ist
-            
-            \begin{code}
-                import pointGroups.gui.event.EventHandler;
-
-                public interface ConcreteHandler
-                    extends EventHandler
-                {
-                    public void onConcreteEvent(final ConcreteEvent event);
-                }
-            \end{code}
-
-            Das Event-Typ-Template ist
-
-            \begin{code}            
-                import pointGroups.gui.event.Event;
-
-                public class ConcreteEvent
-                    extends Event<ConcreteHandler>
-                {
-                    public final static Class<ConcreteHandler> TYPE =
-                        ConcreteHandler.class;
-
-                    @Override
-                    public final Class<ConcreteHandler> getType() {
-                        return TYPE;
-                    }
-
-                    @Override
-                    protected void dispatch(final ConcreteHandler handler) {
-                        handler.onConcreteEvent(this);
-                    }
-                } 
-            \end{code}
-            
-            wobei Concrete durch konkrete Namen ersetzt werden kann.
+      %  \subsubsection*{Eventimplementierung}
+      %      Event-Typen werden durch Anlegen einer Event-Klasse und einer EventHandler-Klasse hinzugefügt.%
+%
+%            Das EventHandler-Template ist
+%            
+%            \begin{code}
+%                import pointGroups.gui.event.EventHandler;
+%
+%                public interface ConcreteHandler
+%                    extends EventHandler
+%                {
+%                    public void onConcreteEvent(final ConcreteEvent event);
+%                }
+%            \end{code}
+%
+%            Das Event-Typ-Template ist
+%
+%            \begin{code}            
+%                import pointGroups.gui.event.Event;
+%
+%                public class ConcreteEvent
+%                    extends Event<ConcreteHandler>
+%                {
+%                    public final static Class<ConcreteHandler> TYPE =
+%                        ConcreteHandler.class;
+%
+%                    @Override
+%                    public final Class<ConcreteHandler> getType() {
+%                        return TYPE;
+%                    }
+%
+%                    @Override
+%                    protected void dispatch(final ConcreteHandler handler) {
+%                        handler.onConcreteEvent(this);
+%                    }
+%                } 
+%            \end{code}
+%            
+%            wobei Concrete durch konkrete Namen ersetzt werden kann.
             
         \subsubsection*{Implementierte Events}
             Eventuelle Auflistung aller oder nur einzelner.
