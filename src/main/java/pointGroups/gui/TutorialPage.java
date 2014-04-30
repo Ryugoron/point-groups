@@ -73,8 +73,14 @@ public class TutorialPage
       
       Dimension par = this.getParent().getSize();
       Dimension text = discription.getSize();
+      
+      double ratio = image.getHeight() / (1.0 * image.getWidth());
+      
+      int newWidth = par.width - text.width;
+      int newHight = (int) (newWidth * ratio);
+      
       if (image != null)
-        g.drawImage(image.getScaledInstance(par.width - text.width, par.height, Image.SCALE_DEFAULT), 0, 0, this);
+        g.drawImage(image.getScaledInstance(newWidth, newHight, Image.SCALE_DEFAULT), 0, 0, this);
     }
   }
   
