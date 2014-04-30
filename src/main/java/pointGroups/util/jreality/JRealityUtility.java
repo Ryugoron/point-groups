@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pointGroups.geometry.Edge;
+import pointGroups.geometry.Face;
 import pointGroups.geometry.Point;
 import pointGroups.geometry.Point2D;
 import pointGroups.geometry.Point3D;
@@ -64,11 +65,11 @@ public class JRealityUtility
     return points_;
   }
 
-  public static int[][] convertEdges(Edge<Integer, Integer>[] edges) {
+  public static int[][] convertEdges(Edge[] edges) {
     int[][] edges_ = new int[edges.length][];
 
     int i = 0;
-    for (Edge<Integer, Integer> edge : edges) {
+    for (Edge edge : edges) {
       int u = edge.left, v = edge.right;
 
       edges_[i++] = new int[] { u, v };
@@ -77,12 +78,35 @@ public class JRealityUtility
     return edges_;
   }
 
-  public static Geometry generateGraph(Point[] points,
-      Edge<Integer, Integer>[] edges) {
-    return generateGraph(convertPoints(points), convertEdges(edges));
+  public static int[][] convertFaces(Face[] faces) {
+    if (faces == null) return null;
+
+    int[][] faces_ = new int[faces.length][];
+
+    int i = 0;
+    for (Face face : faces) {
+      int j = 0;
+
+      int[] indices = new int[face.indices.size()];
+      for (int index : face.indices) {
+        indices[j++] = index;
+      }
+
+      faces_[i++] = indices;
+    }
+
+    return faces_;
   }
 
-  public static Geometry generateGraph(double[][] points, int[][] edges) {
+  public static <P extends Point> Geometry generateGraph(P[] points,
+      Edge[] edges, Face[] faces) {
+
+    return generateGraph(convertPoints(points), convertEdges(edges),
+        convertFaces(faces));
+  }
+
+  public static Geometry generateGraph(double[][] points, int[][] edges,
+      int[][] faces) {
     IndexedFaceSetFactory ifsf = new IndexedFaceSetFactory();
 
     ifsf.setVertexCount(points.length);
@@ -90,6 +114,12 @@ public class JRealityUtility
 
     ifsf.setEdgeCount(edges.length);
     ifsf.setEdgeIndices(edges);
+
+    if (faces != null) {
+      ifsf.setFaceCount(faces.length);
+      ifsf.setFaceIndices(faces);
+    }
+
     ifsf.update();
 
     return ifsf.getGeometry();
@@ -104,6 +134,6 @@ public class JRealityUtility
         edges[at++] = new int[] { i, j };
       }
     }
-    return generateGraph(points, edges);
+    return generateGraph(points, edges, null);
   }
 }

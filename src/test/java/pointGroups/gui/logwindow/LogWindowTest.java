@@ -23,6 +23,7 @@ public class LogWindowTest
     Assert.assertFalse(logFrame.isVisible());
     dispatcher.fireEvent(new ShowLogEvent());
     Assert.assertTrue(logFrame.isVisible());
+    logFrame.setVisible(false);
     Logger logger1 = LoggerFactory.get(this.getClass());
     Logger logger2 = LoggerFactory.get(this.getClass());
     Logger single = LoggerFactory.getSingle(this.getClass());
@@ -32,11 +33,6 @@ public class LogWindowTest
         logger2.getName());
     Assert.assertEquals("pointGroups.gui.logwindow.LogWindowTest",
         single.getName());
-    for (int i = 0; i < 100; i++) {
-      logger2.info("foo");
-    }
-    logger1.warning("bar");
-    single.severe("ahhh");
   }
 
 }

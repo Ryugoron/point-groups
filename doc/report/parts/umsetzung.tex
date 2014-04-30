@@ -2,66 +2,100 @@
 
 \subsection{Verwendete Softwarehilfsmittel}
     \begin{itemize}
-        \item jReality
-        \item polymake
-        \item maven
+        \item jReality~\cite{jreality}
+        \item polymake~\cite{polymake}
+        \item maven~\cite{maven}
+        \item jUnit
     \end{itemize}
     
 \subsection{Softwarearchitektur}
+     ein paar sätze zur Abbildung~\ref{fig:architecture}
+     \begin{figure}[tbh]
+            \centering
+            \includegraphics[width=0.85\textwidth]{img/architecture}
+            \caption{Grobübersicht über die Architektur des Projekts\label{fig:architecture}}
+        \end{figure}
     \begin{itemize}
-        \item Eventsystem (Eventstruktur)
-        \item Pipeline (Symmetriegruppe wählen, Fundamentalbereich berechnen und anzeigen, Punkt im Fundamentalbereich auswählen, Punkt unter Symmetrien abbilden, konvexe Hülle Berechnen, im 3--dimensionalen konvexe Hülle anzeigen/im 4--dimensionalen Schlegeldiagram berechnen, anzeigen)
-        \item GUI
+        \item Pipeline-artiger Informationsfluss (siehe~\ref{ssec:flow})
+        \item Lose Kopplung durch Eventsystem (siehe~\ref{ssec:event})
+        \item Aufbereitung der Daten durch GUI (siehe~\ref{ssec:gui})
     \end{itemize}
-    \subsubsection{Eventssystem}
+    Grobidee skizzieren: Wir verwenden polymake als externen rechner und verwalten zustand/gui selbst. anzeige wird mit hilfe von jreality gemacht....integriert, blabla.
+
+    \subsubsection{Informationsfluss\label{ssec:flow}}
+        \begin{figure}[tbh]
+            \centering
+            \includegraphics[width=0.85\textwidth]{img/flow}
+            \caption{Informationsfluss zwischen den Komponenten
+                      {\scriptsize(gestrichelt: sync. Methodenaufruf, punkt-strich: async. Methodenaufruf, durchgezogen: TCP-Nachricht}}
+        \end{figure}
+
+        yada yada 
+    \subsubsection{Eventssystem\label{ssec:event}}
+        \begin{figure}[bht]
+            \centering
+            \includegraphics[width=0.8\textwidth]{img/event_classdiagram2}
+            \caption{Klassendiagramm des Eventsystems}
+        \end{figure}
         \subsubsection*{Events}
-            Events sind konkrete Reaktionen auf bestimmte Ereignisse und enthalten entsprechende Kontextinformationen. Alle Typen von Events erben von der abstrakten Klasse Event<H extends EventHandler>. Klassen, die auf bestimmte Event-Typen reagieren wollen, implementieren das zum Event zugeordnete Interface EventHandler.
+            Events sind konkrete Reaktionen auf bestimmte Ereignisse und enthalten je nach Ereignis entsprechende Kontextinformationen.
+            Alle Typen von Events erben von der abstrakten Klasse \lstinline|Event<H extends EventHandler>| und stellen einen
+            zugehörigen \lstinline|EventHandler|-Typen bereit.
+            Komponenten, die auf ein bestimmtes Event reagieren sollen, realisieren das zum Event zugeordnete
+            \lstinline|EventHandler|-Interface und implementieren damit eine Reaktionsmethode mit komponentenspezifischem
+            Code.
 
-            Jede Klasse, die Events abfeuern möchte, muss einen Verweis auf den EventDispatcher besitzen. Ein Singleton von diesem Dispatcher kann mittels EventDispatcher.get() eingeholt werden. Soll ein konkretes Event e gefeuert werden, wird dies via dispatcher.fireEvent(e) erledigt. Alle Klassen, die sich vor dem Feuern eines Events via dispatcher.addHandler(eventType, handler) registriert haben, werden die Events vom Typ eventType erhalten. Der Event-Typ sollte, via Konvention, durch KonkretesEvent.TYPE gegeben sein (wobei KonkretesEvent eine Implementieren von Event ist).
-        \subsubsection*{Eventimplementierung}
-            Event-Typen werden durch Anlegen einer Event-Klasse und einer EventHandler-Klasse hinzugefügt.
+            Eine zentrale Singleton-Instanz, der \lstinline|EventDispatcher|, koordiniert dann das Absenden und Empfangen von Events
+            und verteilt die Ereignismeldungen an Interessenten.
+            Hierfür muss jede an einem spezifischen Event interessierte Komponente sich als solche beim
+            \lstinline|EventDispatcher| registrieren (\lstinline|addHandler(Class<H> eventType, H handler)|).
+            Eine designierte Eventquelle hält ebenfalls einen Verweis, um mittels dessen
+            \lstinline|fireEvent(Event<?> e)|-Methode im Zuge einer Reaktion ein Event abzufeuern.
 
-            Das EventHandler-Template ist
+      %  \subsubsection*{Eventimplementierung}
+      %      Event-Typen werden durch Anlegen einer Event-Klasse und einer EventHandler-Klasse hinzugefügt.%
+%
+%            Das EventHandler-Template ist
+%            
+%            \begin{code}
+%                import pointGroups.gui.event.EventHandler;
+%
+%                public interface ConcreteHandler
+%                    extends EventHandler
+%                {
+%                    public void onConcreteEvent(final ConcreteEvent event);
+%                }
+%            \end{code}
+%
+%            Das Event-Typ-Template ist
+%
+%            \begin{code}            
+%                import pointGroups.gui.event.Event;
+%
+%                public class ConcreteEvent
+%                    extends Event<ConcreteHandler>
+%                {
+%                    public final static Class<ConcreteHandler> TYPE =
+%                        ConcreteHandler.class;
+%
+%                    @Override
+%                    public final Class<ConcreteHandler> getType() {
+%                        return TYPE;
+%                    }
+%
+%                    @Override
+%                    protected void dispatch(final ConcreteHandler handler) {
+%                        handler.onConcreteEvent(this);
+%                    }
+%                } 
+%            \end{code}
+%            
+%            wobei Concrete durch konkrete Namen ersetzt werden kann.
             
-            \begin{code}
-                import pointGroups.gui.event.EventHandler;
-
-                public interface ConcreteHandler
-                    extends EventHandler
-                {
-                    public void onConcreteEvent(final ConcreteEvent event);
-                }
-            \end{code}
-
-            Das Event-Typ-Template ist
-
-            \begin{code}            
-                import pointGroups.gui.event.Event;
-
-                public class ConcreteEvent
-                    extends Event<ConcreteHandler>
-                {
-                    public final static Class<ConcreteHandler> TYPE =
-                        ConcreteHandler.class;
-
-                    @Override
-                    public final Class<ConcreteHandler> getType() {
-                        return TYPE;
-                    }
-
-                    @Override
-                    protected void dispatch(final ConcreteHandler handler) {
-                        handler.onConcreteEvent(this);
-                    }
-                } 
-            \end{code}
-            
-            wobei Concrete durch konkrete Namen ersetzt werden kann.
-            
-        \subsubsection*{Implementierte Events}
-            Eventuelle Auflistung aller oder nur einzelner.
+        \subsubsection{GUI\label{ssec:gui}}
+             ein bisschen erzählen, woher jreality kommt und warum wir es benutzen. was es kann, wie wir es bisschen anpassen mussten.
                 
-\subsection{Fancy name}
+\subsection{Implementierung von Berechnungen}
     \begin{itemize}
         \item Symmetriegruppen (Berechnung mittels Generatoren, hart kodiert, Darstellung/Repräsentation)
         \item Fundamentalbereich (Berechnung, Darstellung/Repräsentation)

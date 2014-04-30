@@ -27,7 +27,6 @@ import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.util.LoggerFactory;
 import pointGroups.util.jreality.JRealityUtility;
 import pointGroups.util.point.PointUtil;
-import pointGroups.util.polymake.FundamentalTransformer;
 import de.jreality.geometry.Primitives;
 import de.jreality.scene.Appearance;
 import de.jreality.scene.Geometry;
@@ -55,6 +54,9 @@ public class PointPicker
 
   private final boolean responsive;
   private double scale = 1; // TODO Initialize ändern
+
+  private final double SHOWSIZE = 3.0;
+  private double showScale = 1; // Wird von einer neuen Symmetrie geändert.
 
   private Symmetry3DChooseEvent lastSymmetry3DChooseEvent;
   private Symmetry4DChooseEvent lastSymmetry4DChooseEvent;
@@ -193,6 +195,8 @@ public class PointPicker
   // Maybe i need this.
   @Override
   public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
+    uiViewer.setDimensionMode(uiViewer.uiState.isPointPicker3DMode());
+
     if (event.switchedTo3D()) {
       logger.fine("Point Picker switched to 2D Mode.");
       this.dim = 2;
@@ -225,6 +229,8 @@ public class PointPicker
     double[] selComp = new double[this.dim];
     for (int i = 0; i < this.dim; i++)
       selComp[i] = point[i];
+    // Show Scale revert
+    if (fundamental.isKnown()) selComp = PointUtil.div(showScale, selComp);
     double[] resP = this.fundamental.revertPoint(selComp);
 
     logger.fine("Point Picker calculated Point (" + resP[0] + "," + resP[1] +
@@ -252,10 +258,21 @@ public class PointPicker
 
   protected void showFundamental() {
     logger.info("Showing new Fundamental Domain.");
+
     Geometry g;
     // Calculate the new fundamental
     if (this.fundamental.isKnown()) {
-      g = JRealityUtility.generateGraph(this.fundamental.getVertices(), JRealityUtility.convertEdges(this.fundamental.getEdges()));
+      double[][] points = this.fundamental.getVertices();
+      double dia = PointUtil.diameter(points);
+      showScale = SHOWSIZE / dia;
+      int[][] edges = JRealityUtility.convertEdges(this.fundamental.getEdges());
+      int[][] faces = null;
+
+      for (int i = 0; i < points.length; i++) {
+        points[i] = PointUtil.mult(showScale, points[i]);
+      }
+
+      g = JRealityUtility.generateGraph(points, edges, faces);
     }
     else {
       if (this.dim == 2) g = JRealityUtility.circle(0, 0, 1);

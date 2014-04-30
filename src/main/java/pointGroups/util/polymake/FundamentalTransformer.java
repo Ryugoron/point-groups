@@ -39,6 +39,11 @@ public class FundamentalTransformer
     this.dim = this.points.iterator().next().getComponents().length;
   }
 
+  /**
+   * Builds a script for polymake, that first initializes the voronoicell of
+   * center in points and then returns the vertices and edges of the cell,
+   * leading a bit flag, that says, whether the polytope is bounded.
+   */
   @Override
   public String toScript() {
     if (script != null) return script;
@@ -81,6 +86,7 @@ public class FundamentalTransformer
     sb.append("]]);");
 
     sb.append("my $poly = new Polytope(INEQUALITIES=>$hyper, EQUATIONS=>$aff);");
+    sb.append("print $poly->BOUNDED;print \"\\n\";");
     sb.append("print $poly->VERTICES;");
     sb.append("print \"-----\\n\";");
     sb.append("print $poly->GRAPH->EDGES;");
@@ -88,6 +94,7 @@ public class FundamentalTransformer
     sb.append("print $poly->FACETS;");
 
     this.script = sb.toString();
+    System.out.println(script);
     return this.script;
   }
 
@@ -115,6 +122,12 @@ public class FundamentalTransformer
       // Tries to transform a Fundamental Region.
       // System.out.println(this.script);
       res = transformHelper();
+      if (res.isKnown()) {
+        if (res.getEdges().length < 3) {
+          logger.info("To less edges for a polytope. Returning an Unkown Fundamental Region.");
+          res = new UnknownFundamental();
+        }
+      }
     }
     catch (Exception e) {
       logger.info("Could not transform Fundamental Result String, given trivial Fundamental instead.");
@@ -127,11 +140,17 @@ public class FundamentalTransformer
   private Fundamental transformHelper() {
     String[] answer = this.resultString.split("\n");
 
+    // The first flag says if it is bounded, 0 -> Unbounded so we want a
+    // UnknwonFundamental
+    if (answer[0].equals("0")) { 
+      logger.info("Unbounded Fundamental Region computed. Returning UnkownFundamental instead");
+      return new UnknownFundamental(); 
+    }
+
     List<double[]> points = new LinkedList<double[]>();
-    List<Edge<Integer, Integer>> edges =
-        new LinkedList<Edge<Integer, Integer>>();
+    List<Edge> edges = new LinkedList<Edge>();
     List<double[]> hyperPlanes = new LinkedList<double[]>();
-    int pos = 0;
+    int pos = 1;
     // The first ones are Vertices
     while (!answer[pos].equals("-----")) {
       points.add(parsePoint(answer[pos]));
@@ -166,12 +185,12 @@ public class FundamentalTransformer
       hyper[i] = hyperPlanes.get(i);
     }
 
-    return new KnownFundamental(normPoints, f2n, hyper, center.getComponents(), edges);
+    return new KnownFundamental(normPoints, f2n, hyper, center.getComponents(),
+        edges);
   }
 
-  
   /**
-   * Parses a coordinate 
+   * Parses a coordinate
    */
   private double parseCoordinate(String s) {
     if (s.contains("/")) {
@@ -212,13 +231,13 @@ public class FundamentalTransformer
    * @param s - Stringrepresentation of an edge
    * @return an edge object
    */
-  private Edge<Integer, Integer> parseEdge(String s) {
+  private Edge parseEdge(String s) {
     String[] ends = s.substring(1, s.length() - 1).split(" ");
     int[] endi = new int[2];
     endi[0] = Integer.parseInt(ends[0]);
     endi[1] = Integer.parseInt(ends[1]);
 
-    return new Edge<Integer, Integer>(endi[0], endi[1]);
+    return new Edge(endi[0], endi[1]);
   }
 
   /**

@@ -27,11 +27,13 @@ public class PointGroupsUtility
     throws FileNotFoundException {
 
     try {
-      return PointGroups.class.getClassLoader().getResource(file).toURI();
+      ClassLoader classLoader = PointGroups.class.getClassLoader();
+      URL url = classLoader.getResource(file);
+      return url.toURI();
     }
-    catch (URISyntaxException e) {
-      throw new FileNotFoundException("File " + e.getMessage() +
-          " couldn't be found.");
+    catch (NullPointerException | URISyntaxException e) {
+      throw new FileNotFoundException("File " + file +
+          " couldn't be found. Error-Message: " + e.getMessage());
     }
   }
 
@@ -52,6 +54,20 @@ public class PointGroupsUtility
     prop.load(new FileInputStream(new File(file)));
 
     return prop;
+  }
+
+  /**
+   * Get the location of a symmetry relative to the `symmetries` folder in the
+   * resources.
+   * 
+   * @param symmetry
+   * @return
+   * @throws IOException
+   */
+  public static File getSymmetry(String symmetry)
+    throws IOException {
+    URI file = getResource("symmetries/" + symmetry);
+    return new File(file);
   }
 
   /**
