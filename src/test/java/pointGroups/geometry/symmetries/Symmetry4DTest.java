@@ -55,22 +55,23 @@ public class Symmetry4DTest
     Symmetry4D[] a = new Symmetry4D[groups.size()];
     a = groups.toArray(a);
     Symmetry4D[] b =
-        { Symmetry4D.IxO, Symmetry4D.IxT, Symmetry4D.OxT, Symmetry4D.IxI,
-            Symmetry4D.IxI60, Symmetry4D.IxIQuer60, Symmetry4D.IxIPlus60,
-            Symmetry4D.IxIQuerPlus60, Symmetry4D.OxO, Symmetry4D.OxO2,
+        { Symmetry4D.TxT, Symmetry4D.TxT3, Symmetry4D.TxTQuer3,
+            Symmetry4D.TxT12, Symmetry4D.TxTQuer12, Symmetry4D.TxTPlus12,
+            Symmetry4D.TxTQuerPlus12, Symmetry4D.OxO, Symmetry4D.OxO2,
             Symmetry4D.OxO6, Symmetry4D.OxO24, Symmetry4D.OxOPlus24,
-            Symmetry4D.OxOQuerPlus24, Symmetry4D.TxT, Symmetry4D.TxT3,
-            Symmetry4D.TxTQuer3, Symmetry4D.TxT12, Symmetry4D.TxTQuer12,
-            Symmetry4D.TxTPlus12, Symmetry4D.TxTQuerPlus12 };
+            Symmetry4D.OxOQuerPlus24, Symmetry4D.IxI, Symmetry4D.IxI60,
+            Symmetry4D.IxIQuer60, Symmetry4D.IxIPlus60,
+            Symmetry4D.IxIQuerPlus60, Symmetry4D.IxO, Symmetry4D.IxT,
+            Symmetry4D.OxT };
     assertArrayEquals(b, a);
 
     Collection<Symmetry4D> subgroups = Symmetry4D.subgroups.get(Symmetry4D.IxO);
     Symmetry4D[] a1 = new Symmetry4D[subgroups.size()];
     a1 = subgroups.toArray(a1);
     Symmetry4D[] b1 =
-        { Symmetry4D.IxO, Symmetry4D.IxT, Symmetry4D.TxT, Symmetry4D.TxT3,
-            Symmetry4D.TxTQuer3, Symmetry4D.TxT12, Symmetry4D.TxTQuer12,
-            Symmetry4D.TxTPlus12, Symmetry4D.TxTQuerPlus12 };
+        { Symmetry4D.TxT, Symmetry4D.TxT3, Symmetry4D.TxTQuer3,
+            Symmetry4D.TxT12, Symmetry4D.TxTQuer12, Symmetry4D.TxTPlus12,
+            Symmetry4D.TxTQuerPlus12, Symmetry4D.IxO, Symmetry4D.IxT };
     assertArrayEquals(b1, a1);
   }
 
