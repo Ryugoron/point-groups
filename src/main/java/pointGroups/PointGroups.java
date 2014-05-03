@@ -70,16 +70,11 @@ public class PointGroups
         }
       }
       logger.info("Entered Path is:" + ps.s);
-      // create two files because while running the first time, the one in
-      // target doesnt exist.
-      File file = new File("./src/main/resources/settings.ini");
-      File file2 = new File("./target/classes/settings.ini");
+
+      File file = new File("./settings.ini");
       try {
         System.out.println(file.createNewFile());
         BufferedWriter output = new BufferedWriter(new FileWriter(file));
-        output.write("POLYMAKEPATH = " + ps.s);
-        output.close();
-        output = new BufferedWriter(new FileWriter(file2));
         output.write("POLYMAKEPATH = " + ps.s);
         output.close();
       }
