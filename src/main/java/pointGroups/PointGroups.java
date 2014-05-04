@@ -73,7 +73,7 @@ public class PointGroups
 
       File file = new File("./settings.ini");
       try {
-        System.out.println(file.createNewFile());
+        file.createNewFile();
         BufferedWriter output = new BufferedWriter(new FileWriter(file));
         output.write("POLYMAKEPATH = " + ps.s);
         output.close();
@@ -82,7 +82,7 @@ public class PointGroups
         logger.severe("settings.ini not proper initialised");
         logger.fine(e.getStackTrace().toString());
       }
-      polyCmd = PointGroupsUtility.getPolymakePath();
+      polyCmd = new File(ps.s);
     }
 
     // No info where to find polymake
@@ -100,7 +100,6 @@ public class PointGroups
       // Create Mainframe (copy from MainFrame.java)
       try {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
         SwingUtilities.invokeLater(new Runnable() {
           @Override
           public void run() {
