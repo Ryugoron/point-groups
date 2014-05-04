@@ -1,13 +1,4 @@
 \section{Umsetzung}
-
-\subsection{Verwendete Softwarehilfsmittel}
-    \begin{itemize}
-        \item jReality~\cite{jreality}
-        \item polymake~\cite{polymake}
-        \item maven~\cite{maven}
-        \item jUnit
-    \end{itemize}
-    
 \subsection{Softwarearchitektur}
      ein paar sätze zur Abbildung~\ref{fig:architecture}
      \begin{figure}[tbh]
@@ -21,6 +12,14 @@
         \item Aufbereitung der Daten durch GUI (siehe~\ref{ssec:gui})
     \end{itemize}
     Grobidee skizzieren: Wir verwenden polymake als externen rechner und verwalten zustand/gui selbst. anzeige wird mit hilfe von jreality gemacht....integriert, blabla.
+
+    \subsubsection{Verwendete Softwarehilfsmittel}
+       \begin{itemize}
+           \item jReality~\cite{jreality} jeweils 1-2 saetze was /wofür das ist
+           \item polymake~\cite{polymake} jeweils 1-2 saetze was /wofür das ist
+           \item maven~\cite{maven} jeweils 1-2 saetze was /wofür das ist
+           \item jUnit jeweils 1-2 saetze was /wofür das ist
+        \end{itemize}
 
     \subsubsection{Informationsfluss\label{ssec:flow}}
         \begin{figure}[tbh]
@@ -93,15 +92,13 @@
 %            wobei Concrete durch konkrete Namen ersetzt werden kann.
             
         \subsubsection{GUI\label{ssec:gui}}
-             ein bisschen erzählen, woher jreality kommt und warum wir es benutzen. was es kann, wie wir es bisschen anpassen mussten.
+             MARCEL: ein bisschen erzählen, woher jreality kommt und warum wir es benutzen (in frame eingebettet etc). was es kann, wie wir es bisschen anpassen mussten.
                 
 \subsection{Implementierung von Berechnungen}
-    \begin{itemize}
-        \item Symmetriegruppen (Berechnung mittels Generatoren, hart kodiert, Darstellung/Repräsentation)
-        \item Fundamentalbereich (Berechnung, Darstellung/Repräsentation)
-    \end{itemize}
-    
+    \subsubsection{Symmetriebilder}
+        ALEX SCHREIBT HIER KURZEN PSEUDOCODE    
     \subsubsection{Symmetriegruppen}
+        OLLI SCHREIBT HIER ZU .... Symmetriegruppen (Berechnung mittels Generatoren, hart kodiert, Darstellung/Repräsentation)
     \subsubsection{Fundamentalbereich}
          In Abschnitt \ref{fundamentalbereich} wurde in Definition \ref{fundamentalbereich:voronoi} der Voronoi-Fundamentalbereich beschrieben. Wir wollen eine dieser Zellen
          nehmen und Visualisieren. Da wir einen Abschnitt der $S^3$ nicht leicht visualsieren können, benötigen wir zunächst eine Projektion das Vornoi-Fundamentalbereiches auf
