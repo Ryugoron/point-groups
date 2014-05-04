@@ -1,10 +1,10 @@
 package pointGroups.geometry.symmetries;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -449,9 +449,9 @@ public enum Symmetry4D
   public static Collection<Rotation4D> readSymmetryGroup(final Symmetry4D sym)
     throws FileNotFoundException, IOException, ClassNotFoundException {
 
-    File f = PointGroupsUtility.getSymmetry(sym.filename + ".sym");
+    InputStream is = PointGroupsUtility.getSymmetry(sym.filename + ".sym");
 
-    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
+    ObjectInputStream ois = new ObjectInputStream(is);
     Object o = ois.readObject();
     // TODO: ugly
     Collection<Rotation4D> group = ((Collection<Rotation4D>) o);

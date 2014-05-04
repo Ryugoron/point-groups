@@ -1,13 +1,15 @@
 package pointGroups.util;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 
 import pointGroups.PointGroups;
@@ -23,7 +25,7 @@ public class PointGroupsUtility
    * @returned.addAll(this.edges);
    * @throws FileNotFoundException
    */
-  public static URI getResource(String file)
+  public static URI getResource(final String file)
     throws FileNotFoundException {
 
     try {
@@ -32,6 +34,18 @@ public class PointGroupsUtility
       return url.toURI();
     }
     catch (NullPointerException | URISyntaxException e) {
+      throw new FileNotFoundException("File " + file +
+          " couldn't be found. Error-Message: " + e.getMessage());
+    }
+  }
+
+  public static InputStream getResourceAsStream(final String file)
+    throws FileNotFoundException {
+    try {
+      ClassLoader classLoader = PointGroups.class.getClassLoader();
+      return classLoader.getResourceAsStream(file);
+    }
+    catch (NullPointerException e) {
       throw new FileNotFoundException("File " + file +
           " couldn't be found. Error-Message: " + e.getMessage());
     }
@@ -50,8 +64,8 @@ public class PointGroupsUtility
 
     Properties prop = new Properties();
 
-    URI file = getResource("settings.ini");
-    prop.load(new FileInputStream(new File(file)));
+    InputStream is = getResourceAsStream("settings.ini");
+    prop.load(is);
 
     return prop;
   }
@@ -64,10 +78,11 @@ public class PointGroupsUtility
    * @return
    * @throws IOException
    */
-  public static File getSymmetry(String symmetry)
+  public static InputStream getSymmetry(final String symmetry)
     throws IOException {
-    URI file = getResource("symmetries/" + symmetry);
-    return new File(file);
+    return getResourceAsStream("symmetries/" + symmetry);
+    // URI file = getResource("symmetries/" + symmetry);
+    // return new File(file);
   }
 
   /**
@@ -78,7 +93,7 @@ public class PointGroupsUtility
    * @return
    * @throws IOException
    */
-  public static URL getImage(String image)
+  public static URL getImage(final String image)
     throws IOException {
     URI file = getResource("images/" + image);
     try {
@@ -98,8 +113,15 @@ public class PointGroupsUtility
    */
   public static File getPolymakeDriverPath()
     throws IOException {
-    URI file = getResource("perl/pmDriver.pl");
-    return new File(file);
+    File file = new File("asdasdadsadasd.pl");
+    file.deleteOnExit();
+    Files.copy(getResourceAsStream("perl/pmDriver.pl"), file.toPath(),
+        StandardCopyOption.REPLACE_EXISTING);
+    file.deleteOnExit();
+    return file;
+
+    // URI file = getResource("perl/pmDriver.pl");
+    // return new File(file);
   }
 
   /**
