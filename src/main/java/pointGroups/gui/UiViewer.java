@@ -85,8 +85,7 @@ public class UiViewer
 
           Viewer view = viewer.getViewer();
 
-          Appearance ap = view.getSceneRoot().getAppearance();
-          setupAppearance(ap);
+          view.getSceneRoot().setAppearance(appearanceRoot);
 
           component.setLayout(new BorderLayout());
           component.add((Component) view.getViewingComponent(),
@@ -104,8 +103,7 @@ public class UiViewer
 
   protected final Container component;
   protected final SceneGraphComponent sceneRoot = new SceneGraphComponent();
-  // protected final Appearance appearanceRoot = setupAppearance(new
-  // Appearance());
+  protected final Appearance appearanceRoot = setupAppearance(new Appearance());
   protected final UiViewerToolsPlugin toolsPlugin = new UiViewerToolsPlugin();
 
   /**
