@@ -148,6 +148,7 @@
     <junit.junit.version>[4.10,)</junit.junit.version>
     <org.jogamp.gluegen.gluegen-rt-main.version>[2.0.2,)</org.jogamp.gluegen.gluegen-rt-main.version>
     <org.jogamp.jogl.jogl-all-main.version>[2.0.2,)</org.jogamp.jogl.jogl-all-main.version>
+    <skipTests>true</skipTests>
   </properties>
 
   <url>https://github.com/Ryugoron/point-groups</url>
