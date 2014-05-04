@@ -2,8 +2,12 @@ package pointGroups;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -20,7 +24,9 @@ import pointGroups.gui.event.types.ScaleFundamentalDomainEvent;
 import pointGroups.gui.event.types.Schlegel3DComputeEvent;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.util.ExternalCalculationWrapper;
+import pointGroups.util.LoggerFactory;
 import pointGroups.util.PointGroupsUtility;
+import pointGroups.util.PointerToString;
 import pointGroups.util.polymake.wrapper.PolymakeWrapper;
 
 
@@ -28,12 +34,67 @@ public class PointGroups
 {
   static MainFrame mainframe;
   static ExternalCalculationWrapper polymakeWrapper;
+  static final Logger logger = LoggerFactory.get(PointGroups.class);
 
   public static void main(final String[] args)
     throws IOException {
+    File polyCmd;
+    File driverPath = null;
+    try {
+      driverPath = PointGroupsUtility.getPolymakeDriverPath();
+    }
+    catch (FileNotFoundException e) {
+      final String err =
+          "Standard set-up of project was changed!\n"
+              + "As a result, the polymake driver file 'pmDriver.pl' was not found. \n"
+              + "Please restore pmDriver.pl at its original path. Program is terminating.";
 
-    File polyCmd = PointGroupsUtility.getPolymakePath();
-    File driverPath = PointGroupsUtility.getPolymakeDriverPath();
+      logger.severe(err);
+      System.err.println(err);
+      System.exit(1);
+    }
+
+    try {
+      polyCmd = PointGroupsUtility.getPolymakePath();
+    }
+    catch (FileNotFoundException e) {
+      PointerToString ps = new PointerToString();
+      new StartupErrorFrame(ps);
+      synchronized (ps) {
+        try {
+          ps.wait();
+        }
+        catch (InterruptedException e1) {
+          // TODO Auto-generated catch block
+          e1.printStackTrace();
+        }
+      }
+      logger.info("Entered Path is:" + ps.s);
+      // create two files because while running the first time, the one in
+      // target doesnt exist.
+      File file = new File("./src/main/resources/settings.ini");
+      File file2 = new File("./target/classes/settings.ini");
+      try {
+        System.out.println(file.createNewFile());
+        BufferedWriter output = new BufferedWriter(new FileWriter(file));
+        output.write("POLYMAKEPATH = " + ps.s);
+        output.close();
+        output = new BufferedWriter(new FileWriter(file2));
+        output.write("POLYMAKEPATH = " + ps.s);
+        output.close();
+      }
+      catch (IOException e2) {
+        logger.severe("settings.ini not proper initialised");
+        logger.fine(e.getStackTrace().toString());
+      }
+      polyCmd = PointGroupsUtility.getPolymakePath();
+    }
+
+    // No info where to find polymake
+    if (polyCmd == null) {
+      logger.severe("Creation of settings.ini failed, polymake cannot be found. Exiting");
+      System.exit(1);
+    }
 
     // Check whether Polymake exists on the system
     if (!polyCmd.isFile()) {
@@ -63,18 +124,6 @@ public class PointGroups
       catch (Exception e) {
         e.printStackTrace();
       }
-
-      // // Only for debugging purposes
-      // EventDispatcher.get().addHandler(SchlegelResultHandler.class,
-      // new SchlegelResultHandler() {
-      //
-      // @Override
-      // public void onSchlegelResultEvent(final SchlegelResultEvent event) {
-      // Logger.getGlobal().info("Got Schlegelresult!");
-      // Logger.getGlobal().info(event.getResult().points.toString());
-      // }
-      // });
-      // // End
 
       // Create Wrapper and HUB
       polymakeWrapper =

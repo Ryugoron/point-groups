@@ -5,46 +5,125 @@
 \subsection{Quaternionen}\label{quaternionen}
 Zur einheitlichen Darstellung von drei- und vierdimensionalen Rotationen und Spiegelungen werden
 sog. \textbf{Quaternionen} benutzt.
-Die Menge der Quaternionen $\mathbb{H}$ bilden einen Erweiterungskörper der komplexen Zahlen $\mathbb{C}$ und besitzen überraschend praktische Eigenschaften für den Einsatz bei geometrischen Anwendungen. Die Algebra der Quaternionen wurde 1843 von Hamilton entwickelt~\cite{hazewinkel2004algebras}.
+Die Menge der Quaternionen $\mathbb{H}$ bilden einen Erweiterungskörper der komplexen Zahlen $\mathbb{C}$ und besitzen überraschend praktische Eigenschaften für den Einsatz bei geometrischen Anwendungen. Die Algebra der Quaternionen wurde 1843 von Hamilton entwickelt~\cite{hazewinkel2004algebras} und seitdem intensiv erforscht.
 
 \begin{definition}[Quaternion]
-Es seien $a,b,c,d \in \mathbb{R}$ und $i,j,k$ imaginäre Einheiten für die gilt:
+Es seien $a,b,c,d \in \mathbb{R}$ und $i,j,k$ imaginäre Einheiten (durch Adjunktion) für die gilt:
 \begin{equation*}\begin{split}
 i^2 = j^2 = k^2 = ijk = -1
 \end{split}\end{equation*}
-....
-Dann heißt die Zahl $p = a + bi + cj + dk$ Quaternion. Die Menge der Quaternionen wird mit $\mathbb{H}$ bezeichnet
-und ist äquivalent zu rellen Vektorraum $\mathbb{R}^4$.
+Dann heißt die Zahl $q = a + bi + cj + dk$ Quaternion.
 \end{definition}
-....
-\begin{definition}[Kojugiertes Quaternion, Norm, Reziprokwert]
-...
-$q^* := a - bi - cj - dk$ konjugiert
-$\| q \| := \sqrt{q q^*}$ norm
+Dabei sind die Bezeichnungen $Re(.)$ und $Im(.)$ für den Real- und Imiginärteil eines Quaternions wie üblich definiert.
+Die Menge der Quaternionen wird mit $\mathbb{H}$ bezeichnet und ist äquivalent zu reellen Vektorraum $\mathbb{R}^4$.
+Man kann sich also ein Quaternion $q \in \mathbb{H}$ als Vektor auffassen; dies ist speziell für die Interpretation
+von Quaternionen als Rotationsoperatoren hilfreich.
 
+Wie auch bei den komplexen Zahlen $\mathbb{C}$, können die üblichen Rechnenoperationen auf Quaternionen erweitert werden:
+
+\begin{definition}[Kojugiertes Quaternion, Norm, Betrag] $\quad$ \\
+Sei $q = a + bi + cj + dk \in \mathbb{H}$. Dann heißt das Quaternion
+\begin{equation*}
+\overline{q} := a - bi - cj - dk
+\end{equation*} das zu $q$ konjugierte Quaternion. \\
+Die Norm von $q$ ist gegeben durch $Norm(q) := a^2 + b^2 + c^2 + d^2 = q\overline{q} = \overline{q}q$, der Wert
+$\| q \| := \sqrt{Norm(q)} = \sqrt{q \overline{q}}$ wird Betrag (oder Länge) von $q$ genannt.
 \end{definition}
+\noindent Der Betrag $\|q\|$ eines Quaternions $q = a + bi + cj + dk$ ist identisch mit der (euklidischen) Norm des Vektors $(a,b,c,d) \in \mathbb{R}^4$. Quaternionen mit Norm 1 spielen im Folgenden eine besondere Bedeutung.
 
-....
-
-\begin{definition}[Einheitsquaternion]
-Ein Quaternion $q$ heißt Einheitsquaternion falls $\|q\| = 1$.
+\begin{definition}[Einheitsquaternion, Reines Quaternion]
+Ein Quaternion $q$ heißt 
+\begin{itemize}
+\item Einheitsquaternion, falls $\|q\| = 1$
+\item Reines Quaternion, falls $Re(q) = 0$
+\end{itemize}\vspace{-0.9cm}
 \end{definition}
+Wegen $\|q\| = 1$ folgt für das Inverse von Einheitsquaternionen dass $q^{-1} = \overline{q}$. Das ist sehr praktisch,
+da somit eine effiziente Berechnungsvorschrift für das Invertieren von Einheitsquaternionen vorliegt.
 
 \subsection{Quaternionen und dreidimensionale Symmetrien}
-Verwendung von Einheitsquaternionen für Rotationen 
-Einheitsquaternionen praktisch.
+Die Benutzung von Quaternionen für dreidimensionale Symmetrien ist zwar nicht so intuitiv wie z.B. die Benutzung von Matrizen,
+erlaubt einem jedoch eine sehr elegante und schlanke Darstellung von Rotationen~\cite{conway2003}~\cite{du1964}: 
 
-Eulers Rotationstheorem: Jede Drehung oder Folge von Drehungen um einen festen Punkt kann für eine einfache Drehung um einen Winkel $\theta$ und eine Achse (sog. Eulerachse) durch diesen festen Punkt beschrieben werden. Dafür identizifiert man einen 
-Drehwinkel $\theta$ und die Drehachse $\overline{u} = (u_1,u_2,u_3)$.
-Dann beschreibt das Quaternion $q = e^{\frac{1}{2}\theta(u_1i + u_2j + u_3k)}$ diese Drehung.
-Die Rotationsfunktion wird dann von der Abbildung $[q]: p \mapsto q p q^{-1}$ beschrieben (entspricht der Konjugation von p durch q).
-Dadurch, dass bei Einheitsquaternionen gilt $q^{-1} = q^*$, wird auch Rechenaufwand gespart.
+Nach Eulers Rotationstheorem kann jede Drehung oder Folge von Drehungen um einen festen Punkt durch eine einzige Drehung beschrieben werden.
+Hierfür benötigen wir zum einen den Drehwinkel $\theta$ und eine Achse (die sog. Euler-Achse) die durch eben den festen Punkt geht.
+Der Drehwinkel $\theta$ ist dabei, wie üblich, ein Skalar; die Euler-Achse $\overrightarrow{u}$ wird durch einen dreidimensionalen Einheitsvektor $\overrightarrow{u} = (u_1,u_2,u_3)$ dargestellt. Diese vier Werte der Rotation (also $\theta, u_1, u_2, u_3$) können durch eine simple
+Berechnungsvorschrift in einen (Einheits-)Quaternion kodiert und dann anschließend durch simple Rechenoperationen
+angewendet werden.
+
+Hierfür wird die Eulerachse $\overrightarrow{u}$ als Quaternion interpretiert; es ergibt sich das reine Einheitsquaternion
+$u = u_1 i + u_2 j + u_3 k$. Das Rotationsquaternion $q$ kann dann nach Eulers Formel wie folgt berechnet werden:
+\begin{equation*}
+q = e^{\frac{1}{2} \theta \left( u_1 i + u_2 j + u_3 k \right)} = \cos \frac{1}{2} \theta + \left( u_1 i + u_2 j + u_3 k \right) \sin \frac{1}{2} \theta
+\end{equation*}
+
+\noindent Wollen wir nun einen Punkt $(p_x, p_y, p_z) \in \mathbb{R}^3$ gemäß $q$ rotieren, so wird der Punkt wiederum als reines Quaternion
+$p = p_x i + p_y j + p_z k$ interpretiert und schlicht die Konjugation mit $q$ berechnet:
+Die durch $q$ induzierte Rotationsfunktion $[.]$ ergibt sich dann also durch die Abbildung
+\begin{equation*}
+[q]: p \mapsto q p q^{-1}
+\end{equation*}
+Diese Berechnung ist mit zwei Quaternionen-Multiplikationen nicht besonders aufwändig.
+Da es sich bei $p$ um ein Einheitsquaternion handelt, gilt außerdem $q^{-1} = \overline{q}$ -- dieser Berechnungsaufwand
+kann also beinahe vernachlässigt werden. \\
+
+\noindent Für Spiegelungen können Quaternionen ebenso elegant benutzt werden~\cite{1946}: Soll ein Punkt  $(p_x, p_y, p_z) \in \mathbb{R}^3$
+an einer Ebene $\Pi: vn = 0$ durch den Ursprung mit Normalenvektor $n$ gespielt werden, so wird dies durch die Funktionsvorschrift $].[$ mit
+\begin{equation*}
+]n[: p \mapsto n p n
+\end{equation*}
+beschrieben, wobei sich $p$ wieder durch Interpretation von $(p_x, p_y, p_z)$ als reines Quaternion ergibt.
 
 \subsection{Quaternionen und vierdimensionale Symmetrien}
-....
+OLLI SCHREIBT HIER ETWAS
 
 \subsection{Punktgruppen}
-...gibts hier was interessantes?
+ALEX SCHREIBT HIER KURZE SAETZE...gibts hier was interessantes?
 
 \subsection{Fundamentalbereiche}\label{fundamentalbereich}
-Kurz: Was ist das, wofür braucht man das? Wie kann man es ausrechnen (nicht in polymake oder so, nur rein mathematisch)?
+
+Wie bereits erwähnt wurde, ist eine Punktegruppe die Gruppenwirkung einer Symmetriegruppe auf ein gegebenes Element im zu grundeliegendem Raum der Symmetrieoperationen.
+Für eine Gruppenwirkung können wir zunächst die Verallgemeinerung der Punktegruppe definiere.
+
+\begin{definition}[Gruppenwirkung]\label{fundamentalbereich:wirking} \mbox{}\\
+ Eine (Links-)Wirkung einer Gruppe $(G, \star)$ auf eine Menge $X$ is eine Funktion
+   $$
+      \rhd \, : \, G \times X \longrightarrow X
+   $$
+   mit den Eigenschaften
+   \begin{itemize}
+      \item $(g \star h) \rhd x = g \rhd (h \rhd x)$ für alle $g,h \in G$ und $x \in X$.
+      \item $e \rhd x = x$ für alle $x \in X$ und $e$ neutrales Element von $G$.
+   \end{itemize}
+\end{definition}
+
+\begin{definition}[Orbit] \label{fundamentalbereich:orbit} \mbox{}\\
+  Für eine Gruppe $(G, \star)$ mit Gruppenwirkung $\rhd$ auf $X$ ist für ein Element $x \in X$ die \emph{Bahn von $x$ bezüglich $G$} definiert als
+   $$
+      G \rhd x := \left\{ g \rhd x \, | \, g \in G \right\}
+   $$
+\end{definition}
+
+Über die Orbite können wir eine Äquivalenzrelation beschreiben, mit $x_1 \sim x_2$ genau dann wenn $x_2 \in G \rhd x_1$ und $G \setminus X$ ist die Menge der Representanten.\\
+
+Nun ist $G \setminus X$ schon annährend ein Fundamentalbereich falls $G$ eine Symmetriegruppe ist. Da Symmetrien auf $\mathbb{R}^n$ nun aber Isometrien sind, wissen wir, dass die Länge unserer Vektoren immer erhalten bleibt. Daher interessieren uns bei der Betrachtung nur Vektoren gleicher Länge. Wir definieren daher den Fundamentalbereich wie folgt.\\
+
+\begin{definition}[Fundamentalbereich]\label{fundamentalbereich:def} \mbox{}\\
+   Sei $G \subseteq O(n)$ eine Symmetriegruppe auf $\mathbb{R}^n$.\\
+
+   Dann ist ein Fundamentalbereich $G \setminus S^{n-1}$ -- ein Representatensystem für die Wirkung auf die $n-1$ - Sphäre.
+\end{definition}
+
+Für die Darstellung der Fundamentalbereiche, wählen wir nur spezielle zusammenhängende Representanten. Wir wählen die folgenden Representanten.
+
+\begin{definition}[Voronoi - Fundamentalbereich]\label{fundamentalbereich:voronoi} \mbox{}\\
+   Sei $O \subset 2^{S^{n-1}}$ die Menge der Orbits der Gruppenwirkung von $G$ auf $S^{n-1}$ und $x \in S^{n-1}$ ein ausgezeichneter Punkt.\\
+
+   Dann ist der Voronoi - Fundamentalbereich die Menge
+   $$
+      VF(x) := \left\{ \underset{y\in o}{\text{argmin}} \, d(x,y) \, |  o \in O\right\}.
+   $$
+   Damit ist die Menge der $VF(y)$ mit $y \in G \rhd x$ eine Voronoidiagram, da wir jeweils die Punkte mit Minimalem Abstand genommen haben.
+\end{definition}
+
+

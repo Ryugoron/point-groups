@@ -2,14 +2,11 @@ package pointGroups.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
 import pointGroups.geometry.Fundamental;
-import pointGroups.geometry.Point3D;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointEvent;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointHandler;
@@ -30,7 +27,6 @@ import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.util.LoggerFactory;
 import pointGroups.util.jreality.JRealityUtility;
 import pointGroups.util.point.PointUtil;
-import pointGroups.util.polymake.FundamentalTransformer;
 import de.jreality.geometry.Primitives;
 import de.jreality.scene.Appearance;
 import de.jreality.scene.Geometry;
@@ -59,6 +55,9 @@ public class PointPicker
   private final boolean responsive;
   private double scale = 1; // TODO Initialize ändern
 
+  private final double SHOWSIZE = 3.0;
+  private double showScale = 1; // Wird von einer neuen Symmetrie geändert.
+
   private Symmetry3DChooseEvent lastSymmetry3DChooseEvent;
   private Symmetry4DChooseEvent lastSymmetry4DChooseEvent;
 
@@ -69,30 +68,10 @@ public class PointPicker
     public final Appearance pointAppearance = new Appearance();
     public final SceneGraphComponent fundamental = new SceneGraphComponent();
 
-    public void testShow() {
-      Collection<Point3D> points = new ArrayList<Point3D>();
-      points.add(new Point3D(1, 1, 1));
-      points.add(new Point3D(1, 1, -1));
-      points.add(new Point3D(1, -1, 1));
-      points.add(new Point3D(-1, 1, 1));
-      points.add(new Point3D(1, -1, -1));
-      points.add(new Point3D(-1, 1, -1));
-      points.add(new Point3D(-1, -1, 1));
-      points.add(new Point3D(-1, -1, -1));
-      FundamentalTransformer fT = new FundamentalTransformer(points);
-      fT.setResultString("1 0 0 0\n&\n1 1 0 0\n1 0 0 1\n1 0 1 0\n1 0 0 0\n");
-      dispatcher.fireEvent(new FundamentalResultEvent(
-          fT.transformResultString()));
-    }
-
     @Override
     public void onInitialized() {
       SceneGraphComponent root = getSceneRoot();
 
-      // Test for Fundamental
-      testShow();
-
-      // fundamental.setGeometry(Primitives.cylinder(15));
       point.setGeometry(Primitives.point(new double[] { 0, 0, 0 }));
 
       setPointAppearance(pointAppearance);
@@ -206,7 +185,7 @@ public class PointPicker
   }
 
   @Override
-  public void onSchlegelResultEvent(FundamentalResultEvent event) {
+  public void onFundamentalResultEvent(FundamentalResultEvent event) {
     this.isSet = true;
     this.fundamental = event.getResult();
     // Maybe check for dimension
@@ -216,6 +195,8 @@ public class PointPicker
   // Maybe i need this.
   @Override
   public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
+    uiViewer.setDimensionMode(uiViewer.uiState.isPointPicker3DMode());
+
     if (event.switchedTo3D()) {
       logger.fine("Point Picker switched to 2D Mode.");
       this.dim = 2;
@@ -248,6 +229,8 @@ public class PointPicker
     double[] selComp = new double[this.dim];
     for (int i = 0; i < this.dim; i++)
       selComp[i] = point[i];
+    // Show Scale revert
+    if (fundamental.isKnown()) selComp = PointUtil.div(showScale, selComp);
     double[] resP = this.fundamental.revertPoint(selComp);
 
     logger.fine("Point Picker calculated Point (" + resP[0] + "," + resP[1] +
@@ -275,10 +258,21 @@ public class PointPicker
 
   protected void showFundamental() {
     logger.info("Showing new Fundamental Domain.");
+
     Geometry g;
     // Calculate the new fundamental
     if (this.fundamental.isKnown()) {
-      g = JRealityUtility.generateCompleteGraph(this.fundamental.getVertices());
+      double[][] points = this.fundamental.getVertices();
+      double dia = PointUtil.diameter(points);
+      showScale = SHOWSIZE / dia;
+      int[][] edges = JRealityUtility.convertEdges(this.fundamental.getEdges());
+      int[][] faces = null;
+
+      for (int i = 0; i < points.length; i++) {
+        points[i] = PointUtil.mult(showScale, points[i]);
+      }
+
+      g = JRealityUtility.generateGraph(points, edges, faces);
     }
     else {
       if (this.dim == 2) g = JRealityUtility.circle(0, 0, 1);
@@ -317,12 +311,14 @@ public class PointPicker
   @Override
   public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
     this.lastSymmetry4DChooseEvent = event;
+    this.dim = 3;
 
   }
 
   @Override
   public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
     this.lastSymmetry3DChooseEvent = event;
+    this.dim = 2;
   }
 
   @Override

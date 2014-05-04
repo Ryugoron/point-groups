@@ -1,5 +1,6 @@
 package pointGroups.geometry;
 
+
 /**
  * Interface to the Fundamental Domain. It supports the translation of a point
  * in the Domain to the symmetry domain, because on event level we operate on
@@ -21,12 +22,20 @@ public interface Fundamental
   /**
    * Returns the Points on the boundary for the fundamental domain. This is a
    * representation as a V-Polytope. Should be emtpy, if the fundamental domain
-   * is not known.
+   * is not known.edges
    * 
    * @return Points on the boundary of the fundamental domain.
    */
   public double[][] getVertices();
 
+  
+  /**
+   * Returns the indices of the vertices, which are connected by an edge.
+   *  
+   * @return Edges of the fundamental region
+   */
+  public Edge[] getEdges();
+  
   /**
    * Accepts a point of the fundamental domain representation and translates it
    * back to the symmetry.

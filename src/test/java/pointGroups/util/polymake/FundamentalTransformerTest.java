@@ -1,14 +1,14 @@
 package pointGroups.util.polymake;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import pointGroups.geometry.Edge;
 import pointGroups.geometry.Fundamental;
-import pointGroups.geometry.KnownFundamental;
 import pointGroups.geometry.Point3D;
 import pointGroups.util.point.PointUtil;
 
@@ -18,40 +18,48 @@ public class FundamentalTransformerTest
 {
 
   public static final String POLYMAKE_RESULT =
-      "1 0 0 0\n&\n3 3 3 3\n3 3 3 -3\n3 3 -3 3\n3 -3 3 3\n";
+      "1\n1 0 0 3\n1 0 3 0\n1 3 0 0\n-----\n{0 1}\n{0 2}\n{1 2}\n-----\n0 0 1 0\n0 0 0 1\n0 1 0 0";
 
   public static final String POLYMAKE_SCRIPT =
-      "my $points = new Matrix<Rational>([[1.0, 1.0, 1.0, 1.0],[1.0, 1.0, 1.0, -1.0],[1.0, 1.0, -1.0, 1.0],[1.0, -1.0, 1.0, 1.0],[1.0, 1.0, -1.0, -1.0],[1.0, -1.0, 1.0, -1.0],[1.0, -1.0, -1.0, 1.0],[1.0, -1.0, -1.0, -1.0]]);my $v = new VoronoiDiagram(SITES=>$points);print $v->VORONOI_VERTICES->[0];print \"\\n\";my $adj = $v->DUAL_GRAPH->ADJACENCY->adjacent_nodes(0);my $s0 = $points->[0];my $s1 = $points->[$adj->[0]];my $s2 = $points->[$adj->[1]];my $s3 = $points->[$adj->[2]];print \"&\\n\";print $s0;print \"\\n\";print $s1; print \"\\n\";print $s2; print \"\\n\";print $s3; print \"\\n\";";
+      "my $hyper = new Matrix<Rational>([[0.0, 0.0, 1.0, 0.0],[0.0, 0.0, 0.0, 1.0],[0.0, 1.0, 0.0, 0.0]]);my $aff = new Matrix<Rational>([[-3.0 , 1.0 , 1.0 , 1.0]]);my $poly = new Polytope(INEQUALITIES=>$hyper, EQUATIONS=>$aff);print $poly->BOUNDED;print \"\\n\";print $poly->VERTICES;print \"-----\\n\";print $poly->GRAPH->EDGES;print \"-----\\n\";print $poly->FACETS;";
 
-  Collection<Point3D> points;
+  public static final double EPSILON = 0.00001;
+  
+  public static final double[][] FUND_VERTICES = new double[][]{ new double[] {-Math.sqrt(3d/2d), 3 / Math.sqrt(2)}, new double[] {Math.sqrt(6), 0}, new double[] {-Math.sqrt(3d/2d), -3 / Math.sqrt(2)} };
+
+  public static List<Edge> edges;
+  
+  List<Point3D> points;
+  Point3D center;
+
   FundamentalTransformer fT;
+  
+  Fundamental fund;
+  
   double[] testCoordinate;
   double[] outside;
   double[] inside;
 
+  
+
   @Override
   public void setUp() {
+    center = new Point3D(1.0, 1.0, 1.0);
     points = new ArrayList<Point3D>();
-    points.add(new Point3D(1, 1, 1));
-    points.add(new Point3D(1, 1, -1));
-    points.add(new Point3D(1, -1, 1));
-    points.add(new Point3D(-1, 1, 1));
-    points.add(new Point3D(1, -1, -1));
-    points.add(new Point3D(-1, 1, -1));
-    points.add(new Point3D(-1, -1, 1));
-    points.add(new Point3D(-1, -1, -1));
-    fT = new FundamentalTransformer(points);
+    points.add(new Point3D(1.0, 0.0, 1.0));
+    points.add(new Point3D(1.0, 1.0, 0.0));
+    points.add(new Point3D(0.0, 1.0, 1.0));
+    
+    edges = new ArrayList<Edge>();
+    edges.add(new Edge(0, 1));
+    edges.add(new Edge(0, 2));
+    edges.add(new Edge(1, 2));
 
-    testCoordinate = new double[] { 0.25, 0.25 };
-    inside = new double[] { 0.2, 0.2 };
-    outside = new double[] { 1.5, 1.2 };
-  }
-
-  @Test
-  public void testTransformResult() {
+    fT = new FundamentalTransformer(center, points);
     fT.setResultString(POLYMAKE_RESULT);
-    assertResult(fT.transformResultString());
+    fund = fT.transformResultString();
   }
+
 
   @Test
   public void testScript() {
@@ -59,53 +67,52 @@ public class FundamentalTransformerTest
   }
 
   @Test
-  public void testAffine() {
-    fT.setResultString(POLYMAKE_RESULT);
+  public void testNormalVector() {
+    double[] normalInFun =
+        PointUtil.applyMatrix(fT.n2f, center.getComponents());
 
-    assertAffine(fT.transformResultString());
+    // The normalvector should be (1,0,0)
+    for (int i = 1; i < normalInFun.length; i++) {
+      assertTrue (normalInFun[i] < EPSILON);
+    }
   }
-
+  
   @Test
-  public void testInFundamental() {
-    fT.setResultString(POLYMAKE_RESULT);
-    Fundamental fund = fT.transformResultString();
-
-    assertTrue(fund.isKnown());
-    // assertTrue(fund.inFundamental(inside));
+  public void testVertices() {
+    double[][] vert = fund.getVertices();
+    for(int i = 0; i < vert.length; i++){
+      for(int j = 0; j < vert[i].length; j++) {
+        assertTrue(Math.abs(vert[i][j] - FUND_VERTICES[i][j]) < EPSILON);
+      }
+    }
+  }
+  
+  @Test
+  public void testRevertPoint() {
+    double[] testPoint = new double[] {0.5, 0.5}; 
+    double[] revertedPoint = new double[] {0.23643130220223896, 0.7527403740608412, 0.6143957752114663};
+    
+    double[] realRevert = fund.revertPoint(testPoint);
+    
+    for(int j = 0; j < realRevert.length; j++) {
+      assertTrue(Math.abs(realRevert[j] - revertedPoint[j]) < EPSILON);
+    }
+  }
+  
+  @Test
+  public void testInside() {
+    double[] outside = new double[] {2.0, 2.0};
+    double[] inside = new double[] {0.5, 0.5};
+    
+    assertTrue(fund.inFundamental(inside));
     assertFalse(fund.inFundamental(outside));
   }
-
-  public void assertAffine(Fundamental fund) {
-    assertTrue(fund.isKnown());
-    KnownFundamental f1 = (KnownFundamental) fund;
-
-    double[] affineT = new double[] { 3, 1, 1 };
-
-    assertEquals(affineT[0], f1.affine[0]);
-    assertEquals(affineT[1], f1.affine[1]);
-    assertEquals(affineT[2], f1.affine[2]);
-
-    affineT = PointUtil.normalize(affineT);
-    double[] p = fund.revertPoint(new double[] { 0.0, 0.0 });
-    assertEquals(affineT[0], p[0]);
-    assertEquals(affineT[1], p[1]);
-    assertEquals(affineT[2], p[2]);
+  
+  @Test
+  public void testEdges() {
+    for (Edge ed : fund.getEdges()) {
+      edges.contains(ed);
+    }
   }
 
-  public void assertResult(Fundamental fund) {
-    assertTrue(fund.isKnown());
-    double[][] p = fund.getVertices();
-
-    assertEquals(3, p.length);
-    assertEquals(0.0, p[0][0]);
-    assertEquals(0.0, p[0][1]);
-
-    assertEquals(1.0, p[1][0]);
-    assertEquals(0.0, p[1][1]);
-
-    assertEquals(0.0, p[2][0]);
-    assertEquals(1.0, p[2][1]);
-
-    assertEquals(3, fund.revertPoint(testCoordinate).length);
-  }
 }

@@ -47,3 +47,6 @@ target
 *.fdb_latexmk
 
 lib/
+
+*.pdf
+

@@ -25,6 +25,11 @@ public class UnknownFundamental
     return null;
   }
 
+  @Override
+  public Edge[] getEdges() {
+    return null;
+  }
+
   /**
    * Lifts the point to the unit sphere, upper half. It is assumed, that the
    * points lies inside the unit sphere of dimension one less then the symmetry.
@@ -42,7 +47,7 @@ public class UnknownFundamental
     // Nur zur sicherheit
     p = PointUtil.normalize(p);
 
-    return p;
+    return lift;
   }
 
   @Override
