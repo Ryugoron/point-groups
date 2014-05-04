@@ -57,7 +57,7 @@ public class PointGroups
     try {
       polyCmd = PointGroupsUtility.getPolymakePath();
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException | NullPointerException e) {
       PointerToString ps = new PointerToString();
       new StartupErrorFrame(ps);
       synchronized (ps) {

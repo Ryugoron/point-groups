@@ -1,6 +1,7 @@
 package pointGroups.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +23,7 @@ public class PointGroupsUtility
    * Get the location of the resource relative to the binaries of point groups.
    * 
    * @param file
-   * @returned.addAll(this.edges);
+   * @return the {@link URI} of the resource
    * @throws FileNotFoundException
    */
   public static URI getResource(final String file)
@@ -39,6 +40,15 @@ public class PointGroupsUtility
     }
   }
 
+  /**
+   * Gets the location of the resource relative to the {@link PointGroups} class
+   * as a stream. This is necessary if a resource is called from within a
+   * executable jar, where {@link #getResource(String)} would fail.
+   * 
+   * @param file
+   * @return An {@link InputStream} to the requested resource
+   * @throws FileNotFoundException
+   */
   public static InputStream getResourceAsStream(final String file)
     throws FileNotFoundException {
     try {
@@ -53,8 +63,8 @@ public class PointGroupsUtility
 
   /**
    * Get the standard {@link Properties} of the point group project. We assume a
-   * {@linkplain settings.ini} in the root directory of the compiled classes to
-   * fetch from.
+   * {@linkplain settings.ini} beside the base directory the project is started
+   * from.
    * 
    * @return
    * @throws IOException
@@ -64,7 +74,7 @@ public class PointGroupsUtility
 
     Properties prop = new Properties();
 
-    InputStream is = getResourceAsStream("settings.ini");
+    InputStream is = new FileInputStream("settings.ini");
     prop.load(is);
 
     return prop;
@@ -113,15 +123,12 @@ public class PointGroupsUtility
    */
   public static File getPolymakeDriverPath()
     throws IOException {
-    File file = new File("asdasdadsadasd.pl");
+    File file = new File("pmDriver.temp.pl");
     file.deleteOnExit();
     Files.copy(getResourceAsStream("perl/pmDriver.pl"), file.toPath(),
         StandardCopyOption.REPLACE_EXISTING);
     file.deleteOnExit();
     return file;
-
-    // URI file = getResource("perl/pmDriver.pl");
-    // return new File(file);
   }
 
   /**
