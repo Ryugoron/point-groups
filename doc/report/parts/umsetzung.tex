@@ -100,64 +100,60 @@
     \subsubsection{Symmetriegruppen}
         OLLI SCHREIBT HIER ZU .... Symmetriegruppen (Berechnung mittels Generatoren, hart kodiert, Darstellung/Repräsentation)
     \subsubsection{Fundamentalbereich}
-         In Abschnitt \ref{fundamentalbereich} wurde in Definition \ref{fundamentalbereich:voronoi} der Voronoi-Fundamentalbereich beschrieben. Wir wollen eine dieser Zellen
-         nehmen und Visualisieren. Da wir einen Abschnitt der $S^3$ nicht leicht visualsieren können, benötigen wir zunächst eine Projektion das Vornoi-Fundamentalbereiches auf
-         eine $\mathbb{R}^3$ Ebene.
+         In Abschnitt \ref{fundamentalbereich} wurde in Definition \ref{fundamentalbereich:voronoi} der Voronoi-Fundamentalbereich beschrieben. Zur Berechnung der Punktgruppen soll eine dieser Zellen ausgewählt und visualisiert werden.
+         Zur einfacheren Darstellung eines Abschnitts der Sphäre $S^3$ berechnen wir zunächst die Projektion des Voronoi--Fundamentalbereichs auf eine $\mathbb{R}^3$ Ebene.
         \subsubsection*{Idee}
-            Wir lassen zunächst die Gruppe auf ein Ausgezeichnetes Element $x$ wirken.
+            Wir lassen zunächst die Symmetriegruppe auf ein ausgezeichnetes Element $x$ wirken.
 
-            Als erstes Berechnen wir die Voronoi - Zelle für $x$ bezüglich des Orbits von $x$. Alle Punkte die dort drinnen liegen sind Elemente von $S^3$. Da die Gruppe symmet          risch ist, können wir nicht zwei Elemente aus dem selben Orbit haben, da der zweite Punkt näher an einem anderen Element aus $G \rhd x$ liegen müsste.
-
-         Das einzig wichtige an diesem Punkt ist, dass $x$ nicht auf einer Rotationasachse oder Spiegelebene befindet, da sonst die Voronoizellen zu groß ausfallen.
-
-         Haben wir diese Zelle, nehmen wir eine beliebige Ebene, die tangential auf dem Kugelsegment ist und projezieren darauf. Die spezielle Ebene, die wir wählen
-         ist die Ebene $h \, : \, [t - x] \cdot x = 0$ in Normalendarstellung, da wir wissen, dass $x$ auf der Kugeloberfläche im Kreissegment liegt und $x$ auch ein
-          Normalenvektor ist.
+            Als erstes Berechnen wir die Voronoi--Zelle für $x$ bezüglich des Orbits von $x$. Alle Punkte die innerhalb dieser Voronoi--Zelle liegen, sind Elemente von $S^3$. 
+            Da die Gruppe symmetrisch ist, können wir nicht zwei Elemente aus dem selben Orbit haben. 
+            Andernfalls müsste ein zweiter Punkt näher an einem anderen Element aus $G \rhd x$ liegen.
+            Dabei ist es notwendig, dass sich der Punkt $x$ nicht auf einer Rotationsachse oder Spiegelebene befindet, da sonst die Voronoi--Zellen zu groß ausfallen.
+            
+            Anschließend projizieren wir diese Zelle auf eine Ebene, die tangential auf dem Kugelsegment liegt. Dazu wählen wir die Ebene $h \, : \, [t - x] \cdot x = 0$ in Normalendarstellung, da wir wissen, dass $x$ auf der Kugeloberfläche im Kreissegment liegt und $x$ auch ein Normalenvektor ist.
             
         \subsubsection*{Umsetzung}
-         Eine Voronoizelle von $x$ für eine Menge von Sites $S$ ist definiert als 
+         Eine Voronoi--Zelle von $x$ für eine Menge von Zentren $S$ ist definiert als 
          $$ VC(x) = \bigcap_{s \in S \setminus \{ x \}} h^+_{x,s}$$
          Wobei $h^+_{x,s}$ der Halbraum ist, der rechts von der Hyperebene liegt, die zu $x$ und $y$ in jedem Punkt den selben Abstand hat.\\
-
-         Polymake hat die Möglichkeit ein Polytope, das die Voronoizelle ja ist, gerade über den Schnitt von Halbräumen zu definieren. Dies geht über
+         
+         In polymake kann die Voronoi--Zelle als Polytop über den Schnitt von den zugehörigen Halbräumen definiert werden. Dies geht über den Befehl
 
          \begin{code}
             new Polytope(INEQUALITIES=>\$hyperplanes)
          \end{code}
 
-         wobei \$hyperplanes eine Menge von Hyperebenen ist. Falls ein affines Polytope vorliegt, wie in unserem Fall in der Ebene $h$, die wie im letzten Abschnitt
-         definiert ist, können wir auch dies mit in die Erzeugung eingeben mittels
+         Dabei ist \$hyperplanes eine Menge von Hyperebenen. Falls ein affines Polytop vorliegt, wie in unserem Fall in der Ebene $h$, die wie im letzten Abschnitt
+         definiert ist, können wir auch dies mit in die Erzeugung mittels
 
          \begin{code}
             new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>{h})
          \end{code}
 
-         und haben so $VC(x)$ berechnet. Da die konkrete Berechnung über den Schnitt von allen Hyperebenen zu lange dauert, filtern wir die in frage kommenden Hyperebenen vor
-         über die Nachbern des Voronoi Diagrams. Dummerweise konnten wir nicht ermitteln, wie man in Polymake sich direkt eine Voronoizelle ausgeben lassen kann und
-         haben daher diesen Umweg gewählt.\\
+         eingeben und haben so $VC(x)$ berechnet. \todo{Wieso wird die Ebene mit eingegeben?}
+         
+         Da die konkrete Berechnung über den Schnitt von allen Hyperebenen zu lange dauert, filtern wir die in frage kommenden Hyperebenen über die Nachbarn des Voronoi--Diagramms vor.
+         Einen einfacheren Weg mittels polymake zur direkten Berechnung der Voronoi--Zelle konnten wir nicht auffinden. Daher dieses etwas umfangreichere Vorgehen.\\
 
-         Haben wir nun das Polytope in der Ebene, müssen wir zur Darstellung in $n-1$ Dimensionen noch eine geeignete Basis berechnen, so dass wir
-         die Eckpunkte des Polytopes durch $n-1$ Koordinaten darstellen können. Wir wissen schon, dass $x$ senkrecht auf der Ebene steht, also für unsere Darstellung 
-         unerheblich ist. Wir berechnen eine Orthonormalbasis für die Ebene mit $x$ als erstem Basisvektor. Nun können wir leicht eine Basiswechselmatrix angeben,
-         da wir ja die Bilder der neuen Basis in der alten kennen. Darüber hinaus ist diese Matrix orthogonal -- da die Spalten ja eine orthogonal Basis waren -- und
-         kann daher durch transponieren invertiert werden.
+         Das Polytop befindet sich nun in der Ebene. Für die Darstellung in $n-1$ Dimensionen berechnen wir nun eine geeignete Basis, so dass die Eckpunkte des Polytops durch $n-1$ Koordinaten darstellen werden können. 
+         Der Punkt $x$ steht senkrecht auf der Ebene und ist damit für die Darstellung 
+         unerheblich. Wir berechnen eine Orthonormalbasis für die Ebene mit $x$ als erstem Basisvektor. Nun können wir leicht eine Basiswechselmatrix angeben,
+         da die Bilder der neuen in der alten Basis bekannt. Darüber hinaus ist diese Matrix orthogonal -- da die Spalten eine Orthogonalbasis waren, weshalb die zu diesem Basiswechsel inverse Matrix durch Transponieren einfach ermittelt werden kann.
 
-         Wir haben nun also zwei Matrizen um beide Darstellungen in einander umzurechnen. In der neuen Basis können wir nun die erste Komponente weg lassen,
-         da diese nach Projektion nur genullt wird und haben so eine Darstellung in $n-1$ Dimensionen.
-
-         Beim zurückrechnen müssen wir uns nur erinnern, dass wir uns in einer affinen Ebene mit Stützvektor $x$ befinden.
+         Wir haben nun also zwei Matrizen, um beide Darstellungen ineinander umzurechnen. In der neuen Basis können wir nun die erste Komponente weg lassen, da diese nach der Projektion auf null abgebildet wird. Daraus resultiert eine Darstellung in $n-1$ Dimensionen.
+         Beim Zurückrechnen muss nur beachtet werden, dass sich die Punkte in einer affinen Ebene mit Stützvektor $x$ befinden.
 
         \subsubsection*{Berechnung}
 
-         Die Hyperebenen Definition in Polymake hat die Darstellung
+         Die Definition von Hyperebenen in polymake hat die Darstellung
          $$
             h \, : \, [a_0, ..., a_n] \rightsquigarrow a_0 + a_1 x_1 + \cdots + a_n x_n = 0
          $$
-         und Halbräume ebenso mit $\geq 0$.\\
+         und entsprechend für Halbräume mit $\geq 0$.\\
 
-         Die Halbräume für unser Polytope genügen der Gleichung
+         Die Halbräume für unser Polytop genügen der Gleichung
          $$
-            t \cdot (x - s) \geq 0 \Leftrightarrow 0 + (x_1-s_1)\cdot t_1 + \cdots + (x_n -s_n)t_n \geq 0
+            t \cdot (x - s) \geq 0 \Leftrightarrow 0 + (x_1-s_1)\cdot t_1 + \cdots + (x_n -s_n)t_n \geq 0,
          $$
          wobei $x$ der gewählte Vektor war und $s \not x$ aus dem Orbit von $x$ stammt.
 
@@ -165,7 +161,7 @@
          $$
             (t - x) \cdot x = 0 \Leftrightarrow - \left( \sum_{i=1}^n x_i^2 \right) + t_1 x_1 + \cdots t_n x_n = 0
          $$
-         und kann auch leicht erstellt werden. Um an unser Polytope heran zu kommen, benutzen wir das folgende Polymake-Script
+         und kann auch leicht erstellt werden. Um das von uns gewünschte Polytop zu bekommen, benutzen wir das folgende polymake-Script
 
          \begin{code}
             my \$poly = new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>\$affine);
@@ -174,7 +170,7 @@
             print \$poly->FACETS;
          \end{code}
 
-         Mit diesen Ergebnissen können wir nun die Basiswechselmatrizen berechnen und so die Vertices umrechnen. Das Object Fundamental ist somit
+         Mit diesen Ergebnissen können wir nun die Basiswechselmatrizen berechnen und so die Punkte umrechnen. Das Objekt \emph{Fundamental} ist somit
          eine Sammlung dieser Eigenschaften.
 
          \begin{code}
@@ -189,10 +185,10 @@
             }
          \end{code}
          
-         Die ersten beiden Funktionen sind selbst erklärend. Die dritte methode \emph{revertPoint} nimmt einen Punkt in $\mathbb{R}^{n-1}$ und
-         liftet ihn auf die Oberfläche der $S^{n-1}$ zurück. Die letzte Methode überprüft, ob ein angegebener Punkt überhaupt in der Voronoizelle lag.
-         Diese Methode wird bei der anzeige beötigt um bei der Punktauswahl keine Punkte außerhalb das Polytops zuzulassen.\\
+         Die ersten beiden Funktionen liefern entsprechend ihrer Namensgebung die Knoten und Kanten des Fundamentalbereichs. Die dritte Methode \emph{revertPoint} nimmt einen Punkt in $\mathbb{R}^{n-1}$ und
+         hebt ihn auf die Oberfläche der $S^{n-1}$ zurück. Die letzte Methode überprüft, ob ein angegebener Punkt überhaupt in der Voronoi--Zelle liegt.
+         Diese Methode wird bei der Anzeige benötigt, um bei der Punktauswahl keine Punkte außerhalb das Polytops auszuwählen.\\
 
-         Das ganze ist ein interface, da wir als Fallback-case, falls die Berechnung das Fundamentalbereichs einmal fehl schlägt immer noch 
-         den Bereich $S^{n-2}$ benutzen können. Dies ist kein Fundamentalbereich, da wir alle Orbite mehrfach treffen, allerdings werden wir außer im Falle
-         der Identität wirklich jeden Orbit mindestens einmal treffen.
+         Das Ganze ist eine Schnittstelle, da wir als Fallback-case, falls die Berechnung das Fundamentalbereichs einmal fehl schlägt, immer noch 
+         den Bereich $S^{n-2}$ benutzen können. Dies ist kein Fundamentalbereich, da wir alle Orbits mehrfach treffen. Allerdings werden wir, außer im Falle
+         der Identität, jeden Orbit mindestens einmal treffen.
