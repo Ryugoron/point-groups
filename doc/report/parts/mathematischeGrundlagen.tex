@@ -15,11 +15,10 @@ i^2 = j^2 = k^2 = ijk = -1
 Dann heißt die Zahl $q = a + bi + cj + dk$ Quaternion.
 \end{definition}
 Dabei sind die Bezeichnungen $Re(.)$ und $Im(.)$ für den Real- und Imiginärteil eines Quaternions wie üblich definiert.
-Die Menge der Quaternionen wird mit $\mathbb{H}$ bezeichnet und ist äquivalent zu reellen Vektorraum $\mathbb{R}^4$.
-Man kann sich also ein Quaternion $q \in \mathbb{H}$ als Vektor auffassen; dies ist speziell für die Interpretation
-von Quaternionen als Rotationsoperatoren hilfreich.
+Die Menge der Quaternionen wird mit $\mathbb{H}$ bezeichnet und ist äquivalent zum reellen Vektorraum $\mathbb{R}^4$.
+Man kann also ein Quaternion $q \in \mathbb{H}$ als Vektor auffassen; dies ist speziell für die Interpretation von Quaternionen als Rotationsoperatoren hilfreich.
 
-Wie auch bei den komplexen Zahlen $\mathbb{C}$, können die üblichen Rechnenoperationen auf Quaternionen erweitert werden:
+Wie auch bei den komplexen Zahlen $\mathbb{C}$, können die üblichen Rechenoperationen auf Quaternionen erweitert werden:
 
 \begin{definition}[Kojugiertes Quaternion, Norm, Betrag] $\quad$ \\
 Sei $q = a + bi + cj + dk \in \mathbb{H}$. Dann heißt das Quaternion
@@ -38,7 +37,7 @@ Ein Quaternion $q$ heißt
 \item Reines Quaternion, falls $Re(q) = 0$
 \end{itemize}\vspace{-0.9cm}
 \end{definition}
-Wegen $\|q\| = 1$ folgt für das Inverse von Einheitsquaternionen dass $q^{-1} = \overline{q}$. Das ist sehr praktisch,
+Wegen $\|q\| = 1$ folgt für das Inverse von Einheitsquaternionen, dass $q^{-1} = \overline{q}$. Das ist sehr praktisch,
 da somit eine effiziente Berechnungsvorschrift für das Invertieren von Einheitsquaternionen vorliegt.
 
 \subsection{Quaternionen und dreidimensionale Symmetrien}
@@ -82,17 +81,17 @@ ALEX SCHREIBT HIER KURZE SAETZE...gibts hier was interessantes?
 
 \subsection{Fundamentalbereiche}\label{fundamentalbereich}
 
-Wie bereits erwähnt wurde, ist eine Punktegruppe die Gruppenwirkung einer Symmetriegruppe auf ein gegebenes Element im zu grundeliegendem Raum der Symmetrieoperationen.
-Für eine Gruppenwirkung können wir zunächst die Verallgemeinerung der Punktegruppe definiere.
+Wie bereits erwähnt wurde, ist eine Punktgruppe die Gruppenwirkung einer Symmetriegruppe auf ein gegebenes Element im zugrunde liegendem Raum der Symmetrieoperationen.
+Für eine Gruppenwirkung können wir zunächst die Verallgemeinerung der Punktgruppe definiere.
 
 \begin{definition}[Gruppenwirkung]\label{fundamentalbereich:wirking} \mbox{}\\
- Eine (Links-)Wirkung einer Gruppe $(G, \star)$ auf eine Menge $X$ is eine Funktion
+ Eine (Links-)Wirkung einer Gruppe $(G, \star)$ auf eine Menge $X$ ist eine Funktion
    $$
       \rhd \, : \, G \times X \longrightarrow X
    $$
    mit den Eigenschaften
    \begin{itemize}
-      \item $(g \star h) \rhd x = g \rhd (h \rhd x)$ für alle $g,h \in G$ und $x \in X$.
+      \item $(g \star h) \rhd x = g \rhd (h \rhd x)$ für alle $g,h \in G$ und $x \in X$ und
       \item $e \rhd x = x$ für alle $x \in X$ und $e$ neutrales Element von $G$.
    \end{itemize}
 \end{definition}
@@ -100,30 +99,31 @@ Für eine Gruppenwirkung können wir zunächst die Verallgemeinerung der Punkteg
 \begin{definition}[Orbit] \label{fundamentalbereich:orbit} \mbox{}\\
   Für eine Gruppe $(G, \star)$ mit Gruppenwirkung $\rhd$ auf $X$ ist für ein Element $x \in X$ die \emph{Bahn von $x$ bezüglich $G$} definiert als
    $$
-      G \rhd x := \left\{ g \rhd x \, | \, g \in G \right\}
+      G \rhd x := \left\{ g \rhd x \, | \, g \in G \right\}.
    $$
 \end{definition}
 
-Über die Orbite können wir eine Äquivalenzrelation beschreiben, mit $x_1 \sim x_2$ genau dann wenn $x_2 \in G \rhd x_1$ und $G \setminus X$ ist die Menge der Representanten.\\
+Über die Orbits können wir eine Äquivalenzrelation beschreiben, mit $x_1$ ist äquivalent zu $x_2$, geschrieben $x_1 \sim x_2$, genau dann, wenn $x_2 \in G \rhd x_1$ und $G \setminus X$ die Menge der Repräsentanten ist.\\
 
-Nun ist $G \setminus X$ schon annährend ein Fundamentalbereich falls $G$ eine Symmetriegruppe ist. Da Symmetrien auf $\mathbb{R}^n$ nun aber Isometrien sind, wissen wir, dass die Länge unserer Vektoren immer erhalten bleibt. Daher interessieren uns bei der Betrachtung nur Vektoren gleicher Länge. Wir definieren daher den Fundamentalbereich wie folgt.\\
+Nun bildet $G \setminus X$ schon annähernd einen Fundamentalbereich, falls $G$ eine Symmetriegruppe ist. Symmetrien auf $\mathbb{R}^n$ sind Isometrien und folglich bleiben die Länge der Vektoren immer erhalten. Aufgrund dieser Tatsache interessieren uns bei der Betrachtung nur Vektoren gleicher Länge. Wir definieren daher den Fundamentalbereich wie folgt.\\
 
 \begin{definition}[Fundamentalbereich]\label{fundamentalbereich:def} \mbox{}\\
    Sei $G \subseteq O(n)$ eine Symmetriegruppe auf $\mathbb{R}^n$.\\
 
-   Dann ist ein Fundamentalbereich $G \setminus S^{n-1}$ -- ein Representatensystem für die Wirkung auf die $n-1$ - Sphäre.
+   Dann ist ein \emph{Fundamentalbereich} $G \setminus S^{n-1}$ -- ein Repräsentantensystem für die Wirkung auf die $(n-1)$--Sphäre.
 \end{definition}
+\todo{Die Definition des Fundamentalbereichs wirkt irgendwie unglücklich formuliert} 
 
-Für die Darstellung der Fundamentalbereiche, wählen wir nur spezielle zusammenhängende Representanten. Wir wählen die folgenden Representanten.
+Für die Darstellung der Fundamentalbereiche, wählen wir nur spezielle, zusammenhängende Repräsentanten.
 
-\begin{definition}[Voronoi - Fundamentalbereich]\label{fundamentalbereich:voronoi} \mbox{}\\
+\begin{definition}[Voronoi--Fundamentalbereich]\label{fundamentalbereich:voronoi} \mbox{}\\
    Sei $O \subset 2^{S^{n-1}}$ die Menge der Orbits der Gruppenwirkung von $G$ auf $S^{n-1}$ und $x \in S^{n-1}$ ein ausgezeichneter Punkt.\\
 
-   Dann ist der Voronoi - Fundamentalbereich die Menge
+   Dann ist der Voronoi--Fundamentalbereich die Menge
    $$
       VF(x) := \left\{ \underset{y\in o}{\text{argmin}} \, d(x,y) \, |  o \in O\right\}.
    $$
-   Damit ist die Menge der $VF(y)$ mit $y \in G \rhd x$ eine Voronoidiagram, da wir jeweils die Punkte mit Minimalem Abstand genommen haben.
+   Damit ist die Menge der $VF(y)$ mit $y \in G \rhd x$ eine Voronoidiagram, da wir jeweils die Punkte mit minimalem Abstand genommen haben.
 \end{definition}
 
 
