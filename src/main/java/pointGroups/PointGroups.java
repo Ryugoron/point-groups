@@ -71,8 +71,11 @@ public class PointGroups
       }
       logger.info("Entered Path is:" + ps.s);
 
-      File file = new File("./settings.ini");
+      File file =
+          new File(System.getProperty("user.home") +
+              "/.pointgroups/settings.ini");
       try {
+        new File(System.getProperty("user.home") + "/.pointgroups").mkdir();
         file.createNewFile();
         BufferedWriter output = new BufferedWriter(new FileWriter(file));
         output.write("POLYMAKEPATH = " + ps.s);
@@ -80,7 +83,7 @@ public class PointGroups
       }
       catch (IOException e2) {
         logger.severe("settings.ini not proper initialised");
-        logger.fine(e.getStackTrace().toString());
+        logger.severe(e.getMessage());
       }
       polyCmd = new File(ps.s);
     }

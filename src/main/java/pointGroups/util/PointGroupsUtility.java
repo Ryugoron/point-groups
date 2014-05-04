@@ -74,7 +74,9 @@ public class PointGroupsUtility
 
     Properties prop = new Properties();
 
-    InputStream is = new FileInputStream("settings.ini");
+    InputStream is =
+        new FileInputStream(System.getProperty("user.home") +
+            "/.pointgroups/settings.ini");
     prop.load(is);
 
     return prop;
