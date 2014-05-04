@@ -134,9 +134,6 @@
 
          eingeben und haben so $VC(x)$ berechnet. \todo{Wieso wird die Ebene mit eingegeben?}
          
-         Da die konkrete Berechnung über den Schnitt von allen Hyperebenen zu lange dauert, filtern wir die in frage kommenden Hyperebenen über die Nachbarn des Voronoi--Diagramms vor.
-         Einen einfacheren Weg mittels polymake zur direkten Berechnung der Voronoi--Zelle konnten wir nicht auffinden. Daher dieses etwas umfangreichere Vorgehen.\\
-
          Das Polytop befindet sich nun in der Ebene. Für die Darstellung in $n-1$ Dimensionen berechnen wir nun eine geeignete Basis, so dass die Eckpunkte des Polytops durch $n-1$ Koordinaten darstellen werden können. 
          Der Punkt $x$ steht senkrecht auf der Ebene und ist damit für die Darstellung 
          unerheblich. Wir berechnen eine Orthonormalbasis für die Ebene mit $x$ als erstem Basisvektor. Nun können wir leicht eine Basiswechselmatrix angeben,
@@ -157,7 +154,7 @@
          $$
             t \cdot (x - s) \geq 0 \Leftrightarrow 0 + (x_1-s_1)\cdot t_1 + \cdots + (x_n -s_n)t_n \geq 0,
          $$
-         wobei $x$ der gewählte Vektor war und $s \not x$ aus dem Orbit von $x$ stammt.
+         wobei $x$ der gewählte Vektor war und $s \not= x$ aus dem Orbit von $x$ stammt.
 
          Damit können wir alle Halbräume aus dem Orbit berechnen. Die affine Ebene genügt der Gleichung
          $$
