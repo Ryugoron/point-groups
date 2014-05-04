@@ -15,12 +15,14 @@
 
     \subsubsection{Verwendete Softwarehilfsmittel}
        \begin{description}
-           \item jReality~\cite{jreality} jeweils 1-2 saetze was /wofür das ist
+           \item [jReality]
+                ~\cite{jreality} jeweils 1-2 saetze was /wofür das ist
            \item [Polymake]
            	~\cite{polymake} ist ein Werkzeug um Berechnungen mit konvexen Polytopen (z.B. das Berechnen von konvexen Hüllen) auszuführen. Es wird entweder als Kommandozeilenanwendung oder online benutzt.
-           \item maven~\cite{maven} jeweils 1-2 saetze was /wofür das ist
+           \item [Maven]
+                ~\cite{maven} jeweils 1-2 saetze was /wofür das ist
            \item [JUnit]
-            ~\cite{jUnit} ist ein Framework zum Testen von Java-Anwendungen mittels Unit-Tests. Mit den Tests kann nach jeder Änderung oder Neuerung automatisiert getestet werden, ob Methoden fehlerfrei funktionieren und das gewünschte Resultat liefern.
+                ~\cite{jUnit} ist ein Framework zum Testen von Java-Anwendungen mittels Unit-Tests. Mit den Tests kann nach jeder Änderung oder Neuerung automatisiert getestet werden, ob Methoden fehlerfrei funktionieren und das gewünschte Resultat liefern.
         \end{description}
 
     \subsubsection{Informationsfluss\label{ssec:flow}}
@@ -98,7 +100,23 @@
                 
 \subsection{Implementierung von Berechnungen}
     \subsubsection{Symmetriebilder}
-        ALEX SCHREIBT HIER KURZEN PSEUDOCODE    
+        Wie bereits in Abschnitt~\ref{ssec:quad3sym} beschrieben, können Elemente der Symmetriegruppen (Drehungen, Spiegelungen) als Quaternionen beschrieben werden.
+        Das Bild eines Punktes $p$ bezüglich einer Drehung bzw. einer Spiegelung kann dann durch einfache Multiplikationsoperationen berechnet werden.
+        Der Algorithmus~\ref{alg:images} zeigt einen einfachen Pseudocode, der bei Eingabe eines Punktes $p$ und einer Symmetriegruppe $sym$ alle Bilder von $p$ berechnet.
+
+        \begin{lstlisting}[mathescape, morekeywords={for, each, do, begin,input, output, end, return}, caption={Peusdocode der Bildmengenberechnung}, label=alg:images]
+    input: sym = {s$_1$, ..., s$_n$}: Symmetry group
+           p: Point
+    output: images: All images of p with respect to sym
+    
+    begin
+        images $\gets$ {}
+        for each s $\in$ sym do
+            q $\gets$ rotate p according to s
+            images $\gets$ images $\cup$ {q}
+        end
+    end
+        \end{lstlisting}
     \subsubsection{Symmetriegruppen}
         OLLI SCHREIBT HIER ZU .... Symmetriegruppen (Berechnung mittels Generatoren, hart kodiert, Darstellung/Repräsentation)
     \subsubsection{Fundamentalbereich}
@@ -191,3 +209,4 @@
          Das Ganze ist eine Schnittstelle, da wir als Fallback-case, falls die Berechnung das Fundamentalbereichs einmal fehl schlägt, immer noch 
          den Bereich $S^{n-2}$ benutzen können. Dies ist kein Fundamentalbereich, da wir alle Orbits mehrfach treffen. Allerdings werden wir, außer im Falle
          der Identität, jeden Orbit mindestens einmal treffen.
+
