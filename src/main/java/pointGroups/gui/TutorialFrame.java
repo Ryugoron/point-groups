@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,6 +13,7 @@ import javax.swing.JPanel;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.TutorialEvent;
 import pointGroups.gui.event.types.TutorialHandler;
+import pointGroups.util.PointGroupsUtility;
 
 public class TutorialFrame 
   extends JFrame
@@ -45,13 +48,24 @@ public class TutorialFrame
     pages = new JPanel(layout);
     
     //pages, e.g. steps of the tutorial
-    JPanel step1 = null;
-    JPanel step2 = null;
-    JPanel step3 = null;
+    String dir_step1;
+    String dir_step2;
+    String dir_step3;
     
-    step1 = new TutorialPage("/Users/Simon/Desktop/image-114470-galleryV9-fisq.jpg", "Nulla vitae elit libero, a pharetra augue. Maecenas faucibus mollis interdum. Donec ullamcorper nulla non metus auctor fringilla. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Cras mattis consectetur purus sit amet fermentum.");
-    step2 = new TutorialPage("/Users/Simon/Desktop/image-114470-galleryV9-fisq.jpg", "Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Aenean lacinia bibendum nulla sed consectetur.");
-    step3 = new TutorialPage("/Users/Simon/Desktop/image-114470-galleryV9-fisq.jpg", "Cras mattis consectetur purus sit amet fermentum. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.");
+    try {
+      dir_step1 = PointGroupsUtility.getImage("icon.png").toString();
+      dir_step2 = PointGroupsUtility.getImage("icon.png").toString();
+      dir_step3 = PointGroupsUtility.getImage("icon.png").toString();
+    } catch(IOException e) {
+        dir_step1 = "Users/Simon/Desktop/image-114470-galleryV9-fisq.jpg";
+        dir_step2 = "Users/Simon/Desktop/image-114470-galleryV9-fisq.jpg";
+        dir_step3 = "Users/Simon/Desktop/image-114470-galleryV9-fisq.jpg";
+    }
+    
+    
+    JPanel step1 = new TutorialPage(dir_step1, "Step 1: Choose a symmetry group\nYou can choose a symmetry group on the top left side. In the left column are all available groups listed. After selecting one of them you can choose in the right column one of its subgroups to work with. With the 3D|4D button you can switch between three and four dimensional space.");
+    JPanel step2 = new TutorialPage(dir_step2, "Step 2: Pick a point\nDrag the spot to pick a point in the fundamental domain. The coordinates of the point will be displayed below this panel. The point will be mapped under all symmetries according to the symmetry group you chose before. The resulting point group will be shown on the main panel.\nAlternatively you can put specific coordinates manually in the displayed fields below or generate random coordinates.\nAdditionally you can scale the model by using the slider. ");
+    JPanel step3 = new TutorialPage(dir_step3, "Cras mattis consectetur purus sit amet fermentum. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.");
     // adding pages
     pages.add(step1);
     pages.add(step2);
