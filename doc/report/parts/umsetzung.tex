@@ -98,9 +98,14 @@
     \subsubsection{Symmetriebilder}
         ALEX SCHREIBT HIER KURZEN PSEUDOCODE    
     \subsubsection{Symmetriegruppen}
+    Eine Symmetriegruppe wird durch einen Enum repräsentiert. Durch diesen Enum wird auf Hashmaps zugegriffen. Es gibt jeweils eine Hashmap für die Gruppenelemente und die Untergruppen. Dies erleichert das Hinzufügen von Symmetriegruppen, deren Zugriff und die Verwaltung von Gruppenelementen. Es ist im Gegensatz zu unserem ursprünglichen Entwurf nur eine Klasse für den dreidimensionalen Fall nötig und es erspart deutliche Redundanzen. Dies betrifft insbesondere die Nutzung von Gruppenelementen und die Untergruppenbeziehungen. Dieser Entwurf ist somit leichter wartbarer und wiederbenutzbarer.
+    Für die Nutzung der Symmetriegruppen steht ein Interface bereit, welches einen leichten und intuitiven Zugang ermöglicht. Die wesentlichen Funktionen sind die Ausgabe der verschiedenen Bezeichnungen einer Gruppe, die Ordnung, die Untergruppen und die Berechnung der Punktgruppe zu einem gegebenen Punkt. Dies war besonders beim Entwurfswechsel sinnvoll. Denn so musste im restlichen Quellcode beim Entwurfswechsel nur sehr wenige Änderungen vorgenommen werden. Dieses Interface wird sowohl für den dreidimensionalen Fall sowie für den vierdimensionalen Fall verwendet.\\ 
+    %%3D case
+    Die dreidimensionalen Symmetriegruppen sind ausgiebig dokumentiert und nicht sehr umfangreich im Vergleich zum vierdimensionalen Fall. Wir konnten dort die Gruppenelemente als auch die Untergruppen fest einprogrammieren. \todo{Beispielcode} \\
         OLLI SCHREIBT HIER ZU .... Symmetriegruppen (Berechnung mittels Generatoren, hart kodiert, Darstellung/Repräsentation)
 %%%% 4D-case
-\newpage
+Im vierdimensionalen Fall waren die Symmetriegruppen nur durch die Generatoren beschrieben und eine händische oder halbautomatische Erzeugung erscheint bei den Gruppengröße von teilweise einigen tausend Elementen nicht sinnvoll. Wir haben uns dazu für die Erzeugung mittels Gruppen entschieden. Dies ist nachträglich für den dreidimensionalen Fall auch möglich und die Ergebnisse wurden in diesem Fall auch verifiziert.\\
+Die Grundlage für unseren Algorithmus ist das Hintereinanderausführen der Erzeuger und die Speicherung von neuen Elementen. Das Hauptproblem dabei ist das Überprüfen, ob ein Element bereits in einer Gruppe vorhanden ist. Bei Gruppen von mehreren tausend Elementen ist eine naive Suche zu zeitintensiv und es kann zu Rundungsfehlern kommen. Aus diesem Grund haben wir uns für eine Hashmap zur Speicherung der Elemente entschieden. Dazu mussten für eine Rotation eine Hashmethode erzeugt werden. Die Anforderungen an die Hashmethode musste eine schnelle Berechnung ermöglichen, im Einklang mit einer equal-Methode sein und eine gute Streuung der Elemente garantieren.\todo{Formulierung?}
 \subsection{Symmetriegruppen im 4D}
 \begin{itemize}
 	\item Berechnung mittels Generatoren
