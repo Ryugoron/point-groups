@@ -100,6 +100,7 @@ public class UiViewer
       };
 
   public final UiState uiState = new UiState();
+  protected double lineThicknessPercentage = 1.;
 
   protected final Container component;
   protected final SceneGraphComponent sceneRoot = new SceneGraphComponent();
@@ -254,7 +255,12 @@ public class UiViewer
     return v;
   }
 
-  private static Appearance setupAppearance(Appearance ap) {
+  public void setLineThicknessPercentage(int percentage) {
+    lineThicknessPercentage = percentage / 100.;
+    setupAppearance(appearanceRoot);
+  }
+
+  private Appearance setupAppearance(Appearance ap) {
     DefaultGeometryShader dgs;
     DefaultPolygonShader dps;
     DefaultLineShader dls;
@@ -295,7 +301,7 @@ public class UiViewer
     dls = (DefaultLineShader) dgs.createLineShader("default");
     dls.setDiffuseColor(Color.yellow);
     dls.setLineWidth(1.0);
-    dls.setTubeRadius(0.01);
+    dls.setTubeRadius(lineThicknessPercentage * 0.01);
     dls.setTubeDraw(true);
     dls.setLineStipple(true);
     dls.setLineLighting(true);
@@ -303,8 +309,8 @@ public class UiViewer
     dpts = (DefaultPointShader) dgs.createPointShader("default");
     dpts.setDiffuseColor(Color.red);
     dpts.setSpheresDraw(true);
-    dpts.setPointSize(0.011);
-    dpts.setPointRadius(0.011);
+    dpts.setPointSize(lineThicknessPercentage * 0.011);
+    dpts.setPointRadius(lineThicknessPercentage * 0.011);
 
     rhs = ShaderUtility.createDefaultRenderingHintsShader(ap, true);
     rhs.setTransparencyEnabled(true);
