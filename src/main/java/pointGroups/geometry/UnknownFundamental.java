@@ -40,8 +40,8 @@ public class UnknownFundamental
     double[] lift = new double[p.length + 1];
     lift[0] = 0;
     for (int i = 1; i <= p.length; i++) {
-      lift[i] = p[i];
-      lift[0] += p[i] * p[i];
+      lift[i] = p[i - 1];
+      lift[0] += p[i - 1] * p[i - 1];
     }
     lift[0] += 1;
     lift[0] = Math.sqrt(lift[0]);
