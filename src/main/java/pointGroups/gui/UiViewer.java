@@ -18,6 +18,10 @@ import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.event.types.DimensionSwitchHandler;
 import pointGroups.gui.event.types.SchlegelResultEvent;
 import pointGroups.gui.event.types.SchlegelResultHandler;
+import pointGroups.gui.event.types.Symmetry3DChooseEvent;
+import pointGroups.gui.event.types.Symmetry3DChooseHandler;
+import pointGroups.gui.event.types.Symmetry4DChooseEvent;
+import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.gui.event.types.gui.SchlegelViewModeChangedEvent;
 import pointGroups.gui.event.types.gui.SchlegelViewModeChangedHandler;
 import de.jreality.jogl.JOGLViewer;
@@ -85,8 +89,7 @@ public class UiViewer
 
           Viewer view = viewer.getViewer();
 
-          Appearance ap = view.getSceneRoot().getAppearance();
-          setupAppearance(ap);
+          view.getSceneRoot().setAppearance(appearanceRoot);
 
           component.setLayout(new BorderLayout());
           component.add((Component) view.getViewingComponent(),
@@ -101,11 +104,11 @@ public class UiViewer
       };
 
   public final UiState uiState = new UiState();
+  protected double lineThicknessPercentage = 1.;
 
   protected final Container component;
   protected final SceneGraphComponent sceneRoot = new SceneGraphComponent();
-  // protected final Appearance appearanceRoot = setupAppearance(new
-  // Appearance());
+  protected final Appearance appearanceRoot = setupAppearance(new Appearance());
   protected final UiViewerToolsPlugin toolsPlugin = new UiViewerToolsPlugin();
 
   /**
@@ -256,7 +259,12 @@ public class UiViewer
     return v;
   }
 
-  private static Appearance setupAppearance(Appearance ap) {
+  public void setLineThicknessPercentage(int percentage) {
+    lineThicknessPercentage = percentage / 100.;
+    setupAppearance(appearanceRoot);
+  }
+
+  private Appearance setupAppearance(Appearance ap) {
     DefaultGeometryShader dgs;
     DefaultPolygonShader dps;
     DefaultLineShader dls;
@@ -297,7 +305,7 @@ public class UiViewer
     dls = (DefaultLineShader) dgs.createLineShader("default");
     dls.setDiffuseColor(Color.yellow);
     dls.setLineWidth(1.0);
-    dls.setTubeRadius(0.01);
+    dls.setTubeRadius(lineThicknessPercentage * 0.01);
     dls.setTubeDraw(true);
     dls.setLineStipple(true);
     dls.setLineLighting(true);
@@ -305,8 +313,8 @@ public class UiViewer
     dpts = (DefaultPointShader) dgs.createPointShader("default");
     dpts.setDiffuseColor(Color.red);
     dpts.setSpheresDraw(true);
-    dpts.setPointSize(0.011);
-    dpts.setPointRadius(0.011);
+    dpts.setPointSize(lineThicknessPercentage * 0.011);
+    dpts.setPointRadius(lineThicknessPercentage * 0.011);
 
     rhs = ShaderUtility.createDefaultRenderingHintsShader(ap, true);
     rhs.setTransparencyEnabled(true);
@@ -634,7 +642,7 @@ public class UiViewer
 
   public class UiState
     implements DimensionSwitchHandler, SchlegelResultHandler,
-    SchlegelViewModeChangedHandler
+    SchlegelViewModeChangedHandler, Symmetry3DChooseHandler, Symmetry4DChooseHandler
   {
     protected final EventDispatcher dispatcher = EventDispatcher.get();
 
@@ -650,6 +658,8 @@ public class UiViewer
       dispatcher.addHandler(DimensionSwitchHandler.class, this);
       dispatcher.addHandler(SchlegelResultHandler.class, this);
       dispatcher.addHandler(SchlegelViewModeChangedHandler.class, this);
+      dispatcher.addHandler(Symmetry3DChooseHandler.class, this);
+      dispatcher.addHandler(Symmetry4DChooseHandler.class, this);
     }
 
     public boolean is3DMode() {
@@ -714,6 +724,18 @@ public class UiViewer
     @Override
     public void onSchlegelViewModeChanged(SchlegelViewModeChangedEvent event) {
       lastSchlegelViewMode = event.getViewMode();
+    }
+
+    @Override
+    public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
+      this.lastPickedSymmetry = event.getSymmetry4D();
+      
+    }
+
+    @Override
+    public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
+      this.lastPickedSymmetry = event.getSymmetry3D();
+      
     }
   }
 }

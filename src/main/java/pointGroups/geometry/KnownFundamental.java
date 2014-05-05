@@ -20,7 +20,7 @@ public class KnownFundamental
   implements Fundamental
 {
 
-  private static final double EPSILON = 0.1;
+  private static final double EPSILON = 1e-09;
 
   final protected Logger logger = LoggerFactory.get(KnownFundamental.class);
 
@@ -122,7 +122,7 @@ public class KnownFundamental
    * @param point - in fundamental
    * @return point in liftet fundamental
    */
-  private double[] affinePolytope(double[] point) {
+  public double[] affinePolytope(double[] point) {
     double[] p = PointUtil.addZero(point);
     p = PointUtil.applyMatrix(revertMatrix, p);
     p = PointUtil.add(p, this.affine);

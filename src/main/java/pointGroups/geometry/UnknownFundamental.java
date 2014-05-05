@@ -7,7 +7,7 @@ public class UnknownFundamental
   implements Fundamental
 {
 
-  private static final double EPSILON = 0.001;
+  private static final double EPSILON = 1e-09;
 
   /**
    * If this class is instanciated the fundamental domain should not be known.

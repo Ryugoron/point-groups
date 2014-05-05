@@ -2,11 +2,16 @@ package pointGroups.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JToggleButton;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import pointGroups.geometry.Edge;
 import pointGroups.geometry.Face;
@@ -65,11 +70,34 @@ public class SchlegelView
     dispatcher.addHandler(DimensionSwitchHandler.class, this);
   }
 
+  protected JSlider thicknessSlider;
+
   protected void initViewButton() {
     viewModeButton.addItemListener(new ViewModeButtonListener());
 
     buttonGroup.setLayout(new BorderLayout());
     buttonGroup.add(viewModeButton, BorderLayout.EAST);
+
+    thicknessSlider = new JSlider(1, 100, 100);
+    thicknessSlider.setPaintLabels(false);
+    thicknessSlider.setPaintTicks(false);
+    thicknessSlider.setPaintTrack(true);
+
+    thicknessSlider.addChangeListener(new ChangeListener() {
+
+      @Override
+      public void stateChanged(ChangeEvent e) {
+        JSlider self = (JSlider) e.getSource();
+        uiViewer.setLineThicknessPercentage(self.getValue());
+      }
+    });
+
+    JPanel thicknessGroup = new JPanel();
+    thicknessGroup.setLayout(new FlowLayout(FlowLayout.LEFT));
+    thicknessGroup.add(new JLabel("Line thickness: "));
+    thicknessGroup.add(thicknessSlider);
+
+    buttonGroup.add(thicknessGroup);
   }
 
   public void dispose() {
@@ -112,7 +140,7 @@ public class SchlegelView
   @Override
   public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
     // show SchlegelViewModeButton only in 3D Mode
-    buttonGroup.setVisible(event.switchedTo3D());
+    viewModeButton.setVisible(event.switchedTo3D());
   }
 
 
