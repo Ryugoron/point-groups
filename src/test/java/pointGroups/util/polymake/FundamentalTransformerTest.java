@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import pointGroups.geometry.Edge;
 import pointGroups.geometry.Fundamental;
+import pointGroups.geometry.KnownFundamental;
 import pointGroups.geometry.Point3D;
 import pointGroups.util.point.PointUtil;
 
@@ -114,5 +115,23 @@ public class FundamentalTransformerTest
       edges.contains(ed);
     }
   }
-
+  
+  @Test
+  public void testRevertBoundaryPoints(){
+    for(double[] p : fT.clalcPoints){
+      System.out.println("Check");
+      double[] p1 = PointUtil.applyMatrix(fT.n2f, p);
+      p1 = PointUtil.rmFst(p1);
+      p1 = ((KnownFundamental) fund).affinePolytope(p1);
+      for(int j = 0; j < p.length; j++) {
+        assertTrue(Math.abs(p[j] - p1[j]) < EPSILON);
+      }
+    }
+  }
+  
+  
+  @Test
+  public void testInsideBoundaryPoints(){
+    
+  }
 }

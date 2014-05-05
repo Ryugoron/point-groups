@@ -64,12 +64,12 @@ public class PointPicker
   final protected Logger logger = LoggerFactory.getSingle(PointPicker.class);
 
   public double[] lastPickedPoint;
-  
+
   // Moved Outside of UiViewer to manipulate.
   public final SceneGraphComponent point = new SceneGraphComponent();
-  
+
   protected final UiViewer uiViewer = new UiViewer(this) {
-    
+
     public final Appearance pointAppearance = new Appearance();
     public final SceneGraphComponent fundamental = new SceneGraphComponent();
 
@@ -144,12 +144,13 @@ public class PointPicker
       dpts.setPointRadius(0.1);
     }
 
-
   };
-  
+
   public void setPoint(double[] coords) {
-    if(dim == 2) {
-      this.point.setGeometry(Primitives.point(new double[] {coords[0], coords[1], 0.0}));
+    logger.fine("Set Fundamental Pick Point to: " + PointUtil.showPoint(coords));
+    if (dim == 2) {
+      this.point.setGeometry(Primitives.point(new double[] { coords[0],
+          coords[1], 0.0 }));
     }
     this.point.setGeometry(Primitives.point(coords));
   }
@@ -224,32 +225,28 @@ public class PointPicker
       this.isSet = false;
     }
   }
-  
+
   /**
-   * If the point is outside the fundamental region 
-   * it is moved iteratively to the center, until it is inside.
+   * If the point is outside the fundamental region it is moved iteratively to
+   * the center, until it is inside.
    * 
    * @param point - Outside of fundamental.
    * @return point inside the fundamental region
    */
-  private double[] moveInside(double[] point){
-    if(fundamental.inFundamental(point)) return point;
-    
+  private double[] moveInside(double[] point) {
+    if (fundamental.inFundamental(point)) return point;
+
     double[] out = point;
     double[] in = lastPickedPoint;
     double[] next;
-    while(PointUtil.length(PointUtil.subtract(in, out)) > 0.01){
+    while (PointUtil.length(PointUtil.subtract(in, out)) > 0.01) {
       next = PointUtil.add(in, PointUtil.div(2, PointUtil.subtract(out, in)));
-      if(fundamental.inFundamental(next)) {
-        System.out.println("Calls in");
+      if (fundamental.inFundamental(next)) {
         in = next;
-      } else 
-        System.out.println("Calls out");
-        out = next;
+      }
+      else out = next;
     }
-    System.out.println("Out: "+PointUtil.showPoint(out));
-    setPoint(out);
-    return out; 
+    return out;
   }
 
   // Method to fire coordinate Changed Event, should be executed by click inside
@@ -270,20 +267,20 @@ public class PointPicker
     double[] selComp = new double[this.dim];
     for (int i = 0; i < this.dim; i++)
       selComp[i] = point[i];
-    
-    // Move Point Back, if outside of Fundamental.
-    // selComp = moveInside(selComp);
-    
+
     // Show Scale revert
     if (fundamental.isKnown()) selComp = PointUtil.div(showScale, selComp);
-    
-    
-    
-    
+
+    if (!fundamental.inFundamental(selComp)) {
+      // Move Point Back, if outside of Fundamental.
+      selComp = moveInside(selComp);
+      setPoint(PointUtil.mult(showScale, selComp));
+    }
+
     double[] resP = this.fundamental.revertPoint(selComp);
 
-    
-    
+    lastPickedPoint = resP;
+
     logger.fine("Point Picker calculated Point (" + resP[0] + "," + resP[1] +
         "," + resP[2] + (this.dim == 3 ? "," + resP[3] : "") + ")");
     resP = PointUtil.mult(this.scale, resP);
@@ -332,12 +329,13 @@ public class PointPicker
     // Reset tools (3D rotation, 2D no Rotation)
     logger.fine("A new Fundamental Region is shown.");
     uiViewer.setGeometry(g);
-    if(dim == 2){
-      lastPickedPoint = new double[] {0.0, 0.0};
-    } else {
-      lastPickedPoint = new double[] {0.0, 0.0, 0.0};
+    if (dim == 2) {
+      lastPickedPoint = new double[] { 0.0, 0.0 };
     }
-    setPoint(new double[] {0.0, 0.0, 0.0});
+    else {
+      lastPickedPoint = new double[] { 0.0, 0.0, 0.0 };
+    }
+    setPoint(new double[] { 0.0, 0.0, 0.0 });
   }
 
   @Override
