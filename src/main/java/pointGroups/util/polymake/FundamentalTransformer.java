@@ -24,7 +24,7 @@ public class FundamentalTransformer
 
   private String script = null;
   private final List<? extends Point> points;
-  private final Point center;
+  protected final Point center;
   private final int dim;
 
   private Fundamental f;
@@ -32,6 +32,8 @@ public class FundamentalTransformer
   // For testing issus
   protected double[][] n2f;
   protected double[][] f2n;
+  
+  protected List<double[]> clalcPoints;
 
   public FundamentalTransformer(Point center, List<? extends Point> points) {
     this.points = points;
@@ -184,6 +186,8 @@ public class FundamentalTransformer
     for (int i = 0; i < hyper.length; i++) {
       hyper[i] = hyperPlanes.get(i);
     }
+    
+    this.clalcPoints = points;
 
     return new KnownFundamental(normPoints, f2n, hyper, center.getComponents(),
         edges);
