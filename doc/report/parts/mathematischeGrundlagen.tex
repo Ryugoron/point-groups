@@ -74,7 +74,16 @@ an einer Ebene $\Pi: vn = 0$ durch den Ursprung mit Normalenvektor $n$ gespielt 
 beschrieben, wobei sich $p$ wieder durch Interpretation von $(p_x, p_y, p_z)$ als reines Quaternion ergibt.
 
 \subsection{Quaternionen und vierdimensionale Symmetrien}
-OLLI SCHREIBT HIER ETWAS
+%%%%%%%%%%%%%%%%%  4D-case
+Quaternionen eignen sich besonders für den vierdimensionalen Raum. Vierdimensionale Rotationen können nach ~\cite{conway2003} auf zwei dreidimensionale Rotationen reduziert werden.
+\noindent Wollen wir nun einen Punkt $p$ \in \mathbb{R}^4$ rotieren, so wird die Rotation durch die beiden Quaternionen $l,r$ repräsentiert.
+Die durch $l,r$ induzierte Rotationsfunktion $[.]$ ergibt sich dann also durch die Abbildung
+\begin{equation*}
+[l,r]: p \mapsto l p r
+\end{equation*}
+Im Gegensatz zu Rotationen muss nur ein Quaternion mehr gespeichert werden,  aber der Berechnungsaufwand ist gleich.\\
+Für Spiegelung werden jede Rotationsgruppe mit Hilfe eines Operators \todo{Welche?}erweitert. Alle Gruppenelemente werden mit diesem multipliziert. Dadurch bleiben die Untergruppenbeziehungen aus den Rotationsgruppen unter Beachtung des Operators erhalten.
+Die Gruppen im vierdiemensionalen Fall sind nur mittels Generatoren in ~\cite{conway2003} beschrieben. Die Gruppegrößen variieren zwischen \todo{Wie groß sind die Gruppe?}. Eine explizierte Aufzählung exisiert nicht. 
 
 \subsection{Punktgruppen}
 ALEX SCHREIBT HIER KURZE SAETZE...gibts hier was interessantes?
