@@ -189,7 +189,7 @@ public class FundamentalTransformer
     this.clalcPoints = points;
 
     return new KnownFundamental(normPoints, f2n, hyper, center.getComponents(),
-        edges);
+        edges, n2f);
   }
 
   /**

@@ -54,5 +54,14 @@ public interface Fundamental
    * @return true if it lies in the fundamental domain
    */
   public boolean inFundamental(double[] point);
+  
+  /**
+   * For a point of the pointgroup in the fundamental domain
+   * calculates the point in the projected surface. 
+   * 
+   * @param point - In lifted fundamental.
+   * @return projected fundamental point
+   */
+  public double[] toFundamental(double[] point);
 
 }
