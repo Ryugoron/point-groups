@@ -119,7 +119,7 @@ public class PointUtil
     if (a == 0) throw new IllegalArgumentException("Divison by zero");
     double[] erg = new double[b.length];
     for (int i = 0; i < b.length; i++) {
-      erg[i] = b[i] / 3;
+      erg[i] = b[i] / a;
     }
     return erg;
   }
@@ -240,5 +240,23 @@ public class PointUtil
       ret = new Point4D(p[0], p[1], p[2], p[3]);
     }
     return ret;
+  }
+  
+  /**
+   * Copmutes the euclidean diameter of a given set of points.
+   * 
+   * @param points - Set of Points.
+   * @return euclidean diamter
+   */
+  public static double diameter(double[][] points) {
+    double dia = 0.0;
+    
+    for(double[] p1 : points) {
+      for(double[] p2 : points) {
+        dia = Math.max(dia, length(subtract(p1, p2)));
+      }
+    }
+    
+    return dia;
   }
 }

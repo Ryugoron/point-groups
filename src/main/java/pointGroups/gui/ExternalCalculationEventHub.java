@@ -1,6 +1,8 @@
 package pointGroups.gui;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -106,14 +108,28 @@ public class ExternalCalculationEventHub
   public void onSymmetry4DChooseEvent(final Symmetry4DChooseEvent event) {
     Point4D p = event.getSymmetry4D().getNormalPoint();
     logger.info("Calculating new Fundamental Domain");
-    submit(new FundamentalTransformerTransformer(event.getSymmetry4D().images(p)));
+    
+    // With pre processing
+    //submit(new FundamentalTransformerTransformer(event.getSymmetry4D().images(p)));
+    
+    //Without pre processing
+    List<Point4D> l = new ArrayList<Point4D>();
+    l.addAll(event.getSymmetry4D().images(p));
+    submit(new FundamentalTransformer(p, l));
   }
 
   @Override
   public void onSymmetry3DChooseEvent(final Symmetry3DChooseEvent event) {
     Point3D p = event.getSymmetry3D().getNormalPoint();
     logger.info("Calculating new Fundamental Domain");
-    submit(new FundamentalTransformerTransformer(event.getSymmetry3D().images(p)));
+    
+    // With pre processing
+    //submit(new FundamentalTransformerTransformer(event.getSymmetry3D().images(p)));
+    
+    //Without pre processing
+    List<Point3D> l = new ArrayList<Point3D>();
+    l.addAll(event.getSymmetry3D().images(p));
+    submit(new FundamentalTransformer(p, l));
   }
 
 
@@ -203,7 +219,9 @@ public class ExternalCalculationEventHub
               sc.getSymmetry());
         } else if (transformerType == FundamentalTransformerTransformer.class) {
           // Two step Transformer, unpack it and resend it
+          logger.info("Finished Pre-Processing. Now starting to compute Voronoi-Diagram");
           submit((FundamentalTransformer) result);
+          return null;
         }
         else if (transformerType == FundamentalTransformer.class) {
           // Second step Transform, broadcast real result

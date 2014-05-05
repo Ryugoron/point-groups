@@ -35,7 +35,7 @@ public class EventDispatcher
   }
 
   public Map<Class<? extends EventHandler>, Collection<? extends EventHandler>> eventTypeHandlerMap =
-      new HashMap<>();
+      Collections.synchronizedMap(new HashMap<Class<? extends EventHandler>, Collection<? extends EventHandler>>());
 
   /**
    * Adds the specified {@link EventHandler} to be invoked on firing the
@@ -80,8 +80,10 @@ public class EventDispatcher
   private <H extends EventHandler> void fireEvent0(final Event<H> event) {
     Collection<H> handlers = this.getHandlers(event.getType());
 
-    for (H h : handlers) {
-      event.dispatch(h);
+    synchronized (handlers) {
+      for (H h : handlers) {
+        event.dispatch(h);
+      }
     }
   }
 
@@ -93,7 +95,7 @@ public class EventDispatcher
         (Collection<H>) eventTypeHandlerMap.get(handlerType);
 
     if (existingHandlers == null) {
-      existingHandlers = new LinkedList<>();
+      existingHandlers = Collections.synchronizedList(new LinkedList<H>());
       eventTypeHandlerMap.put(handlerType, existingHandlers);
     }
 

@@ -1,10 +1,10 @@
 package pointGroups.geometry.symmetries;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -19,6 +19,8 @@ import java.util.Set;
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Quaternion;
 import pointGroups.geometry.Symmetry;
+import pointGroups.util.HashMapKeysLikeInserted;
+import pointGroups.util.LoggerFactory;
 import pointGroups.util.PointGroupsUtility;
 
 
@@ -347,10 +349,12 @@ public enum Symmetry4D
     createSymgroup(IxI);
 
     System.out.println("Finish: " + Calendar.getInstance().getTime());
+    LoggerFactory.get(Symmetry4D.class).info(
+        "Symmetry data calculation finished.");
 
   }
 
-  private static void createSymgroup(Symmetry4D sym) {
+  private static void createSymgroup(final Symmetry4D sym) {
     Collection<Rotation4D> group = generateSymmetryGroup4D(sym.getGenerator());
     System.out.println(sym.schoenflies + " / " + sym.coxeter + " groupsize: " +
         group.size());
@@ -373,9 +377,9 @@ public enum Symmetry4D
    * @param dist
    * @return #new group elems
    */
-  private static int calculate(Collection<Rotation4D> group,
-      Collection<Rotation4D> arg1, Collection<Rotation4D> arg2,
-      Collection<Rotation4D> dist) {
+  private static int calculate(final Collection<Rotation4D> group,
+      final Collection<Rotation4D> arg1, final Collection<Rotation4D> arg2,
+      final Collection<Rotation4D> dist) {
     int newElems = 0;
     Rotation4D z;
     for (Rotation4D x : arg1) {
@@ -391,7 +395,7 @@ public enum Symmetry4D
   }
 
   private static Collection<Rotation4D> generateSymmetryGroup4D(
-      Collection<Rotation4D> generator) {
+      final Collection<Rotation4D> generator) {
     int newElems = 0;
     // All known group elems
     Set<Rotation4D> groupElems = new HashSet<Rotation4D>();
@@ -427,8 +431,8 @@ public enum Symmetry4D
     return groupElems;
   }
 
-  private static void writeSymmetryGroup(Symmetry4D sym,
-      Collection<Rotation4D> groupElems)
+  private static void writeSymmetryGroup(final Symmetry4D sym,
+      final Collection<Rotation4D> groupElems)
     throws IOException {
     // create a new file with an ObjectOutputStream
 
@@ -442,30 +446,28 @@ public enum Symmetry4D
     oout.close();
   }
 
-  public static Collection<Rotation4D> readSymmetryGroup(Symmetry4D sym)
+  public static Collection<Rotation4D> readSymmetryGroup(final Symmetry4D sym)
     throws FileNotFoundException, IOException, ClassNotFoundException {
-    File f =
-        new File(PointGroupsUtility.getResource("symmetries/" + sym.filename +
-            ".sym"));
-    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
+
+    InputStream is = PointGroupsUtility.getSymmetry(sym.filename + ".sym");
+
+    ObjectInputStream ois = new ObjectInputStream(is);
     Object o = ois.readObject();
     // TODO: ugly
     Collection<Rotation4D> group = ((Collection<Rotation4D>) o);
     ois.close();
     return group;
   }
-  
-  private static void loadSymGroups(){
-    try {
-      groups.put(IxO, readSymmetryGroup(IxO));
-      groups.put(IxT, readSymmetryGroup(IxT));
-      groups.put(OxT, readSymmetryGroup(OxT));
 
-      groups.put(IxI, readSymmetryGroup(IxI));
-      groups.put(IxI60, readSymmetryGroup(IxI60));
-      groups.put(IxIPlus60, readSymmetryGroup(IxIPlus60));
-      groups.put(IxIQuer60, readSymmetryGroup(IxIQuer60));
-      groups.put(IxIQuerPlus60, readSymmetryGroup(IxIQuerPlus60));
+  private static void loadSymGroups() {
+    try {
+      groups.put(TxT, readSymmetryGroup(TxT));
+      groups.put(TxT3, readSymmetryGroup(TxT3));
+      groups.put(TxTQuer3, readSymmetryGroup(TxTQuer3));
+      groups.put(TxT12, readSymmetryGroup(TxT12));
+      groups.put(TxTQuer12, readSymmetryGroup(TxTQuer12));
+      groups.put(TxTPlus12, readSymmetryGroup(TxTPlus12));
+      groups.put(TxTQuerPlus12, readSymmetryGroup(TxTQuerPlus12));
 
       groups.put(OxO, readSymmetryGroup(OxO));
       groups.put(OxO2, readSymmetryGroup(OxO2));
@@ -474,13 +476,15 @@ public enum Symmetry4D
       groups.put(OxOPlus24, readSymmetryGroup(OxOPlus24));
       groups.put(OxOQuerPlus24, readSymmetryGroup(OxOQuerPlus24));
 
-      groups.put(TxT, readSymmetryGroup(TxT));
-      groups.put(TxT3, readSymmetryGroup(TxT3));
-      groups.put(TxTQuer3, readSymmetryGroup(TxTQuer3));
-      groups.put(TxT12, readSymmetryGroup(TxT12));
-      groups.put(TxTQuer12, readSymmetryGroup(TxTQuer12));
-      groups.put(TxTPlus12, readSymmetryGroup(TxTPlus12));
-      groups.put(TxTQuerPlus12, readSymmetryGroup(TxTQuerPlus12));
+      groups.put(IxI, readSymmetryGroup(IxI));
+      groups.put(IxI60, readSymmetryGroup(IxI60));
+      groups.put(IxIQuer60, readSymmetryGroup(IxIQuer60));
+      groups.put(IxIPlus60, readSymmetryGroup(IxIPlus60));
+      groups.put(IxIQuerPlus60, readSymmetryGroup(IxIQuerPlus60));
+
+      groups.put(IxO, readSymmetryGroup(IxO));
+      groups.put(IxT, readSymmetryGroup(IxT));
+      groups.put(OxT, readSymmetryGroup(OxT));
 
     }
     catch (ClassNotFoundException | IOException e) {
@@ -490,7 +494,7 @@ public enum Symmetry4D
   }
 
   static {
-    groups = new HashMap<>();
+    groups = new HashMapKeysLikeInserted<Symmetry4D, Collection<Rotation4D>>();
     subgroups = new HashMap<>();
 
     // load group elems
@@ -498,48 +502,52 @@ public enum Symmetry4D
       loadSymGroups();
     }
     catch (NullPointerException e) {
-      e.printStackTrace();
+      LoggerFactory.get(Symmetry4D.class).warning(
+          "Symmetry group data not found. Starting one-time calculation now (this may take a long time).");
       createSymgroups();
       loadSymGroups();
     }
 
-    subgroups.put(IxO, Arrays.asList(IxO, IxT, TxTPlus12, TxT3, TxTQuer12,
-        TxT12, TxTQuerPlus12, TxTQuer3, TxT));
-    subgroups.put(OxT, Arrays.asList(OxT, TxTPlus12, TxT3, TxTQuer12, TxT12,
-        TxTQuerPlus12, TxTQuer3, TxT));
+    subgroups.put(IxO, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12, IxO, IxT));
+    subgroups.put(OxT, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12, OxT));
 
-    subgroups.put(IxT, Arrays.asList(IxT, TxT, TxT3, TxTQuer3, TxT12,
-        TxTQuer12, TxTPlus12, TxTQuerPlus12));
+    subgroups.put(IxT, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12, IxT));
 
-    subgroups.put(IxI, Arrays.asList(IxI, IxIQuer60, IxIQuerPlus60, IxIPlus60,
-        IxI60, TxTPlus12, TxT12, TxT3, TxT, TxTQuer3, TxTQuer12, TxTQuerPlus12,
-        IxT));
+    subgroups.put(IxI, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12, IxI, IxI60, IxIQuer60, IxIPlus60,
+        IxIQuerPlus60, IxT));
+
     subgroups.put(IxIQuer60,
-        Arrays.asList(IxIQuer60, IxIQuerPlus60, TxTQuer12, TxTQuerPlus12));
-    subgroups.put(IxIQuerPlus60, Arrays.asList(IxIQuerPlus60, TxTQuerPlus12));
+        Arrays.asList(TxTQuer12, TxTQuerPlus12, IxIQuer60, IxIQuerPlus60));
+
+    subgroups.put(IxIQuerPlus60, Arrays.asList(TxTQuerPlus12, IxIQuerPlus60));
     subgroups.put(IxI60, Arrays.asList(IxI60, IxIPlus60)); // check
     subgroups.put(IxIPlus60, Arrays.asList(IxIPlus60)); // check
 
-    subgroups.put(TxT, Arrays.asList(TxT, TxT12, TxTPlus12, TxT3, TxTQuer3,
-        TxTQuer12, TxTQuerPlus12)); // check
+    subgroups.put(TxT, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12)); // check
     subgroups.put(TxT3, Arrays.asList(TxT3, TxT12, TxTPlus12)); // check
     subgroups.put(TxT12, Arrays.asList(TxT12, TxTPlus12)); // check
     subgroups.put(TxTPlus12, Arrays.asList(TxTPlus12)); // check
     subgroups.put(TxTQuer3, Arrays.asList(TxTQuer3, TxTQuer12, TxTQuerPlus12)); // check
-    subgroups.put(TxTQuer12, Arrays.asList(TxTQuerPlus12, TxTQuer12)); // check
+    subgroups.put(TxTQuer12, Arrays.asList(TxTQuer12, TxTQuerPlus12)); // check
     subgroups.put(Symmetry4D.TxTQuerPlus12, Arrays.asList(TxTQuerPlus12));
 
-    subgroups.put(OxO, Arrays.asList(OxO, OxO2, OxO6, OxO24, OxOPlus24,
-        OxOQuerPlus24, TxT12, TxTPlus12, TxT3, TxTQuer3, TxT, TxTQuer12,
-        TxTQuerPlus12, OxT)); // check
-    subgroups.put(OxO2, Arrays.asList(OxOPlus24, OxO2, TxT12, TxT3, TxT, OxO24,
-        OxO6, OxOQuerPlus24, TxTPlus12, TxTQuer3, TxTQuer12, TxTQuerPlus12)); // check
-    subgroups.put(OxO6, Arrays.asList(OxO6, OxOPlus24, OxO24, OxOQuerPlus24,
-        TxT12, TxTPlus12, TxT3)); // check
+    subgroups.put(OxO, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12, OxO, OxO2, OxO6, OxO24, OxOPlus24,
+        OxOQuerPlus24, OxT)); // check
+
+    subgroups.put(OxO2, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12, OxO2, OxO6, OxO24, OxOPlus24, OxOQuerPlus24)); // check
+    subgroups.put(OxO6, Arrays.asList(TxT3, TxT12, TxTPlus12, OxO6, OxO24,
+        OxOPlus24, OxOQuerPlus24)); // check
     subgroups.put(OxO24,
-        Arrays.asList(OxO24, OxOPlus24, OxOQuerPlus24, TxT12, TxTPlus12)); // check
-    subgroups.put(OxOPlus24, Arrays.asList(OxOPlus24, TxTPlus12)); // check
-    subgroups.put(OxOQuerPlus24, Arrays.asList(OxOQuerPlus24, TxTPlus12)); // check
+        Arrays.asList(TxTPlus12, OxO24, OxOPlus24, OxOQuerPlus24, TxT12)); // check
+    subgroups.put(OxOPlus24, Arrays.asList(TxTPlus12, OxOPlus24)); // check
+    subgroups.put(OxOQuerPlus24, Arrays.asList(TxTPlus12, OxOQuerPlus24)); // check
 
   }
 
@@ -585,7 +593,7 @@ public enum Symmetry4D
   }
 
   @Override
-  public Collection<Point4D> images(Point4D p) {
+  public Collection<Point4D> images(final Point4D p) {
     Collection<Point4D> rotatedPointcollection = new HashSet<>();
     for (Rotation4D r : groups.get(this)) {
       rotatedPointcollection.add(r.rotate(p).asPoint4D());
@@ -611,7 +619,7 @@ public enum Symmetry4D
     return groups.keySet();
   }
 
-  public static void main(String[] args) {
+  public static void main(final String[] args) {
     // Collection<Symmetry4D> syms = getSymmetries();
     // for(Symmetry4D sym : syms){
     // System.out.println("size of "+sym.coxeter()+" / "+sym.schoenflies()+": "+sym.order());

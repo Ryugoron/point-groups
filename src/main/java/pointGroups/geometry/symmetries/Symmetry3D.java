@@ -2,8 +2,10 @@ package pointGroups.geometry.symmetries;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,7 +15,7 @@ import pointGroups.geometry.UnitQuaternion;
 
 
 public enum Symmetry3D
-  implements Symmetry<Point3D> {
+  implements Symmetry<Point3D>, Comparable<Symmetry3D> {
 
   C1("C1", "[]+", "11"), //
   S2("S2", "[2+,2+]", "x"), // Ci = S2
@@ -31,11 +33,7 @@ public enum Symmetry3D
   C5v("C5v", "[5]", "*55"), //
   D5("D5", "[5,2]+", "522"), //
   D3d("D3d", "[2+,6]", "2*3"), //
-  T("T", "[3,3]+", "332"), //
-  Th("Th", "[4,3+]", "3*2"), //
   D5d("D5d", "[2+,10]", "2*5"), //
-  I("I", "[5,3]+", "532"), //
-  Ih("Ih", "[5,3]", "*532"), //
   C4h("C4h", "[2,4+]", "4*"), //
   C4("C4", "[4]+", "44"), //
   S4("S4", "[2+,4+]", "2x"), //
@@ -51,10 +49,13 @@ public enum Symmetry3D
   C6v("C6v", "[6]", "*66"), //
   D3h("D3h", "[3,2]", "*322"), //
   D6h("D6h", "[6,2]", "*622"), //
-  O("O", "[4,3]+", "432"), //
   Td("Td", "[3,3]", "*332"), //
-  Oh("Oh", "[4,3]", "*432");//
-
+  T("T", "[3,3]+", "332"), //
+  Th("Th", "[4,3+]", "3*2"), //
+  O("O", "[4,3]+", "432"), //
+  Oh("Oh", "[4,3]", "*432"), //
+  I("I", "[5,3]+", "532"), //
+  Ih("Ih", "[5,3]", "*532"); //
   // Symmetries as quaternions
   /**
    * identity rotation
@@ -378,6 +379,8 @@ public enum Symmetry3D
   }
 
   public static Collection<Symmetry3D> getSymmetries() {
-    return rotations.keySet();
+    final LinkedList<Symmetry3D> ret = new LinkedList<>(rotations.keySet());
+    Collections.sort(ret);
+    return ret;
   }
 }

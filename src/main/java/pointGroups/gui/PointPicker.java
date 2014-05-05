@@ -27,7 +27,6 @@ import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.util.LoggerFactory;
 import pointGroups.util.jreality.JRealityUtility;
 import pointGroups.util.point.PointUtil;
-import pointGroups.util.polymake.FundamentalTransformer;
 import de.jreality.geometry.Primitives;
 import de.jreality.scene.Appearance;
 import de.jreality.scene.Geometry;
@@ -56,13 +55,19 @@ public class PointPicker
   private final boolean responsive;
   private double scale = 1; // TODO Initialize ändern
 
+  private final double SHOWSIZE = 3.0;
+  private double showScale = 1; // Wird von einer neuen Symmetrie geändert.
+
   private Symmetry3DChooseEvent lastSymmetry3DChooseEvent;
   private Symmetry4DChooseEvent lastSymmetry4DChooseEvent;
 
   final protected Logger logger = LoggerFactory.getSingle(PointPicker.class);
 
+  // Moved Outside of UiViewer to manipulate.
+  public final SceneGraphComponent point = new SceneGraphComponent();
+
   protected final UiViewer uiViewer = new UiViewer(this) {
-    public final SceneGraphComponent point = new SceneGraphComponent();
+
     public final Appearance pointAppearance = new Appearance();
     public final SceneGraphComponent fundamental = new SceneGraphComponent();
 
@@ -90,25 +95,31 @@ public class PointPicker
         public void pointDragged(PointDragEvent e) {
           PointSet pointSet = e.getPointSet();
 
-          double[][] points = new double[pointSet.getNumPoints()][];
+          if (pointSet.getNumPoints() == 0) return;
 
+          double[][] points = new double[pointSet.getNumPoints()][];
           pointSet.getVertexAttributes(Attribute.COORDINATES).toDoubleArrayArray(
               points);
-          points[e.getIndex()] = e.getPosition();
+
+          double[] startPoint = points[0];
+          double[] dragPoint = e.getPosition();
+
+          double[] fundamentalPoint = viewerPointToFundamentalPoint(dragPoint);
+          if (!PointPicker.this.fundamental.inFundamental(fundamentalPoint)) {
+            dragPoint = startPoint;
+            return;
+          }
+
+          points[e.getIndex()] = dragPoint;
+
           pointSet.setVertexAttributes(Attribute.COORDINATES,
               StorageModel.DOUBLE_ARRAY.array(3).createReadOnly(points));
 
-          /*
-           * for (double[] point : points) {
-           * System.out.printf("[%2f, %2f, %2f]\n", point[0], point[1],
-           * point[2]); }
-           */
           // TODO:
           // because the point scene has only one vertex, pointSet should only
           // contain one point; and therefore only the statements below should
           // be sufficient for point picking.
-          double[] pickedPoint = e.getPosition();
-          if (responsive) selectPoint(pickedPoint);
+          if (responsive) selectPoint(dragPoint);
         }
 
         @Override
@@ -136,7 +147,20 @@ public class PointPicker
       dpts.setPointSize(0.1);
       dpts.setPointRadius(0.1);
     }
+
   };
+
+  public void setPoint(double[] coords) {
+    logger.fine("Set Fundamental Pick Point to: " + PointUtil.showPoint(coords));
+
+    if (dim == 2) {
+      this.point.setGeometry(Primitives.point(new double[] { coords[0],
+          coords[1], 0.0 }));
+
+      return;
+    }
+    this.point.setGeometry(Primitives.point(coords));
+  }
 
   // The current Fundamental Domain
   protected Fundamental fundamental;
@@ -156,11 +180,6 @@ public class PointPicker
     super();
 
     setLayout(new BorderLayout());
-
-    /*
-     * JButton button3 = new JButton("VIEW"); PointPicker.this.add(button3,
-     * BorderLayout.PAGE_END);
-     */
 
     this.isSet = false;
     this.dim = 2;
@@ -193,6 +212,8 @@ public class PointPicker
   // Maybe i need this.
   @Override
   public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
+    uiViewer.setDimensionMode(uiViewer.uiState.isPointPicker3DMode());
+
     if (event.switchedTo3D()) {
       logger.fine("Point Picker switched to 2D Mode.");
       this.dim = 2;
@@ -207,31 +228,49 @@ public class PointPicker
     }
   }
 
+  protected double[] viewerPointToFundamentalPoint(double[] viewerPoint) {
+    double[] fundamentalPoint = new double[this.dim];
+    for (int i = 0; i < this.dim; i++) {
+      fundamentalPoint[i] = viewerPoint[i];
+    }
+
+    if (fundamental.isKnown()) {
+      fundamentalPoint = PointUtil.div(showScale, fundamentalPoint);
+    }
+
+    return fundamentalPoint;
+  }
+
   // Method to fire coordinate Changed Event, should be executed by click inside
   // the fundamental domain.
   protected void selectPoint(double[] point) {
+
     if (!isSet || (this.dim != 2 && this.dim != 3)) {
       logger.info("Point was picked with no useable Fundamental Region.");
       return;
     }
+
     logger.info("Selected Point (" + point[0] + "," + point[1] +
         (this.dim == 3 ? "," + point[2] : "") + ")");
+
     if (!isSet) return;
+
     // Maybe the view is translated or smt
     // point = Rotate * point - translation
 
     // Recalculate to Unitsphere on dim+1 dimensions
     // Only take the first dim components
-    double[] selComp = new double[this.dim];
-    for (int i = 0; i < this.dim; i++)
-      selComp[i] = point[i];
+    double[] selComp = viewerPointToFundamentalPoint(point);
     double[] resP = this.fundamental.revertPoint(selComp);
 
     logger.fine("Point Picker calculated Point (" + resP[0] + "," + resP[1] +
         "," + resP[2] + (this.dim == 3 ? "," + resP[3] : "") + ")");
+
     resP = PointUtil.mult(this.scale, resP);
-    System.out.println("Scale: " + this.scale + ", point : " +
+
+    logger.fine("Scale: " + this.scale + ", point : " +
         PointUtil.showPoint(resP));
+
     // Fire Event, that the coordinate changed
     if (dim == 2) {
       this.dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(
@@ -252,10 +291,21 @@ public class PointPicker
 
   protected void showFundamental() {
     logger.info("Showing new Fundamental Domain.");
+
     Geometry g;
     // Calculate the new fundamental
     if (this.fundamental.isKnown()) {
-      g = JRealityUtility.generateGraph(this.fundamental.getVertices(), JRealityUtility.convertEdges(this.fundamental.getEdges()));
+      double[][] points = this.fundamental.getVertices();
+      double dia = PointUtil.diameter(points);
+      showScale = SHOWSIZE / dia;
+      int[][] edges = JRealityUtility.convertEdges(this.fundamental.getEdges());
+      int[][] faces = null;
+
+      for (int i = 0; i < points.length; i++) {
+        points[i] = PointUtil.mult(showScale, points[i]);
+      }
+
+      g = JRealityUtility.generateGraph(points, edges, faces);
     }
     else {
       if (this.dim == 2) g = JRealityUtility.circle(0, 0, 1);
@@ -264,6 +314,8 @@ public class PointPicker
     // Reset tools (3D rotation, 2D no Rotation)
     logger.fine("A new Fundamental Region is shown.");
     uiViewer.setGeometry(g);
+
+    setPoint(new double[] { 0.0, 0.0, 0.0 });
   }
 
   @Override

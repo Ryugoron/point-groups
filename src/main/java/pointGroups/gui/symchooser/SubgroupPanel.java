@@ -19,6 +19,11 @@ import pointGroups.gui.symchooser.elements.SymmetryListCellRenderer;
 import pointGroups.util.LoggerFactory;
 
 
+/**
+ * Listing of the corresponding subgroups of a given {@link Symmetry}.
+ * 
+ * @author Alex
+ */
 public class SubgroupPanel
   extends JList<Symmetry<?>>
 
@@ -38,8 +43,11 @@ public class SubgroupPanel
 
     addListSelectionListener(new ListSelectionListener() {
 
+      @SuppressWarnings("unchecked")
       @Override
       public void valueChanged(final ListSelectionEvent e) {
+        // Fire event if symmetry was chosen.
+
         final SubgroupPanel list = SubgroupPanel.this;
         Symmetry<?> subgroup = list.getSelectedValue();
         if (subgroup != null) {
