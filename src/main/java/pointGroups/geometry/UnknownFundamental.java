@@ -38,12 +38,13 @@ public class UnknownFundamental
   public double[] revertPoint(double[] point) {
     double[] p = point;
     double[] lift = new double[p.length + 1];
-    for (int i = 0; i < p.length; i++) {
-      lift[i] = p[i];
-      lift[p.length] += p[i] * p[i];
+    lift[0] = 0;
+    for (int i = 1; i <= p.length; i++) {
+      lift[i] = p[i - 1];
+      lift[0] += p[i - 1] * p[i - 1];
     }
-    lift[p.length] += 1;
-    lift[p.length] = Math.sqrt(lift[p.length]);
+    lift[0] += 1;
+    lift[0] = Math.sqrt(lift[0]);
     // Nur zur sicherheit
     p = PointUtil.normalize(p);
 
@@ -53,6 +54,11 @@ public class UnknownFundamental
   @Override
   public boolean inFundamental(double[] point) {
     return PointUtil.length(point) <= 1 + EPSILON;
+  }
+
+  @Override
+  public double[] toFundamental(double[] point) {
+    return PointUtil.rmFst(point);
   }
 
 }

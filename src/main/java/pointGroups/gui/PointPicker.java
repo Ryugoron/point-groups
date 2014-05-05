@@ -7,6 +7,10 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 import pointGroups.geometry.Fundamental;
+import pointGroups.geometry.Point;
+import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Point4D;
+import pointGroups.geometry.Symmetry;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointEvent;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointHandler;
@@ -64,24 +68,25 @@ public class PointPicker
   final protected Logger logger = LoggerFactory.getSingle(PointPicker.class);
 
   // Moved Outside of UiViewer to manipulate.
-  public final SceneGraphComponent point = new SceneGraphComponent();
+  public final SceneGraphComponent viewerPointScene = new SceneGraphComponent();
+  public final SceneGraphComponent viewerFundamentalScene =
+      new SceneGraphComponent();
 
   protected final UiViewer uiViewer = new UiViewer(this) {
 
     public final Appearance pointAppearance = new Appearance();
-    public final SceneGraphComponent fundamental = new SceneGraphComponent();
 
     @Override
     public void onInitialized() {
       SceneGraphComponent root = getSceneRoot();
 
-      point.setGeometry(Primitives.point(new double[] { 0, 0, 0 }));
+      viewerPointScene.setGeometry(Primitives.point(new double[] { 0, 0, 0 }));
 
       setPointAppearance(pointAppearance);
-      point.setAppearance(pointAppearance);
+      viewerPointScene.setAppearance(pointAppearance);
 
-      root.addChild(fundamental);
-      root.addChild(point);
+      root.addChild(viewerFundamentalScene);
+      root.addChild(viewerPointScene);
 
       DragEventTool dragTool = new DragEventTool();
       dragTool.addPointDragListener(new PointDragListener() {
@@ -105,7 +110,7 @@ public class PointPicker
           double[] dragPoint = e.getPosition();
 
           double[] fundamentalPoint = viewerPointToFundamentalPoint(dragPoint);
-          if (!PointPicker.this.fundamental.inFundamental(fundamentalPoint)) {
+          if (!fundamental.inFundamental(fundamentalPoint)) {
             dragPoint = startPoint;
             return;
           }
@@ -129,7 +134,7 @@ public class PointPicker
         }
       });
 
-      point.addTool(dragTool);
+      viewerPointScene.addTool(dragTool);
 
     }
 
@@ -154,12 +159,12 @@ public class PointPicker
     logger.fine("Set Fundamental Pick Point to: " + PointUtil.showPoint(coords));
 
     if (dim == 2) {
-      this.point.setGeometry(Primitives.point(new double[] { coords[0],
+      this.viewerPointScene.setGeometry(Primitives.point(new double[] { coords[0],
           coords[1], 0.0 }));
 
       return;
     }
-    this.point.setGeometry(Primitives.point(coords));
+    this.viewerPointScene.setGeometry(Primitives.point(coords));
   }
 
   // The current Fundamental Domain
@@ -270,7 +275,7 @@ public class PointPicker
 
     logger.fine("Scale: " + this.scale + ", point : " +
         PointUtil.showPoint(resP));
-
+    
     // Fire Event, that the coordinate changed
     if (dim == 2) {
       this.dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(
@@ -311,43 +316,65 @@ public class PointPicker
       if (this.dim == 2) g = JRealityUtility.circle(0, 0, 1);
       else g = Primitives.sphere(20);
     }
+
     // Reset tools (3D rotation, 2D no Rotation)
     logger.fine("A new Fundamental Region is shown.");
-    uiViewer.setGeometry(g);
+    viewerFundamentalScene.setGeometry(g);
+
+    viewerFundamentalScene.setPickable(false);
 
     setPoint(new double[] { 0.0, 0.0, 0.0 });
+  }
+
+  @SuppressWarnings({ "unchecked", "unused" })
+  private double[] choosenToFundamental3D(Point3D point) {
+    for (Point symPoint : ((Symmetry<Point3D>) uiViewer.uiState.lastPickedSymmetry).images(point)) {
+      double[] pF =
+          fundamental.toFundamental(PointUtil.div(this.scale,
+              symPoint.getComponents()));
+      if (fundamental.inFundamental(pF)) {
+        return PointUtil.mult(this.showScale, pF);
+      }
+    }
+    return new double[] { 0.0, 0.0 };
+  }
+
+  @SuppressWarnings({ "unchecked", "unused" })
+  private double[] choosenToFundamental4D(Point4D point) {
+    for (Point symPoint : ((Symmetry<Point4D>) uiViewer.uiState.lastPickedSymmetry).images(point)) {
+      double[] pF =
+          fundamental.toFundamental(PointUtil.div(this.scale,
+              symPoint.getComponents()));
+      if (fundamental.inFundamental(pF)) {
+        return PointUtil.mult(this.showScale, pF);
+      }
+    }
+    return new double[] { 0.0, 0.0, 0.0 };
   }
 
   @Override
   public void
       onChangeCoordinate4DPointEvent(ChangeCoordinate4DPointEvent event) {
-    // Calculate if the point is in the Fundamental Domain and
-    // show it, if possible
-
-    // For start test just show the point
-    // uiViewer.setGeometry(Primitives.point(new double[] { 0.5, 0.5 }));
-
-    return;
-
+//    if(fundamental == null || event.getSource() == this) return;
+//    
+//    double[] r = choosenToFundamental4D(event.getPickedPoint());
+//    setPoint(r);
   }
 
   @Override
   public void
       onChangeCoordinate3DPointEvent(ChangeCoordinate3DPointEvent event) {
-    // Calculate if the point is in the Fundamental Domain and
-    // show it, if possible
+//    if(fundamental == null || event.getSource() == this) return;
+//  
+//    double[] r = choosenToFundamental3D(event.getPickedPoint());
+//    setPoint(r);
 
-    // For start test just show the point
-    // uiViewer.setGeometry(Primitives.point(new double[] { 0.5, 0.5 }));
-
-    return;
   }
 
   @Override
   public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
     this.lastSymmetry4DChooseEvent = event;
     this.dim = 3;
-
   }
 
   @Override
