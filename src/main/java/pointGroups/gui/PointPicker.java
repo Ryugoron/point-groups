@@ -317,6 +317,8 @@ public class PointPicker
     logger.fine("A new Fundamental Region is shown.");
     viewerFundamentalScene.setGeometry(g);
 
+    viewerFundamentalScene.setPickable(false);
+
     setPoint(new double[] { 0.0, 0.0, 0.0 });
   }
 
