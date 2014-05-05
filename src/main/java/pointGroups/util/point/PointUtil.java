@@ -259,4 +259,8 @@ public class PointUtil
     
     return dia;
   }
+  
+  public static double distance(double[] a, double[] b) {
+    return PointUtil.length(PointUtil.subtract(a, b));
+  }
 }

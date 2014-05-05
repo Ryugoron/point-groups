@@ -38,6 +38,7 @@ import pointGroups.gui.event.types.Symmetry3DChooseHandler;
 import pointGroups.gui.event.types.Symmetry4DChooseEvent;
 import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.util.jreality.JRealityUtility;
+import pointGroups.util.point.PointUtil;
 
 
 /**
@@ -61,6 +62,8 @@ public class CoordinateView
   private Symmetry3DChooseEvent lastSymmetry3DChooseEvent;
   private Symmetry4DChooseEvent lastSymmetry4DChooseEvent;
 
+  private double[] lastCoords = new double[]{0.0, 0.0, 0.0};
+  
   public CoordinateView(int dimension, int maxDimension, EventDispatcher dispatcher) {
     this.setLayout(new BorderLayout());
     inputField = new DimensioninputField(dimension, maxDimension);
@@ -87,12 +90,16 @@ public class CoordinateView
   @Override
   public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
     lastSymmetry3DChooseEvent = event;
+    lastCoords = event.getSymmetry3D().getNormalPoint().getComponents();
+    this.inputField.setCoordinate(lastCoords);
     run.setEnabled(true);
   }
 
   @Override
   public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
     lastSymmetry4DChooseEvent = event;
+    lastCoords = event.getSymmetry4D().getNormalPoint().getComponents();
+    this.inputField.setCoordinate(lastCoords);
     run.setEnabled(true);
   }
   
@@ -150,6 +157,7 @@ public class CoordinateView
   public void
       onChangeCoordinate4DPointEvent(ChangeCoordinate4DPointEvent event) {
     if (!event.isSource(this)) {
+      lastCoords = event.getPickedPoint().getComponents();
       inputField.setCoordinate(event.getPickedPoint());
     }
 
@@ -159,6 +167,7 @@ public class CoordinateView
   public void
       onChangeCoordinate3DPointEvent(ChangeCoordinate3DPointEvent event) {
     if (!event.isSource(this)) {
+      lastCoords = event.getPickedPoint().getComponents();
       inputField.setCoordinate(event.getPickedPoint());
     }
   }
@@ -310,6 +319,8 @@ public class CoordinateView
     protected void changeCoordinateEvent() {
       double[] point = inputField.getCoords();
 
+      if(PointUtil.distance(lastCoords, point) < 1e-09) return;
+      
       if (dimension == 3) {
         Point3D point3D = JRealityUtility.asPoint3D(point);
         dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(point3D,

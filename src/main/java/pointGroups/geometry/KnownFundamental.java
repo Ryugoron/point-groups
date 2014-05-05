@@ -31,6 +31,8 @@ public class KnownFundamental
    */
   private final double[][] revertMatrix;
   public final double[] affine;
+  
+  private final double[][] toFundammentalMatrix;
 
   /**
    * A list with hyperplanes. The first one is a point on the plane and the
@@ -45,7 +47,7 @@ public class KnownFundamental
   private final List<Edge> edges;
 
   public KnownFundamental(double[][] points, double[][] revertMatrix,
-      double[][] hyperplanes, double[] affine, List<Edge> edges) {
+      double[][] hyperplanes, double[] affine, List<Edge> edges, double[][] toFundamental) {
 
     // Punkte kopieren
     finPoints = PointUtil.copyPoints(points);
@@ -55,6 +57,7 @@ public class KnownFundamental
     this.hPolytope = hyperplanes;
     this.edges = (new ArrayList<Edge>());
     this.edges.addAll(edges);
+    this.toFundammentalMatrix = toFundamental;
   }
 
   /**
@@ -126,6 +129,12 @@ public class KnownFundamental
     double[] p = PointUtil.addZero(point);
     p = PointUtil.applyMatrix(revertMatrix, p);
     p = PointUtil.add(p, this.affine);
+    return p;
+  }
+  
+  public double[] toFundamental(double[] point) {
+    double[] p = PointUtil.applyMatrix(toFundammentalMatrix, point);
+    p = PointUtil.rmFst(p);
     return p;
   }
 }
