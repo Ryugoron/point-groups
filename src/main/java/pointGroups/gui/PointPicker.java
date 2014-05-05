@@ -7,6 +7,10 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 import pointGroups.geometry.Fundamental;
+import pointGroups.geometry.Point;
+import pointGroups.geometry.Point3D;
+import pointGroups.geometry.Point4D;
+import pointGroups.geometry.Symmetry;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointEvent;
 import pointGroups.gui.event.types.ChangeCoordinate3DPointHandler;
@@ -270,7 +274,7 @@ public class PointPicker
 
     logger.fine("Scale: " + this.scale + ", point : " +
         PointUtil.showPoint(resP));
-
+    
     // Fire Event, that the coordinate changed
     if (dim == 2) {
       this.dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(
@@ -318,36 +322,55 @@ public class PointPicker
     setPoint(new double[] { 0.0, 0.0, 0.0 });
   }
 
+  @SuppressWarnings({ "unchecked", "unused" })
+  private double[] choosenToFundamental3D(Point3D point) {
+    for (Point symPoint : ((Symmetry<Point3D>) uiViewer.uiState.lastPickedSymmetry).images(point)) {
+      double[] pF =
+          fundamental.toFundamental(PointUtil.div(this.scale,
+              symPoint.getComponents()));
+      if (fundamental.inFundamental(pF)) {
+        return PointUtil.mult(this.showScale, pF);
+      }
+    }
+    return new double[] { 0.0, 0.0 };
+  }
+
+  @SuppressWarnings({ "unchecked", "unused" })
+  private double[] choosenToFundamental4D(Point4D point) {
+    for (Point symPoint : ((Symmetry<Point4D>) uiViewer.uiState.lastPickedSymmetry).images(point)) {
+      double[] pF =
+          fundamental.toFundamental(PointUtil.div(this.scale,
+              symPoint.getComponents()));
+      if (fundamental.inFundamental(pF)) {
+        return PointUtil.mult(this.showScale, pF);
+      }
+    }
+    return new double[] { 0.0, 0.0, 0.0 };
+  }
+
   @Override
   public void
       onChangeCoordinate4DPointEvent(ChangeCoordinate4DPointEvent event) {
-    // Calculate if the point is in the Fundamental Domain and
-    // show it, if possible
-
-    // For start test just show the point
-    // uiViewer.setGeometry(Primitives.point(new double[] { 0.5, 0.5 }));
-
-    return;
-
+//    if(fundamental == null || event.getSource() == this) return;
+//    
+//    double[] r = choosenToFundamental4D(event.getPickedPoint());
+//    setPoint(r);
   }
 
   @Override
   public void
       onChangeCoordinate3DPointEvent(ChangeCoordinate3DPointEvent event) {
-    // Calculate if the point is in the Fundamental Domain and
-    // show it, if possible
+//    if(fundamental == null || event.getSource() == this) return;
+//  
+//    double[] r = choosenToFundamental3D(event.getPickedPoint());
+//    setPoint(r);
 
-    // For start test just show the point
-    // uiViewer.setGeometry(Primitives.point(new double[] { 0.5, 0.5 }));
-
-    return;
   }
 
   @Override
   public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
     this.lastSymmetry4DChooseEvent = event;
     this.dim = 3;
-
   }
 
   @Override
