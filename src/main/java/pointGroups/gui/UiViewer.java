@@ -18,6 +18,10 @@ import pointGroups.gui.event.types.DimensionSwitchEvent;
 import pointGroups.gui.event.types.DimensionSwitchHandler;
 import pointGroups.gui.event.types.SchlegelResultEvent;
 import pointGroups.gui.event.types.SchlegelResultHandler;
+import pointGroups.gui.event.types.Symmetry3DChooseEvent;
+import pointGroups.gui.event.types.Symmetry3DChooseHandler;
+import pointGroups.gui.event.types.Symmetry4DChooseEvent;
+import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.gui.event.types.gui.SchlegelViewModeChangedEvent;
 import pointGroups.gui.event.types.gui.SchlegelViewModeChangedHandler;
 import de.jreality.jogl.JOGLViewer;
@@ -638,7 +642,7 @@ public class UiViewer
 
   public class UiState
     implements DimensionSwitchHandler, SchlegelResultHandler,
-    SchlegelViewModeChangedHandler
+    SchlegelViewModeChangedHandler, Symmetry3DChooseHandler, Symmetry4DChooseHandler
   {
     protected final EventDispatcher dispatcher = EventDispatcher.get();
 
@@ -654,6 +658,8 @@ public class UiViewer
       dispatcher.addHandler(DimensionSwitchHandler.class, this);
       dispatcher.addHandler(SchlegelResultHandler.class, this);
       dispatcher.addHandler(SchlegelViewModeChangedHandler.class, this);
+      dispatcher.addHandler(Symmetry3DChooseHandler.class, this);
+      dispatcher.addHandler(Symmetry4DChooseHandler.class, this);
     }
 
     public boolean is3DMode() {
@@ -718,6 +724,18 @@ public class UiViewer
     @Override
     public void onSchlegelViewModeChanged(SchlegelViewModeChangedEvent event) {
       lastSchlegelViewMode = event.getViewMode();
+    }
+
+    @Override
+    public void onSymmetry4DChooseEvent(Symmetry4DChooseEvent event) {
+      this.lastPickedSymmetry = event.getSymmetry4D();
+      
+    }
+
+    @Override
+    public void onSymmetry3DChooseEvent(Symmetry3DChooseEvent event) {
+      this.lastPickedSymmetry = event.getSymmetry3D();
+      
     }
   }
 }
