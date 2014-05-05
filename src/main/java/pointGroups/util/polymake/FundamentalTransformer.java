@@ -32,7 +32,7 @@ public class FundamentalTransformer
   // For testing issus
   protected double[][] n2f;
   protected double[][] f2n;
-  
+
   protected List<double[]> clalcPoints;
 
   public FundamentalTransformer(Point center, List<? extends Point> points) {
@@ -96,7 +96,6 @@ public class FundamentalTransformer
     sb.append("print $poly->FACETS;");
 
     this.script = sb.toString();
-    System.out.println(script);
     return this.script;
   }
 
@@ -144,9 +143,9 @@ public class FundamentalTransformer
 
     // The first flag says if it is bounded, 0 -> Unbounded so we want a
     // UnknwonFundamental
-    if (answer[0].equals("0")) { 
+    if (answer[0].equals("0")) {
       logger.info("Unbounded Fundamental Region computed. Returning UnkownFundamental instead");
-      return new UnknownFundamental(); 
+      return new UnknownFundamental();
     }
 
     List<double[]> points = new LinkedList<double[]>();
@@ -186,7 +185,7 @@ public class FundamentalTransformer
     for (int i = 0; i < hyper.length; i++) {
       hyper[i] = hyperPlanes.get(i);
     }
-    
+
     this.clalcPoints = points;
 
     return new KnownFundamental(normPoints, f2n, hyper, center.getComponents(),
