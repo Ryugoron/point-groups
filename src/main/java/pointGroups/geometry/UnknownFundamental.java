@@ -24,7 +24,7 @@ public class UnknownFundamental
   public double[][] getVertices() {
     return null;
   }
-  
+
   @Override
   public Edge[] getEdges() {
     return null;

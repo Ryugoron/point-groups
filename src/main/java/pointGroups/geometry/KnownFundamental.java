@@ -122,7 +122,7 @@ public class KnownFundamental
    * @param point - in fundamental
    * @return point in liftet fundamental
    */
-  private double[] affinePolytope(double[] point) {
+  public double[] affinePolytope(double[] point) {
     double[] p = PointUtil.addZero(point);
     p = PointUtil.applyMatrix(revertMatrix, p);
     p = PointUtil.add(p, this.affine);

@@ -24,7 +24,7 @@ public class FundamentalTransformer
 
   private String script = null;
   private final List<? extends Point> points;
-  private final Point center;
+  protected final Point center;
   private final int dim;
 
   private Fundamental f;
@@ -32,6 +32,8 @@ public class FundamentalTransformer
   // For testing issus
   protected double[][] n2f;
   protected double[][] f2n;
+  
+  protected List<double[]> clalcPoints;
 
   public FundamentalTransformer(Point center, List<? extends Point> points) {
     this.points = points;
@@ -39,6 +41,11 @@ public class FundamentalTransformer
     this.dim = this.points.iterator().next().getComponents().length;
   }
 
+  /**
+   * Builds a script for polymake, that first initializes the voronoicell of
+   * center in points and then returns the vertices and edges of the cell,
+   * leading a bit flag, that says, whether the polytope is bounded.
+   */
   @Override
   public String toScript() {
     if (script != null) return script;
@@ -81,6 +88,7 @@ public class FundamentalTransformer
     sb.append("]]);");
 
     sb.append("my $poly = new Polytope(INEQUALITIES=>$hyper, EQUATIONS=>$aff);");
+    sb.append("print $poly->BOUNDED;print \"\\n\";");
     sb.append("print $poly->VERTICES;");
     sb.append("print \"-----\\n\";");
     sb.append("print $poly->GRAPH->EDGES;");
@@ -88,6 +96,7 @@ public class FundamentalTransformer
     sb.append("print $poly->FACETS;");
 
     this.script = sb.toString();
+    System.out.println(script);
     return this.script;
   }
 
@@ -115,8 +124,11 @@ public class FundamentalTransformer
       // Tries to transform a Fundamental Region.
       // System.out.println(this.script);
       res = transformHelper();
-      if(res.getEdges().length < 2) {
-        res = new UnknownFundamental();
+      if (res.isKnown()) {
+        if (res.getEdges().length < 3) {
+          logger.info("To less edges for a polytope. Returning an Unkown Fundamental Region.");
+          res = new UnknownFundamental();
+        }
       }
     }
     catch (Exception e) {
@@ -130,10 +142,17 @@ public class FundamentalTransformer
   private Fundamental transformHelper() {
     String[] answer = this.resultString.split("\n");
 
+    // The first flag says if it is bounded, 0 -> Unbounded so we want a
+    // UnknwonFundamental
+    if (answer[0].equals("0")) { 
+      logger.info("Unbounded Fundamental Region computed. Returning UnkownFundamental instead");
+      return new UnknownFundamental(); 
+    }
+
     List<double[]> points = new LinkedList<double[]>();
     List<Edge> edges = new LinkedList<Edge>();
     List<double[]> hyperPlanes = new LinkedList<double[]>();
-    int pos = 0;
+    int pos = 1;
     // The first ones are Vertices
     while (!answer[pos].equals("-----")) {
       points.add(parsePoint(answer[pos]));
@@ -167,13 +186,15 @@ public class FundamentalTransformer
     for (int i = 0; i < hyper.length; i++) {
       hyper[i] = hyperPlanes.get(i);
     }
+    
+    this.clalcPoints = points;
 
-    return new KnownFundamental(normPoints, f2n, hyper, center.getComponents(), edges);
+    return new KnownFundamental(normPoints, f2n, hyper, center.getComponents(),
+        edges);
   }
 
-  
   /**
-   * Parses a coordinate 
+   * Parses a coordinate
    */
   private double parseCoordinate(String s) {
     if (s.contains("/")) {

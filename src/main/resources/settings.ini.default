@@ -7,12 +7,3 @@
 
 POLYMAKEPATH = /import/polymake/bin/polymake
 
-
-##########################
-## internal configuration parameters
-####
-## do not change, unless you know
-## what you are doing
-##########################
-
-POLYMAKEDRIVER = pmDriver.pl

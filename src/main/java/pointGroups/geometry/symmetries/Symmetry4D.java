@@ -1,10 +1,10 @@
 package pointGroups.geometry.symmetries;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -449,9 +449,9 @@ public enum Symmetry4D
   public static Collection<Rotation4D> readSymmetryGroup(final Symmetry4D sym)
     throws FileNotFoundException, IOException, ClassNotFoundException {
 
-    File f = PointGroupsUtility.getSymmetry(sym.filename + ".sym");
+    InputStream is = PointGroupsUtility.getSymmetry(sym.filename + ".sym");
 
-    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
+    ObjectInputStream ois = new ObjectInputStream(is);
     Object o = ois.readObject();
     // TODO: ugly
     Collection<Rotation4D> group = ((Collection<Rotation4D>) o);
@@ -461,15 +461,13 @@ public enum Symmetry4D
 
   private static void loadSymGroups() {
     try {
-      groups.put(IxO, readSymmetryGroup(IxO));
-      groups.put(IxT, readSymmetryGroup(IxT));
-      groups.put(OxT, readSymmetryGroup(OxT));
-
-      groups.put(IxI, readSymmetryGroup(IxI));
-      groups.put(IxI60, readSymmetryGroup(IxI60));
-      groups.put(IxIQuer60, readSymmetryGroup(IxIQuer60));
-      groups.put(IxIPlus60, readSymmetryGroup(IxIPlus60));
-      groups.put(IxIQuerPlus60, readSymmetryGroup(IxIQuerPlus60));
+      groups.put(TxT, readSymmetryGroup(TxT));
+      groups.put(TxT3, readSymmetryGroup(TxT3));
+      groups.put(TxTQuer3, readSymmetryGroup(TxTQuer3));
+      groups.put(TxT12, readSymmetryGroup(TxT12));
+      groups.put(TxTQuer12, readSymmetryGroup(TxTQuer12));
+      groups.put(TxTPlus12, readSymmetryGroup(TxTPlus12));
+      groups.put(TxTQuerPlus12, readSymmetryGroup(TxTQuerPlus12));
 
       groups.put(OxO, readSymmetryGroup(OxO));
       groups.put(OxO2, readSymmetryGroup(OxO2));
@@ -478,13 +476,15 @@ public enum Symmetry4D
       groups.put(OxOPlus24, readSymmetryGroup(OxOPlus24));
       groups.put(OxOQuerPlus24, readSymmetryGroup(OxOQuerPlus24));
 
-      groups.put(TxT, readSymmetryGroup(TxT));
-      groups.put(TxT3, readSymmetryGroup(TxT3));
-      groups.put(TxTQuer3, readSymmetryGroup(TxTQuer3));
-      groups.put(TxT12, readSymmetryGroup(TxT12));
-      groups.put(TxTQuer12, readSymmetryGroup(TxTQuer12));
-      groups.put(TxTPlus12, readSymmetryGroup(TxTPlus12));
-      groups.put(TxTQuerPlus12, readSymmetryGroup(TxTQuerPlus12));
+      groups.put(IxI, readSymmetryGroup(IxI));
+      groups.put(IxI60, readSymmetryGroup(IxI60));
+      groups.put(IxIQuer60, readSymmetryGroup(IxIQuer60));
+      groups.put(IxIPlus60, readSymmetryGroup(IxIPlus60));
+      groups.put(IxIQuerPlus60, readSymmetryGroup(IxIQuerPlus60));
+
+      groups.put(IxO, readSymmetryGroup(IxO));
+      groups.put(IxT, readSymmetryGroup(IxT));
+      groups.put(OxT, readSymmetryGroup(OxT));
 
     }
     catch (ClassNotFoundException | IOException e) {
@@ -508,26 +508,27 @@ public enum Symmetry4D
       loadSymGroups();
     }
 
-    subgroups.put(IxO, Arrays.asList(IxO, IxT, TxT, TxT3, TxTQuer3, TxT12,
-        TxTQuer12, TxTPlus12, TxTQuerPlus12));
-    subgroups.put(OxT, Arrays.asList(OxT, TxT, TxT3, TxTQuer3, TxT12, TxTQuer12, TxTPlus12,
-        TxTQuerPlus12));
+    subgroups.put(IxO, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12, IxO, IxT));
+    subgroups.put(OxT, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12, OxT));
 
-    subgroups.put(IxT, Arrays.asList(IxT, TxT, TxT3, TxTQuer3, TxT12,
-        TxTQuer12, TxTPlus12, TxTQuerPlus12));
+    subgroups.put(IxT, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12, IxT));
 
-    subgroups.put(IxI, Arrays.asList(IxI, IxI60, IxIQuer60, IxIPlus60, IxIQuerPlus60, IxT,
-        TxT, TxT3, TxTQuer3, TxT12, TxTQuer12, TxTPlus12, TxTQuerPlus12));
-    
+    subgroups.put(IxI, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12, IxI, IxI60, IxIQuer60, IxIPlus60,
+        IxIQuerPlus60, IxT));
+
     subgroups.put(IxIQuer60,
-        Arrays.asList(IxIQuer60, IxIQuerPlus60, TxTQuer12, TxTQuerPlus12));
-    
-    subgroups.put(IxIQuerPlus60, Arrays.asList(IxIQuerPlus60, TxTQuerPlus12));
+        Arrays.asList(TxTQuer12, TxTQuerPlus12, IxIQuer60, IxIQuerPlus60));
+
+    subgroups.put(IxIQuerPlus60, Arrays.asList(TxTQuerPlus12, IxIQuerPlus60));
     subgroups.put(IxI60, Arrays.asList(IxI60, IxIPlus60)); // check
     subgroups.put(IxIPlus60, Arrays.asList(IxIPlus60)); // check
 
-    subgroups.put(TxT, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12, TxTPlus12,
-        TxTQuerPlus12)); // check
+    subgroups.put(TxT, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12)); // check
     subgroups.put(TxT3, Arrays.asList(TxT3, TxT12, TxTPlus12)); // check
     subgroups.put(TxT12, Arrays.asList(TxT12, TxTPlus12)); // check
     subgroups.put(TxTPlus12, Arrays.asList(TxTPlus12)); // check
@@ -535,18 +536,18 @@ public enum Symmetry4D
     subgroups.put(TxTQuer12, Arrays.asList(TxTQuer12, TxTQuerPlus12)); // check
     subgroups.put(Symmetry4D.TxTQuerPlus12, Arrays.asList(TxTQuerPlus12));
 
-    subgroups.put(OxO, Arrays.asList(OxO, OxO2, OxO6, OxO24, OxOPlus24,
-        OxOQuerPlus24, OxT, TxT, TxT3, TxTQuer3, TxT12, TxTQuer12, TxTPlus12,
-        TxTQuerPlus12)); // check
-    
-    subgroups.put(OxO2, Arrays.asList(OxO2, OxO6, OxO24, OxOPlus24, OxOQuerPlus24, TxT, TxT3, TxTQuer3, TxT12,
-        TxTQuer12, TxTPlus12, TxTQuerPlus12)); // check
-    subgroups.put(OxO6, Arrays.asList(OxO6, OxO24, OxOPlus24, OxOQuerPlus24,
-        TxT3, TxT12, TxTPlus12)); // check
+    subgroups.put(OxO, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12, OxO, OxO2, OxO6, OxO24, OxOPlus24,
+        OxOQuerPlus24, OxT)); // check
+
+    subgroups.put(OxO2, Arrays.asList(TxT, TxT3, TxTQuer3, TxT12, TxTQuer12,
+        TxTPlus12, TxTQuerPlus12, OxO2, OxO6, OxO24, OxOPlus24, OxOQuerPlus24)); // check
+    subgroups.put(OxO6, Arrays.asList(TxT3, TxT12, TxTPlus12, OxO6, OxO24,
+        OxOPlus24, OxOQuerPlus24)); // check
     subgroups.put(OxO24,
-        Arrays.asList(OxO24, OxOPlus24, OxOQuerPlus24, TxT12, TxTPlus12)); // check
-    subgroups.put(OxOPlus24, Arrays.asList(OxOPlus24, TxTPlus12)); // check
-    subgroups.put(OxOQuerPlus24, Arrays.asList(OxOQuerPlus24, TxTPlus12)); // check
+        Arrays.asList(TxTPlus12, OxO24, OxOPlus24, OxOQuerPlus24, TxT12)); // check
+    subgroups.put(OxOPlus24, Arrays.asList(TxTPlus12, OxOPlus24)); // check
+    subgroups.put(OxOQuerPlus24, Arrays.asList(TxTPlus12, OxOQuerPlus24)); // check
 
   }
 
