@@ -1,14 +1,61 @@
 \section{Fazit}
-    \begin{itemize}
-        \item Ziele erreicht?\\
-        Nadja: Ich würd sagen ja ;)
-        \item Welche Schwierigkeiten?\\
-   		Nadja: Zeitmanagement zum Ende hin - wenn Projekte einfach nicht fertig werden wollen; vielleicht nicht grade eine Schwierigkeit, aber zeitintensiv: Verstehen der mathematischen Grundlagen
-        \item Welche alternativen Lösungen wurden verworfen? (MVC vs. Eventbasiert, jReality vs. JavaView, C++ vs. Polymake?\dots)
-        \item Sonstiges?\\
-        Nadja: Ich hab gesehen bei der Erstellung der Gruppen mit ihren Untergruppen, wie unglaublich sinnvoll Tests da sind (hier wäre es vielleicht wirklich sinnvoll gewesen erst die Tests zu schreiben). Auch wenn man was verändert, kann man sie einfach wieder durchlaufen lassen und weiß, ob noch alles halbwegs passt.
-         \item Leider kann man den Punkt nicht live draggen, da Polymake langsam ist :(
-        \item Noch offen:\\
-        Nadja: Hatten wir da nicht ein paar Verbesserungsvorschläge gemacht?
-            
-    \end{itemize}
+In diesem Softwareprojekt wurde eine Java-Applikation entwickelt, die die Punktgruppen der drei- und vierdimensionalen
+Polyeder-Symmetrien grafisch darstellt. Zu diesem Zweck wurde \emph{polymake}~\cite{polymake}, eine Berechnungsbibliothek für
+konvexe Polytope, als externe Komponente an die Applikation angebunden. Zur Darstellung der Symmetrien wurde dann die Computergrafik-Bibliothek
+\emph{jReality}~\cite{jreality} verwendet.
+Es wurden sowohl drei- als auch vierdimensionale Punktgruppen samt einiger ihrer Untergruppen implementiert.
+
+\paragraph{Erreichung von Zielen.}
+Das Visualisieren der Punktgruppen als dreidimensionale Polyeder bzw. als Schlegeldiagramme wurde erfolgreich umgesetzt. Ebenso wird für jede Punktgruppe ein Fundamentalbereich angezeigt, aus dem ein Punkt zur Berechnung gewählt werden kann. 
+Einzig die Zuordnung der Kanten bei Verformungen ist problematisch, da die zur Anzeige benutze Bibliothek kaum Kontrolle über
+einen glatten Darstellungsübergang erlaubt.
+\paragraph{Einschätzung von Problemen.}
+Einige Probleme bereitete uns der Einsatz von Drittsoftware (z.B. \emph{polymake} oder \emph{jReality}): Durch eine mäßige bis sehr schlechte
+Dokumentierung war es teilweise kaum möglich, verlässliche Aussagen über das Verhalten dieser Bibliotheken zu machen. So musste teilweise geraten bzw. intensiv getestet werden, welche Ausgaben erwartet werden können und sogar welche Bedeutung einige Ausgaben überhaupt haben. Diese Probleme traten vor allem bei der Verwendung von \emph{polymake} auf.
+Auch bei erfolgreicher Verwendung fällt ein Mangel auf: Die Berechnungsdauer der resultierenden Polytope ist, bei größeren Symmetriegruppen (> 4000), sehr langsam. Der Flaschenhals der gesamten Applikation ist im Wesentlichen auf \emph{polymake} zurückzuführen, da hier die meisten Berechnungen realtiv lange Zeit beanspruchen. So kann man im Falle von großen Symmetriegruppen den Ausgangspunkt nicht interaktiv via Maus
+verschieben und eine flüssige Transformation des Polytops beobachten.
+
+\noindent Beim Projektmanagement gab es zu Anfang des Softwareprojektes schleppende Phasen, in denen fast kein Fortschritt gemacht wurde.
+Dies ist wohl auf den anfänglichen Mangel einer Koordinationsperson (eines `Projektleiters`) zurückzuführen; es wurden zwar Anforderungen und
+Ideen zur Umsetzen diskutiert, allerdings wurden danach keine konkreten Aufgaben verteilt sodass eine Woche später keine oder kaum Ergebnisse vorlagen. Nach einiger Zeit haben sich aber Personen herauskristallisiert, die die Diskussionsleitung, Protokollführung und Aufgabenverteilung 
+in die Hand genommen haben.
+
+\paragraph{Alternative Lösungen.}
+Es wurde diskutiert, die Projektarchitektur nach dem MVC-Pattern zu gestaltet. Wir haben uns aber dennoch für eine ereignisbasierte Architektur
+entschieden, da diese mehr Flexibilität im Hinblick auf das Anforderungsmanagement bietet: Sollten bei einem MVC-Projekt schon früh bestimmte
+Schnittstellen feststehen, so kann im Ereignisbasierten Paradigma ad-hoc (und vor allem später im Projekt) das Interesse an bestimmten Daten kundgetan werden.
+
+\noindent Auch bei den zum Einsatz kommenden externen Bibliotheken haben wir zwischen Alternativen abgewogen: Zur Visualisierung
+sollte zuerst \emph{JavaView}~\cite{javaview} zum Einsatz kommen. Da diese Bibliothek allerdings nur sehr restriktiv (was die Einbettung in ein Java-Programm angeht) verwendet werden kann und zudem schlecht dokumentiert ist, haben wir uns gegen JavaView entschieden.
+Für \emph{jReality} sprechen eine bessere Unterstützung für das Einbinden in Java-Applikationen und die open-source-Lizenz: So kann man zur Not,
+falls die Dokumentation nicht ausreicht, selber im Code nachschauen, was bestimmte Funktionen tun.
+
+\noindent Für die geometrischen Berechnungen stand ebenfalls ein weiterer Kanditat zur Diskussion: Statt \emph{polymake} wurde der
+Einsatz von \emph{CGAL}~\cite{cgal} diskutiert. Obwohl wir der Meinung waren, dass der Umfang, die Funktionalität und die Dokumentation von \emph{CGAL} besser sind, haben wir uns doch gegen den Einsatz entschieden. Der Grund: Die Bibliothek ist in C++ geschrieben und 
+verlangt einen erheblichen Mehraufwand beim Anbinden an die Java-Applikation (im Gegensatz zu dem extrem leichtgewichtigen Perl bei \emph{polymake}).
+
+\noindent Auch bei Java-internen Implementierungsdetails gab es oftmals mehrere (sinnvolle) Alternativen. Hier haben wir uns dann bei den Projekttreffen am Montag nach einer Diskussion jeweils für die passendere Alternative entschieden. Entscheidungen beinhalteten
+die Modellierung der Symmetriegruppen (Eine Klasse pro Symmetriegruppe vs. eine Klasse pro Dimension), der Berechnungsanfragen
+(Festlegen eines Protokolls für den Dialog mit \emph{polymake} vs. Verschicken von perl-Code) und
+Fehlerbehandlung (Exceptions vs. Logging).
+\paragraph{Sonstiges.}
+Viele allgemeine Erfahrungen wurden während der Projektzeit gemacht. So sind die wöchentlichen Besprechungung unverzichtbar:
+Nicht nur weil sich die Gruppe gegenseitig auf den neusten Stand und Lösungsansätze diskutiert, sondern auch um eine gewisse
+Gruppendynamik aufrecht zu erhalten. Die Projektarbeit ist viel motivierender, wenn man miteinander Erfahrungen austauscht
+und auch über Fehler scherzen kann.
+
+\noindent Auch der Einsatz der Versionsverwaltung \emph{Git} klappte meistens sehr gut. Dank der Versionsgeschichte und der Zuordnung
+von Änderungen zu Personen, konnten Fehlerquellen schneller identifiziert werden und mit dem/der Verantwortlichen diskutiert werden.
+
+\noindent Bei der Generierung der Gruppen mit ihren Untergruppen ist es insbesondere aufgefallen, wie sinnvoll Tests für eine schnelle
+Prüfung der Korrektheit sind. Auch wenn sich Code im Projekt verändert, kann man sie einfach wieder durchlaufen lassen und so prüfen,
+ob noch alles korrkt ist. Tatsächlich wäre es hier wahrscheinlich wirklich sinnvoll gewesen erst die Tests zu schreiben und dann die
+Klasen zu implementieren.
+
+\paragraph{Ausblick.}
+Es sind noch einige offene Fragen für die Verbesserung des Projektes zu klären:
+Wie kann die Performance von \emph{polymake} verbessert werden? Ein naiver Parallelisierungsansatz ist wohl ausgeschlossen,
+da die Berechnung innerhalb einer \emph{polymake}-Instanz sequenziell ablaufen und daher genau so lange brauchen.
+Wie kann die GUI intuitiver gestalten, sodass die Bedienung vereinfacht wird?
+Können weitere Eingabeparameter angeboten werden, um die angebotenen Berechnungen zu verallgemeinern?
+

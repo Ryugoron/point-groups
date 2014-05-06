@@ -19,7 +19,7 @@
         \item Lose Kopplung durch Eventsystem (siehe~\ref{ssec:event})
         \item Aufbereitung der Daten durch GUI (siehe~\ref{ssec:gui})
     \end{itemize}
-    \noindent Dabei wird folgende Entwurfsidee verfolgt: Polymake wird als externes Spezielrechenprogram benutzt und mittels I/O mit Berechnungsaufträgen beliefert.
+    \noindent Dabei wird folgende Entwurfsidee verfolgt: Polymake wird als externes Spezialrechenprogramm benutzt und mittels I/O mit Berechnungsaufträgen beliefert.
     Diese Berechnungsaufträge werden ad-hoc als Reaktion von Benutzereingaben (z.B. Anzeige einer 3D-Punktmenge) seitens der Java-Applikation erstellt und intern als
     Objekte repräsentiert. Da die Berechnungen von Polymake verschieden lange dauern, wird ein Ereignissystem (Event-basiertes System) umgesetzt, das an Berechnungsergebnissen
     interessierte Komponenten mittels Events von diesen informiert. Letztendlich wird die grafische Benutzeroberfläche mit den Resultaten der Berechnungen bestückt und
@@ -46,11 +46,11 @@
         \end{figure}
 
         \noindent Die Eingabeinformationen der Anwendung passieren mehrere Berechnungsschritte nacheinander und beschreiben, wie in Abbildung~\ref{fig:flow} zu sehen, eine Pipeline-artige Struktur.
-        Es werden über die grafische Öberfläche durch den Benutzer Anfangsinformationen vorgegeben (z.B. Koordinaten eines Punktes, Auswahl einer Symmetriegruppe)
+        Es werden über die grafische Oberfläche durch den Benutzer Anfangsinformationen vorgegeben (z.B. Koordinaten eines Punktes, Auswahl einer Symmetriegruppe)
         und damit mittels eines Events eine Berechnung gestartet. Hierbei passieren die resultieren Berechnungsaufträge einige interne Stationen der Java-Applikation:
         Eine Zentralinstanz, der \texttt{CalculationHub}, nimmt die Berechnungsanfrage zur Kenntnis und merkt sich diese noch offene Anfrage zur späteren Beantwortung.
         Zeitgleich wird die Anfrage mittels eines Abstraktionsobjektes (des \texttt{Polymakewrapper}s) an die laufende \texttt{polymake}-Instanz geschickt.
-        Erreicht eine Antwort via I/O die Java-Appliations, so ordnet diese der \texttt{CalculationHub} der korrekten ursprünglichen Anfrage zu und informiert mittels Event alle
+        Erreicht eine Antwort via I/O die Java-Applikation, so ordnet diese der \texttt{CalculationHub} der korrekten ursprünglichen Anfrage zu und informiert mittels Event alle
         interessierten Komponenten, dass ein Berechnungsergebnis vorliegt.
         Die GUI empfängt dann diese Informationen, bereitet sie auf und zeigt sie an.
 
@@ -138,36 +138,70 @@
     end
         \end{lstlisting}
     \subsubsection{Symmetriegruppen}
-    Eine Symmetriegruppe wird durch einen Enum repräsentiert. Durch diesen Enum wird auf Hashmaps zugegriffen. Es gibt jeweils eine Hashmap für die Gruppenelemente und die Untergruppen. Dies erleichert das Hinzufügen von Symmetriegruppen, deren Zugriff und die Verwaltung von Gruppenelementen. Es ist im Gegensatz zu unserem ursprünglichen Entwurf nur eine Klasse für den dreidimensionalen Fall nötig und es erspart deutliche Redundanzen. Dies betrifft insbesondere die Nutzung von Gruppenelementen und die Untergruppenbeziehungen. Dieser Entwurf ist somit leichter wartbarer und wiederbenutzbarer.
+    Eine Symmetriegruppe wird durch einen Enum repräsentiert. Durch diesen Enum wird auf Hashmaps zugegriffen. Es gibt jeweils eine Hashmap für die Gruppenelemente und die Untergruppen. Dies erleichtert das Hinzufügen von Symmetriegruppen, deren Zugriff und die Verwaltung von Gruppenelementen. Es ist im Gegensatz zu unserem ursprünglichen Entwurf nur eine Klasse für den dreidimensionalen Fall nötig und es erspart deutliche Redundanzen. Dies betrifft insbesondere die Nutzung von Gruppenelementen und die Untergruppenbeziehungen. Dieser Entwurf ist somit leichter wartbarer und wiederbenutzbarer.
     Für die Nutzung der Symmetriegruppen steht ein Interface bereit, welches einen leichten und intuitiven Zugang ermöglicht. Die wesentlichen Funktionen sind die Ausgabe der verschiedenen Bezeichnungen einer Gruppe, die Ordnung, die Untergruppen und die Berechnung der Punktgruppe zu einem gegebenen Punkt. Dies war besonders beim Entwurfswechsel sinnvoll. Denn so musste im restlichen Quellcode beim Entwurfswechsel nur sehr wenige Änderungen vorgenommen werden. Dieses Interface wird sowohl für den dreidimensionalen Fall sowie für den vierdimensionalen Fall verwendet.\\ 
-    %%3D case
+%% 3D case
     Die dreidimensionalen Symmetriegruppen sind ausgiebig dokumentiert und nicht sehr umfangreich im Vergleich zum vierdimensionalen Fall. Wir konnten dort die Gruppenelemente als auch die Untergruppen festkodieren. Die Rotationsachsen wurden als statische Variablen gespeichert. Die einzelnen Gruppen werden dann durch diese Auswahl der Rotationsachsen charakterisiert. Die Rotationsachsen werden als Quaternionen dargestellt. \todo{Beispielcode?} \\
         OLLI SCHREIBT HIER ZU .... Symmetriegruppen (Berechnung mittels Generatoren, hart kodiert, Darstellung/Repräsentation)
 %%%% 4D-case
-Im vierdimensionalen Fall waren die Symmetriegruppen in der Literatur nur durch die Generatoren beschrieben und eine händische oder halbautomatische Erzeugung erscheint bei den Gruppengröße von teilweise einigen tausend Elementen nicht sinnvoll. Wir haben uns dazu für die Erzeugung mittels Gruppen entschieden. Dies ist nachträglich für den dreidimensionalen Fall auch möglich und die Ergebnisse wurden in diesem Fall auch verifiziert. Im vierdimensionalen Fall haben wir die Klassen Symmetrie4D, Symmetry4DReflection, Rotation4D, Reflection4D und SubgroupChecker4D. In Rotation4D wird eine Rotation mittels zwei Quaternionen dargestellt und ein Punkt kannt mit der Methode gemäß der mathematischen Definitionrotiert werden. Des Weiteren kann zu einer weiteren gegebenen Rotation eine neue Rotation berechnet werden.  
-\begin{lstlisting}[mathescape, morekeywords={for, each, do, begin,input, output, end, return}, caption={Peusdocode der Bildmengenberechnung}, label=alg:images]
-input: rotation1 = {r$_1$,l$_1$}: Rotation4D
-rotation2 = {r$_2$,l$_2$}: Rotation4D
-\end{lstlisting}
-  
-Die Grundlage für unseren Algorithmus ist das Hintereinanderausführen der Erzeuger und die Speicherung von neuen Elementen. 
-\begin{lstlisting}[mathescape, morekeywords={for, each, do, begin,input, output, end, return}, caption={Peusdocode der Bildmengenberechnung}, label=alg:images]
+Im vierdimensionalen Fall waren die Symmetriegruppen in der Literatur nur durch die Generatoren beschrieben und eine händische oder halbautomatische Erzeugung erscheint bei den Gruppengröße von teilweise einigen tausend Elementen nicht sinnvoll. Wir haben uns dazu für die Erzeugung mittels Gruppen entschieden. Dies ist nachträglich für den dreidimensionalen Fall auch möglich und die Ergebnisse wurden in diesem Fall auch verifiziert. Im vierdimensionalen Fall haben wir die Klassen Symmetrie4D, Symmetry4DReflection, Rotation4D, Reflection4D und SubgroupChecker4D.
+Symmetry4D ist analog zu Symmetry3D aufgebaut. Es werden allerdings die Gruppen mittels Hintereinanderausführen der Generatoren bestimmt und die neuen Elemente werden gespeichert beziehungsweise geladen.
+\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode der Erzeugung einer Symmetriegruppe}, label=alg:images]
+input: gen = {(l$_1$,r$_1$),...,(l$_n$,r$_n$)}: Generators
+output: sym: Symmetry group
+begin	
+	sym $\gets$ gen
+	newElem $\gets$ false
+	do
+		for each (l$_i$,r$_i$) $\in$ sym do
+			for each (l$_j$,r$_j$) $\in$ sym do
+				e $\gets $ (l$_i \cdot$ l$_j$, r$_i \cdot$r$_j$)
+				if (e $\notin$ sym) then
+					sym $\gets$ sym $\cup$ {e}
+					newElem $\gets$ true
+				fi
+			end
+		end
+	while (newElem)
+end 
 
-balabla
 \end{lstlisting}
-Das Hauptproblem dabei ist das Überprüfen, ob ein Element bereits in einer Gruppe vorhanden ist. Bei Gruppen von mehreren tausend Elementen ist eine naive Suche zu zeitintensiv und es kann zu Rundungsfehlern kommen. Aus diesem Grund haben wir uns für eine Hashmap zur Speicherung der Elemente entschieden. Dazu mussten für eine Rotation eine Hashmethode erzeugt werden. Die Anforderungen an die Hashmethode musste eine schnelle Berechnung ermöglichen, im Einklang mit einer equal-Methode sein und eine gute Streuung der Elemente garantieren.\todo{Formulierung?}
-\subsection{Symmetriegruppen im 4D}
-\begin{itemize}
-	\item Berechnung mittels Generatoren
-	\item Rotation4D klasse
-	\item hashcode und equals methoden
-	\item Gitternetz
-	\item Testfälle mittels Gruppengröße
-	\item Speicherung
-	\item Untergruppenbeziehungen
-	\item Testfälle Untergruppenbeziehungen
-	\item Berechnung
-\end{itemize}
+Das Hauptproblem dabei ist das Überprüfen, ob ein Element bereits in einer Gruppe vorhanden ist. Bei Gruppen von mehreren tausend Elementen ist eine naive Suche zu zeitintensiv und es kann zu Rundungsfehlern kommen. Aus diesem Grund haben wir uns für eine Hashmap zur Speicherung der Elemente entschieden. Dazu mussten für eine Rotation eine Hashmethode erzeugt werden. Die Anforderungen an die Hashmethode musste eine schnelle Berechnung ermöglichen, im Einklang mit einer equal-Methode sein und eine gute Streuung der Elemente garantieren.\\
+Für das Hashen von Quaternionen haben wir uns an eine Implementierung von JReality orientiert. Mit den Hash- und Equal-Methoden wird gleichzeitig, dass Problem von Rundungsfehler gelöst. Wir runden auf fünf Nachkommastellen und bilden somit ein Gitter. 
+\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode der Erzeugung von Hashcode eines Quaternions}, label=alg:images]
+input: q = (re,i,j,k): Quaternion
+output: hashcode: int
+begin	
+	r $\gets 10^5$
+	x = round(r $\cdot$ re) / r
+    	y = round(r $\cdot$ i) / r
+    	z = round(r $\cdot$ j) / r
+    	w = round(r $\cdot$ k) / r
+	hashcode $\gets$ 31 $\cdot$ hashcode + x $\oplus$ x
+	hashcode $\gets$ 31 $\cdot$ hashcode + y $\oplus$ y
+	hashcode $\gets$ 31 $\cdot$ hashcode + z $\oplus$ z
+	hashcode $\gets$ 31 $\cdot$ hashcode + w $\oplus$ w
+end 
+\end{lstlisting}
+In Rotation4D wird eine Rotation mittels zwei Quaternionen dargestellt und ein Punkt kann mit der Methode gemäß der mathematischen Definition rotiert werden. Als Hashcodefunktion werden die beiden Hashwerte der Quaternionen mit einem XOR verknüpft. Nach ~\cite{conway2003} gelten folgenden Gleichheiten
+$[-l,-r] = [l,r]$ und $[-l,r]=[l,-r]=-[l,r]$. Damit der Hashcode mit den Gleichheiten im Einklang steht, werden negative Quaternionen beim Hashen zu positiven transformiert. Beim Gleichheitstest werden jeweils die einzelnen Quaternionen verglichen.\\
+Die Erzeugung der Rotationsgruppen ist sehr zeitintensiv. Aus diesem Grund werden die Rotationsgruppen im vierdimensionalen Fall mittels Java-ObjectOutputStream jeweils in eine Datei gespeichert und von dort geladen. Sollten die Dateien nicht gefunden werden, so werden die Rotationsgruppen erzeugt und lokal gespeichert. Die erzeugen Gruppen wurden mittels JUnittest überprüft. Dazu wurde jeweils die Gruppengröße der erzeugten Gruppe mit der angegebenen Gruppengröße in der Literatur verglichen. Die Untergruppenbeziehungen wurden mittels naivem Test untersucht. Dazu wurden überprüft, welche Gruppe in einer anderen Gruppe enthalten ist.\\
+Für vierdimensionale Gruppen mit Spiegelungen werden in die Rotationsgruppen erweitert. Bei der Berechnung der Bilder werden dazu zu nächst alle Bilder unter Rotationen bestimmt. Anschließend werden diese Bilder noch mit dem entsprechenden Quaternion erweitert.
+\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode für Bilder unter Spiegelungen}, label=alg:images]
+input: e = (re,i,j,k): Quaternion // extending element
+	 rotations = (q$_1$,..q$_n$): All rotions of given point p with respect to rotationsym
+	
+output: images: All images of p with respect to sym
+begin	
+	images $\gets$ rotations
+	for each q $\in$ rotations do
+		images $\gets$ images $\cup$ reflect(e,q)
+	end
+end 
+\end{lstlisting}
+Die Untergruppenbeziehungen konnten aus den Rotationsgruppen übernommen werden, wenn das gleiche Quaternion zur Erweiterung genommen wurde.
+\\ \todo{Umsortieren}
+  \todo{Formulierung?}
 
 
     \subsubsection{Fundamentalbereich}

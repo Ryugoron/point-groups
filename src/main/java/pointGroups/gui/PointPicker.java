@@ -68,24 +68,25 @@ public class PointPicker
   final protected Logger logger = LoggerFactory.getSingle(PointPicker.class);
 
   // Moved Outside of UiViewer to manipulate.
-  public final SceneGraphComponent point = new SceneGraphComponent();
+  public final SceneGraphComponent viewerPointScene = new SceneGraphComponent();
+  public final SceneGraphComponent viewerFundamentalScene =
+      new SceneGraphComponent();
 
   protected final UiViewer uiViewer = new UiViewer(this) {
 
     public final Appearance pointAppearance = new Appearance();
-    public final SceneGraphComponent fundamental = new SceneGraphComponent();
 
     @Override
     public void onInitialized() {
       SceneGraphComponent root = getSceneRoot();
 
-      point.setGeometry(Primitives.point(new double[] { 0, 0, 0 }));
+      viewerPointScene.setGeometry(Primitives.point(new double[] { 0, 0, 0 }));
 
       setPointAppearance(pointAppearance);
-      point.setAppearance(pointAppearance);
+      viewerPointScene.setAppearance(pointAppearance);
 
-      root.addChild(fundamental);
-      root.addChild(point);
+      root.addChild(viewerFundamentalScene);
+      root.addChild(viewerPointScene);
 
       DragEventTool dragTool = new DragEventTool();
       dragTool.addPointDragListener(new PointDragListener() {
@@ -109,7 +110,7 @@ public class PointPicker
           double[] dragPoint = e.getPosition();
 
           double[] fundamentalPoint = viewerPointToFundamentalPoint(dragPoint);
-          if (!PointPicker.this.fundamental.inFundamental(fundamentalPoint)) {
+          if (!fundamental.inFundamental(fundamentalPoint)) {
             dragPoint = startPoint;
             return;
           }
@@ -133,7 +134,7 @@ public class PointPicker
         }
       });
 
-      point.addTool(dragTool);
+      viewerPointScene.addTool(dragTool);
 
     }
 
@@ -158,12 +159,12 @@ public class PointPicker
     logger.fine("Set Fundamental Pick Point to: " + PointUtil.showPoint(coords));
 
     if (dim == 2) {
-      this.point.setGeometry(Primitives.point(new double[] { coords[0],
+      this.viewerPointScene.setGeometry(Primitives.point(new double[] { coords[0],
           coords[1], 0.0 }));
 
       return;
     }
-    this.point.setGeometry(Primitives.point(coords));
+    this.viewerPointScene.setGeometry(Primitives.point(coords));
   }
 
   // The current Fundamental Domain
@@ -314,9 +315,12 @@ public class PointPicker
       if (this.dim == 2) g = JRealityUtility.circle(0, 0, 1);
       else g = Primitives.sphere(20);
     }
+
     // Reset tools (3D rotation, 2D no Rotation)
     logger.fine("A new Fundamental Region is shown.");
-    uiViewer.setGeometry(g);
+    viewerFundamentalScene.setGeometry(g);
+
+    viewerFundamentalScene.setPickable(false);
 
     setPoint(new double[] { 0.0, 0.0, 0.0 });
   }

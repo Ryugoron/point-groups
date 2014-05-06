@@ -14,7 +14,7 @@ i^2 = j^2 = k^2 = ijk = -1
 \end{split}\end{equation*}
 Dann heißt die Zahl $q = a + bi + cj + dk$ Quaternion.
 \end{definition}
-Dabei sind die Bezeichnungen $Re(.)$ und $Im(.)$ für den Real- und Imiginärteil eines Quaternions wie üblich definiert.
+Dabei sind die Bezeichnungen $Re(.)$ und $Im(.)$ für den Real- und Imaginärteil eines Quaternions wie üblich definiert.
 Die Menge der Quaternionen wird mit $\mathbb{H}$ bezeichnet und ist äquivalent zum reellen Vektorraum $\mathbb{R}^4$.
 Man kann also ein Quaternion $q \in \mathbb{H}$ als Vektor auffassen; dies ist speziell für die Interpretation von Quaternionen als Rotationsoperatoren hilfreich.
 
@@ -83,10 +83,20 @@ Die durch $l,r$ induzierte Rotationsfunktion $[.]$ ergibt sich dann also durch d
 \end{equation*}
 Im Gegensatz zu Rotationen muss nur ein Quaternion mehr gespeichert werden,  aber der Berechnungsaufwand ist gleich.\\
 Für Spiegelung werden jede Rotationsgruppe mit Hilfe eines Operators \todo{Welche?}erweitert. Alle Gruppenelemente werden mit diesem multipliziert. Dadurch bleiben die Untergruppenbeziehungen aus den Rotationsgruppen unter Beachtung des Operators erhalten.
-Die Gruppen im vierdiemensionalen Fall sind nur mittels Generatoren in ~\cite{conway2003} beschrieben. Die Gruppegrößen variieren zwischen \todo{Wie groß sind die Gruppe?}. Eine explizierte Aufzählung exisiert nicht. 
+Die Gruppen im vierdimensionalen Fall sind nur mittels Generatoren in ~\cite{conway2003} beschrieben. Die Gruppengrößen variieren zwischen zwölf und 14400 Elemente. Eine explizite Aufzählung existiert nicht. 
 
 \subsection{Punktgruppen}
-ALEX SCHREIBT HIER KURZE SAETZE...gibts hier was interessantes?
+Eine Punktgruppe $X$ ist eine Symmetriegruppe $X \subseteq O(d)$, die einen Punkt (meistens den Ursprung) festhält.
+Dabei ist $O(d)$ die Orthogonale Gruppe in $d$ Dimensionen. Die Elemente von $X$ sind also Drehungen und Spiegelungen im $d$-dimensionalen
+Raum.
+
+\noindent In diesem Projekt betrachten wir ausschließlich drei- und vierdimensionale Punktgruppen, wobei die Gruppenelemente
+durch Quaternionen (oder Paare von Quaternionen in 4D) explizit dargestellt werden.
+Wir betrachten primär diejenigen Punktgruppen, die die Symmetrien der drei- und vierdimensionalen Polyedern darstellen.
+
+\noindent Die Benennung von Punktgruppen basiert auf den Symmetrieeigenschaften (z.B. Anzahl- und Ordnung von Drehachsen) der jeweiligen Gruppe:
+Hier gibt es mehrere gängige Systeme: Die Coxeternotation (nennt Winkel von Elementardrehungen), die Schoenflies-Notation (explizite Namen) und die
+Orbifold-Notation (nennt Ordnung von Drehungen und Spiegelungen uvm.). Wir verwenden im Softwareprojekt (soweit möglich) alle drei Bezeichnungen.
 
 \subsection{Fundamentalbereiche}\label{fundamentalbereich}
 
@@ -119,7 +129,7 @@ Nun bildet $G \setminus X$ schon annähernd einen Fundamentalbereich, falls $G$ 
 \begin{definition}[Fundamentalbereich]\label{fundamentalbereich:def} \mbox{}\\
    Sei $G \subseteq O(n)$ eine Symmetriegruppe auf $\mathbb{R}^n$.
 
-   \noindent Dann ist ein \emph{Fundamentalbereich von $G$} ein Representatensystem $G \setminus S^{n-1}$.
+   \noindent Dann ist ein \emph{Fundamentalbereich von $G$} ein Repräsentantensystem $G \setminus S^{n-1}$.
 \end{definition} 
 
 Für die Darstellung der Fundamentalbereiche, wählen wir nur spezielle, zusammenhängende Repräsentanten.
@@ -131,7 +141,7 @@ Für die Darstellung der Fundamentalbereiche, wählen wir nur spezielle, zusamme
    $$
       VF(x) := \left\{ \underset{y\in o}{\text{argmin}} \, d(x,y) \, |  o \in O\right\}.
    $$
-   Damit ist die Menge der $VF(y)$ mit $y \in G \rhd x$ eine Voronoidiagram, da wir jeweils die Punkte mit minimalem Abstand genommen haben.
+   Damit ist die Menge der $VF(y)$ mit $y \in G \rhd x$ eine Voronoi-Diagramm, da wir jeweils die Punkte mit minimalem Abstand genommen haben.
 \end{definition}
 
 

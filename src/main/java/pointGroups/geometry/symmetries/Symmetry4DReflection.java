@@ -20,11 +20,11 @@ public enum Symmetry4DReflection
   IxI60m2("+- 1/60 [IxI]*2", "2.[3,5]", "", Symmetry4D.IxI60, getStar()), //
   IxIPlus60m2_3("+ 1/60 [IxI]*2_3", "[3,5]", "", Symmetry4D.IxIPlus60,
       getStar()), //
-  IxIPlus60m2_1("+ 1/60 [IxI]*2_1", "[3,5]�", "", Symmetry4D.IxIPlus60,
+  IxIPlus60m2_1("+ 1/60 [IxI]*2_1", "[3,5]°", "", Symmetry4D.IxIPlus60,
       getMinusstar()), //
   IxIQuer60m2("+- 1/60 [IxIQuer]*2", "2.[3,3,3]", "", Symmetry4D.IxIQuer60,
       getStar()), //
-  IxIQuerPlus60m2_3("+ 1/60 [IxIQuer]*2_3", "[3,3,3]�", "",
+  IxIQuerPlus60m2_3("+ 1/60 [IxIQuer]*2_3", "[3,3,3]°", "",
       Symmetry4D.IxIQuerPlus60, getStar()), //
   IxIQuerPlus60m2_1("+ 1/60 [IxIQuer]*2_1", "[3,3,3]", "",
       Symmetry4D.IxIQuerPlus60, getMinusstar()), //
@@ -37,9 +37,9 @@ public enum Symmetry4DReflection
   OxO24m2("+- 1/24 [OxO]*2", "2.[3,4]", "", Symmetry4D.OxO24, getStar()), //
   OxOPlus24m2_3("+ 1/24 [OxO]*2_3", "[3,4]", "", Symmetry4D.OxOPlus24,
       getStar()), //
-  OxOPlus24m2_1("+ 1/24 [OxO]*2_1", "[3,4]�", "", Symmetry4D.OxOPlus24,
+  OxOPlus24m2_1("+ 1/24 [OxO]*2_1", "[3,4]°", "", Symmetry4D.OxOPlus24,
       getMinusstar()), //
-  OxOQuerPlus24m2_3("+ 1/24 [OxOquer]*2_3", "[2,3,3]�", "",
+  OxOQuerPlus24m2_3("+ 1/24 [OxOquer]*2_3", "[2,3,3]°", "",
       Symmetry4D.OxOQuerPlus24, getStar()), //
   OxOQuerPlus24m2_1("+ 1/24 [OxOquer]*2_1", "[2,3,3]", "",
       Symmetry4D.OxOQuerPlus24, getMinusstar()), //
@@ -53,9 +53,9 @@ public enum Symmetry4DReflection
       getStar()), //
   TxTPlus12m2_3("+ 1/12 [TxT]*2_3", "[+3,4]", "", Symmetry4D.TxTPlus12,
       getStar()), //
-  TxTPlus12m2_1("+ 1/12 [TxT]*2_1", "[+3,4]�", "", Symmetry4D.TxTPlus12,
+  TxTPlus12m2_1("+ 1/12 [TxT]*2_1", "[+3,4]°", "", Symmetry4D.TxTPlus12,
       getMinusstar()), //
-  TxTQuerPlus12m2_3("+ 1/12 [TxTquer]*2_3", "[3,3]�", "",
+  TxTQuerPlus12m2_3("+ 1/12 [TxTquer]*2_3", "[3,3]°", "",
       Symmetry4D.TxTQuerPlus12, getStar()), //
   TxTQuerPlus12m2_1("+ 1/12 [TxTquer]*2_1", "[3,3]", "",
       Symmetry4D.TxTQuerPlus12, getMinusstar()) //
