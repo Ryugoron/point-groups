@@ -91,7 +91,6 @@ public class ExternalCalculationEventHub
 
   @Override
   public void onSchlegel4DComputeEvent(final Schlegel4DComputeEvent event) {
-    System.out.println("Calcule for point "+PointUtil.showPoint(event.getPickedPoint().getComponents()));
     Collection<Point4D> images =
         event.getSymmetry4D().images(event.getPickedPoint());
     submit(new SchlegelTransformer(images, event.getSymmetry4D(),
@@ -100,7 +99,6 @@ public class ExternalCalculationEventHub
 
   @Override
   public void onSchlegel3DComputeEvent(final Schlegel3DComputeEvent event) {
-    System.out.println("Calcule for point "+PointUtil.showPoint(event.getPickedPoint().getComponents()));
     Collection<Point3D> images =
         event.getSymmetry3D().images(event.getPickedPoint());
     submit(new SchlegelTransformer(images, event.getSymmetry3D(),

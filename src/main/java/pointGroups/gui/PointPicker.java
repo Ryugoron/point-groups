@@ -273,8 +273,6 @@ public class PointPicker
     logger.fine("Scale: " + this.scale + ", point : " +
         PointUtil.showPoint(resP));
     
-    System.out.println("Point Picker Calculated "+PointUtil.showPoint(resP));
-    
     // Fire Event, that the coordinate changed
     if (dim == 2) {
       this.dispatcher.fireEvent(new ChangeCoordinate3DPointEvent(
