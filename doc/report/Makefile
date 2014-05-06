@@ -6,10 +6,10 @@ all: clean compile removetemporaries
 
 # TODO: Wirklich 3x latex?!
 compile:
-	latex ${LATEX_OPTS} report.tex
-	bibtex8 report
-	latex ${LATEX_OPTS} report.tex
-	latex ${LATEX_OPTS} report.tex
+	pdflatex ${LATEX_OPTS} report.tex
+	bibtex report
+	pdflatex ${LATEX_OPTS} report.tex
+	pdflatex ${LATEX_OPTS} report.tex
 
 pdf: compile removetemporaries
 	dvips report.dvi
