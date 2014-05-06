@@ -116,8 +116,36 @@
 %            wobei Concrete durch konkrete Namen ersetzt werden kann.
             
         \subsubsection{GUI\label{ssec:gui}}
-             MARCEL: ein bisschen erzählen, woher jreality kommt und warum wir es benutzen (in frame eingebettet etc). was es kann, wie wir es bisschen anpassen mussten.
-                
+
+            Für die Darstellungen der geometrischen Objekte wird die Bibliothek
+            jReality~\cite{jreality} benutzt.
+            %, welche unteranderem mehrere 3D- Backends
+            %unterstützt, wobei in diesem Projekt OpenGL als Standard- Backend
+            %verwendet wird.
+            jReality wird von der TU-Berlin entwickelt, steht unter der BSD-
+            Lizenz und ist quelloffen, frei verwendbar und anpassbar.
+
+            Eigentlich ist jReality eine umfangreiche Ansammlung von Werkzeugen,
+            welche sich nicht nur auf das Anzeigen von geometrischen Objekten
+            beschränkt und dadurch eine eigene Oberfläche für die Nutzung
+            dieser Werkzeuge bereitstellt.
+
+            Aber für das Projekt wurden diese zusätzlichen Features nicht
+            gebraucht und daher auch nicht die Oberfläche von jReality. jReality
+            bietet die Möglichkeit nur das Render-Fenster, also das Fenster wo
+            die Objekte angezeigt werden, zu verwenden und dieses kann
+            nahtlos als Swing-Unterkomponente in die GUI eingebunden werden.
+
+            %Um geometrische Objekte in jReality zeichnen zu können, muss dieses
+            %Objekt in ein von jReality verständliches Format gebracht werden.
+
+            Es werden zwei jReality-Instanzen benutzt, wobei die eine den
+            Fundamentalbereich und die andere das Schlegeldiagramm zeichnet.
+
+            Ansonsten gibt es in der GUI Steuerungselemente, um den
+            Fundamentalbereich bzw. das Schlegeldiagramm berechnen zu können.
+            Sowie die Möglichkeit Punktgruppen aus 3D bzw. 4D zu wählen.
+
 \subsection{Implementierung von Berechnungen}
     \subsubsection{Symmetriebilder}
         Wie bereits in Abschnitt~\ref{ssec:quad3sym} beschrieben, können Elemente der Symmetriegruppen (Drehungen, Spiegelungen) als Quaternionen beschrieben werden.
