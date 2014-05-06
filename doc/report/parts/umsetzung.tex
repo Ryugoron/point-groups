@@ -232,7 +232,7 @@ Die Untergruppenbeziehungen konnten aus den Rotationsgruppen übernommen werden,
          definiert ist, können wir auch dies mit in die Erzeugung mittels
 
          \begin{code}
-            new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>{h})
+new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>{h})
          \end{code}
 
          eingeben und haben so $VC(x)$ berechnet. \todo{Wieso wird die Ebene mit eingegeben?}
@@ -266,26 +266,26 @@ Die Untergruppenbeziehungen konnten aus den Rotationsgruppen übernommen werden,
          und kann auch leicht erstellt werden. Um das von uns gewünschte Polytop zu bekommen, benutzen wir das folgende polymake-Script
 
          \begin{code}
-            my \$poly = new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>\$affine);
-            print \$poly->VERTICES;
-            print \$poly->EDGES;
-            print \$poly->FACETS;
+my \$poly = new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>\$affine);
+print \$poly->VERTICES;
+print \$poly->EDGES;
+print \$poly->FACETS;
          \end{code}
 
          \noindent Mit diesen Ergebnissen können wir nun die Basiswechselmatrizen berechnen und so die Punkte umrechnen. Das Objekt \emph{Fundamental} ist somit
          eine Sammlung dieser Eigenschaften.
-
-         \begin{code}
-            public interface Fundamental {
-               public double[][] getVertices();
+         
+\begin{lstlisting}[language=Java, caption={Auswahl aus dem Fundamental Interface}, label=fund:interface]
+public interface Fundamental {
+   public double[][] getVertices();
                
-               public Edge<Integer,Integer>[] getEdges();
+   public Edge<Integer,Integer>[] getEdges();
 
-               public double[] revertPoint(double[] point);
+   public double[] revertPoint(double[] point);
 
-               public boolean inFundamental(double[] point);
-            }
-         \end{code}
+   public boolean inFundamental(double[] point);
+}
+\end{lstlisting}
          
          \noindent Die ersten beiden Funktionen liefern entsprechend ihrer Namensgebung die Knoten und Kanten des Fundamentalbereichs. Die dritte Methode \emph{revertPoint} nimmt einen Punkt in $\mathbb{R}^{n-1}$ und
          hebt ihn auf die Oberfläche der $S^{n-1}$ zurück. Die letzte Methode überprüft, ob ein angegebener Punkt überhaupt in der Voronoi--Zelle liegt.
