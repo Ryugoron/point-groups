@@ -27,6 +27,7 @@ import pointGroups.gui.event.types.Symmetry4DChooseHandler;
 import pointGroups.util.ExternalCalculationWrapper;
 import pointGroups.util.LoggerFactory;
 import pointGroups.util.Transformer;
+import pointGroups.util.point.PointUtil;
 import pointGroups.util.polymake.FundamentalTransformer;
 import pointGroups.util.polymake.FundamentalTransformerTransformer;
 import pointGroups.util.polymake.PolymakeOutputException;
@@ -90,6 +91,7 @@ public class ExternalCalculationEventHub
 
   @Override
   public void onSchlegel4DComputeEvent(final Schlegel4DComputeEvent event) {
+    System.out.println("Calcule for point "+PointUtil.showPoint(event.getPickedPoint().getComponents()));
     Collection<Point4D> images =
         event.getSymmetry4D().images(event.getPickedPoint());
     submit(new SchlegelTransformer(images, event.getSymmetry4D(),
@@ -98,6 +100,7 @@ public class ExternalCalculationEventHub
 
   @Override
   public void onSchlegel3DComputeEvent(final Schlegel3DComputeEvent event) {
+    System.out.println("Calcule for point "+PointUtil.showPoint(event.getPickedPoint().getComponents()));
     Collection<Point3D> images =
         event.getSymmetry3D().images(event.getPickedPoint());
     submit(new SchlegelTransformer(images, event.getSymmetry3D(),

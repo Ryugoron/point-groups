@@ -266,14 +266,13 @@ public class PointPicker
     // Only take the first dim components
     double[] selComp = viewerPointToFundamentalPoint(point);
     double[] resP = this.fundamental.revertPoint(selComp);
-
-    logger.fine("Point Picker calculated Point (" + resP[0] + "," + resP[1] +
-        "," + resP[2] + (this.dim == 3 ? "," + resP[3] : "") + ")");
-
+    
     resP = PointUtil.mult(this.scale, resP);
 
     logger.fine("Scale: " + this.scale + ", point : " +
         PointUtil.showPoint(resP));
+    
+    System.out.println("Point Picker Calculated "+PointUtil.showPoint(resP));
     
     // Fire Event, that the coordinate changed
     if (dim == 2) {
