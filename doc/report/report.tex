@@ -14,7 +14,7 @@
 \usepackage{booktabs} % For tables
 \usepackage[perpage,bottom]{footmisc} % Footnote configuration
 \usepackage{graphicx} % For includegraphics
-\usepackage[page,titletoc]{appendix} % For appendix in toc
+\usepackage[title]{appendix} % For appendix in toc
 \usepackage{color} % For colors, not sure if I truly need it anymore
 \usepackage{caption} % For nicer listing captions
 \usepackage{xspace} % For horizontal space.
@@ -141,5 +141,45 @@ pdfauthor={Marcel Ehrhardt, Nadja Scharf, Alexander Steen, Simon Tippenhauer, Ol
 \addcontentsline{toc}{section}{Literatur}
 \bibliographystyle{alpha}
 \bibliography{report}
+
+% Appendix
+
+\begin{appendices}
+\section{Projekt kompilieren und starten}
+
+\noindent 1. Projektarchiv entpacken und in den entpackten Ordner wechseln, z.B. via
+\begin{lstlisting}
+tar -xvzf pointgroups.tar.gz
+cd pointgroups
+\end{lstlisting}
+
+Die Orderstruktur sieht dann so aus
+\begin{lstlisting}
+.
+|-- build.xml
+|-- doc
+|-- INSTALL
+|-- LICENSE
+|-- pom.xml
+`-- src
+\end{lstlisting}
+
+\noindent 2. Ant starten um die externen Bibliotheken herunterzuladen (das kann etwas dauern):
+\begin{lstlisting}
+ant setup
+\end{lstlisting}
+
+\noindent 3. Mit Maven das Projekt kompilieren (das kann etwas dauern):
+\begin{lstlisting}
+mvn package
+\end{lstlisting}
+
+\noindent 4.  Das Projekt starten:
+\begin{lstlisting}
+java -jar target/pointgroups.jar
+\end{lstlisting}
+
+\noindent \textbf{Achtung:} Wenn die jar verschoben wird, muss der \lstinline|target/lib|-Order ebenfalls mitverschoben werden, sodass \lstinline|lib| und \lstinline|pointgroups.jar| in dem selben Verzeichnis liegen.
+\end{appendices}
 
 \end{document}

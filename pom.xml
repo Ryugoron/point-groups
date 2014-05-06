@@ -75,6 +75,7 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.4</version>
         <configuration>
+          <finalName>pointgroups</finalName>
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
