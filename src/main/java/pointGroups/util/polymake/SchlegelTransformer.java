@@ -197,8 +197,6 @@ public class SchlegelTransformer
   protected Polytope<Point3D> buildPolytope(Edge[] edges, Face[] faces,
       int numberOfPoints) {
 
-    if (faces == null) return null;
-
     @SuppressWarnings("unchecked")
     Collection<Point3D> points = (Collection<Point3D>) this.points;
 
@@ -283,13 +281,22 @@ public class SchlegelTransformer
       }
     }
     catch (Exception e) {
+      // logger.severe("Can't parse faces in resultString.");
+      // logger.fine(e.getMessage());
+      // logger.fine("resultString was: " + resultString);
+      // throw new PolymakeOutputException("Wrong Format of resultString.");
       logger.severe("Can't parse faces in resultString.");
-      logger.fine(e.getMessage());
-      logger.fine("resultString was: " + resultString);
-      throw new PolymakeOutputException("Wrong Format of resultString.");
+      logger.severe(e.getMessage());
+      logger.severe(facesString);
+      faces = null;
     }
 
-    Polytope<Point3D> polytope = buildPolytope(edges, faces, numberOfPoints);
+    Polytope<Point3D> polytope = null;
+
+    if (is3D) {
+      polytope = buildPolytope(edges, faces, numberOfPoints);
+    }
+
     return new SchlegelCompound(new Schlegel(points, edges, polytope),
         this.sym, this.p);
   }
