@@ -174,7 +174,7 @@
 %%%% 4D-case
 Im vierdimensionalen Fall waren die Symmetriegruppen in der Literatur nur durch die Generatoren beschrieben und eine händische oder halbautomatische Erzeugung erscheint bei den Gruppengröße von teilweise einigen tausend Elementen nicht sinnvoll. Wir haben uns dazu für die Erzeugung mittels Gruppen entschieden. Dies ist nachträglich für den dreidimensionalen Fall auch möglich und die Ergebnisse wurden in diesem Fall auch verifiziert. Im vierdimensionalen Fall haben wir die Klassen Symmetrie4D, Symmetry4DReflection, Rotation4D, Reflection4D und SubgroupChecker4D.
 Symmetry4D ist analog zu Symmetry3D aufgebaut. Es werden allerdings die Gruppen mittels Hintereinanderausführen der Generatoren bestimmt und die neuen Elemente werden gespeichert beziehungsweise geladen.
-\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode der Erzeugung einer Symmetriegruppe}, label=alg:images]
+\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode der Erzeugung einer Symmetriegruppe}, label=alg:fromgen]
 input: gen = {(l$_1$,r$_1$),...,(l$_n$,r$_n$)}: Generators
 output: sym: Symmetry group
 begin	
@@ -196,7 +196,7 @@ end
 \end{lstlisting}
 Das Hauptproblem dabei ist das Überprüfen, ob ein Element bereits in einer Gruppe vorhanden ist. Bei Gruppen von mehreren tausend Elementen ist eine naive Suche zu zeitintensiv und es kann zu Rundungsfehlern kommen. Aus diesem Grund haben wir uns für eine Hashmap zur Speicherung der Elemente entschieden. Dazu mussten für eine Rotation eine Hashmethode erzeugt werden. Die Anforderungen an die Hashmethode musste eine schnelle Berechnung ermöglichen, im Einklang mit einer equal-Methode sein und eine gute Streuung der Elemente garantieren.\\
 Für das Hashen von Quaternionen haben wir uns an eine Implementierung von JReality orientiert. Mit den Hash- und Equal-Methoden wird gleichzeitig, dass Problem von Rundungsfehler gelöst. Wir runden auf fünf Nachkommastellen und bilden somit ein Gitter. 
-\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode der Erzeugung von Hashcode eines Quaternions}, label=alg:images]
+\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode der Erzeugung von Hashcode eines Quaternions}, label=alg:hash]
 input: q = (re,i,j,k): Quaternion
 output: hashcode: int
 begin	
@@ -215,7 +215,7 @@ In Rotation4D wird eine Rotation mittels zwei Quaternionen dargestellt und ein P
 $[-l,-r] = [l,r]$ und $[-l,r]=[l,-r]=-[l,r]$. Damit der Hashcode mit den Gleichheiten im Einklang steht, werden negative Quaternionen beim Hashen zu positiven transformiert. Beim Gleichheitstest werden jeweils die einzelnen Quaternionen verglichen.\\
 Die Erzeugung der Rotationsgruppen ist sehr zeitintensiv. Aus diesem Grund werden die Rotationsgruppen im vierdimensionalen Fall mittels Java-ObjectOutputStream jeweils in eine Datei gespeichert und von dort geladen. Sollten die Dateien nicht gefunden werden, so werden die Rotationsgruppen erzeugt und lokal gespeichert. Die erzeugen Gruppen wurden mittels JUnittest überprüft. Dazu wurde jeweils die Gruppengröße der erzeugten Gruppe mit der angegebenen Gruppengröße in der Literatur verglichen. Die Untergruppenbeziehungen wurden mittels naivem Test untersucht. Dazu wurden überprüft, welche Gruppe in einer anderen Gruppe enthalten ist.\\
 Für vierdimensionale Gruppen mit Spiegelungen werden in die Rotationsgruppen erweitert. Bei der Berechnung der Bilder werden dazu zu nächst alle Bilder unter Rotationen bestimmt. Anschließend werden diese Bilder noch mit dem entsprechenden Quaternion erweitert.
-\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode für Bilder unter Spiegelungen}, label=alg:images]
+\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode für Bilder unter Spiegelungen}, label=alg:images2]
 input: e = (re,i,j,k): Quaternion // extending element
 	 rotations = (q$_1$,..q$_n$): All rotions of given point p with respect to rotationsym
 	
