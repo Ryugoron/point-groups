@@ -129,8 +129,22 @@ public class PointPicker
 
         @Override
         public void pointDragEnd(PointDragEvent e) {
+          int index = e.getIndex();
+
           logger.finest("drag end of vertex no " + e.getIndex());
-          if (!responsive) selectPoint(e.getPosition());
+
+          if (!responsive) {
+            // e.getPosition() returns the position of the point at the start of
+            // the drag, but we want the point at the end of the drag. so we
+            // extract it from the pointSet, which contains the position
+            // of the last pointDragged event.
+            PointSet pointSet = e.getPointSet();
+            double[] dragPoint =
+                pointSet.getVertexAttributes(Attribute.COORDINATES).toDoubleArrayArray().getValueAt(
+                    index).toDoubleArray(null);
+
+            selectPoint(dragPoint);
+          }
         }
       });
 
