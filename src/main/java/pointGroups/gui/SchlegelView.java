@@ -44,9 +44,13 @@ public class SchlegelView
 
   protected final UiViewer uiViewer;
 
+  protected String VIEW_TOGGLE_MODE_SCHLEGEL_TXT = "View as Polyhedron";
+  protected String VIEW_TOGGLE_MODE_3D_TXT = "View as Schlegel";
+
   protected JPanel buttonGroup = new JPanel();
   protected JPanel schlegelRenderer = new JPanel();
-  protected JToggleButton viewModeButton = new JToggleButton("View in 3D Mode");
+  protected JToggleButton viewModeButton = new JToggleButton(
+      VIEW_TOGGLE_MODE_SCHLEGEL_TXT);
 
   protected final JPanel viewerPanel = schlegelRenderer;
 
@@ -151,10 +155,14 @@ public class SchlegelView
     @Override
     public void itemStateChanged(ItemEvent e) {
       SchlegelViewMode schlegelMode = SchlegelViewMode.VIEW_SCHLEGEL;
+      String text = VIEW_TOGGLE_MODE_SCHLEGEL_TXT;
 
       if (e.getStateChange() == ItemEvent.SELECTED) {
         schlegelMode = SchlegelViewMode.VIEW_3D;
+        text = VIEW_TOGGLE_MODE_3D_TXT;
       }
+
+      ((JToggleButton) e.getSource()).setText(text);
 
       EventDispatcher.get().fireEvent(
           new SchlegelViewModeChangedEvent(schlegelMode));
