@@ -150,6 +150,10 @@ public class UiViewer
     }
   }
 
+  public void resetCamera() {
+    toolsPlugin.resetCamera();
+  }
+
   private void set2DMode() {
     toolsPlugin.set2DMode();
   }

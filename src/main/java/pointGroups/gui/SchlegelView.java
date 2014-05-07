@@ -111,6 +111,8 @@ public class SchlegelView
   public void redrawSchlegel() {
     Schlegel lastSchlegel = uiViewer.uiState.getLastSchlegel();
 
+    if (lastSchlegel == null) return;
+
     Point3D[] points = lastSchlegel.points;
     Edge[] edges = lastSchlegel.edges;
     Face[] faces = null;
@@ -128,7 +130,9 @@ public class SchlegelView
     Geometry geom = JRealityUtility.generateGraph(points, edges, faces);
 
     uiViewer.setGeometry(geom);
+
     uiViewer.setDimensionMode(uiViewer.uiState.isSchlegel3DMode());
+    uiViewer.resetCamera();
   }
 
   @Override
@@ -145,6 +149,12 @@ public class SchlegelView
   public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
     // show SchlegelViewModeButton only in 3D Mode
     viewModeButton.setVisible(event.switchedTo3D());
+
+    // reset the state of the button, which will emit the event of a changed
+    // SchlegelViewMode
+    viewModeButton.setSelected(false);
+
+    redrawSchlegel();
   }
 
 
