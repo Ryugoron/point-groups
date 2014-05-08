@@ -19,20 +19,28 @@ public class Quaternion
    */
   private static final long serialVersionUID = -2584314271811803851L;
 
+  /** real unit '1' as {@link Quaternion} */
   public final static Quaternion ONE = new Quaternion(1, 0, 0, 0);
+  /** imaginary unit 'i' as {@link Quaternion} */
   public final static Quaternion I = new Quaternion(0, 1, 0, 0);
+  /** imaginary unit 'j' as {@link Quaternion} */
   public final static Quaternion J = new Quaternion(0, 0, 1, 0);
 
-  // See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 33
+  /** See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 33 */
   public static final double sigma = (Math.sqrt(5) - 1) / 2;
+  /** See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 33 */
   public static final double tau = (Math.sqrt(5) + 1) / 2;
+  /** See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 33 */
   public static final Quaternion qw = new Quaternion(-0.5, 0.5, 0.5, 0.5);
-
+  /** See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 33 */
   public static final Quaternion qI = new Quaternion(0, 0.5, sigma * 0.5,
       tau * 0.5);
+  /** See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 33 */
   public static final Quaternion qO = new Quaternion(0, 0, 1 / Math.sqrt(2),
       1 / Math.sqrt(2));
+  /** See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 33 */
   public static final Quaternion qT = new Quaternion(0, 1, 0, 0);
+  /** See On Quaternions and Ocontions John H. Conway, Derek A. Smith page 33 */
   public static final Quaternion qI2 = new Quaternion((sigma + tau + 1) / 4,
       (sigma + tau - 1) / 4, (-sigma + tau + 1) / 4, (sigma - tau + 1) / 4);
 
@@ -81,6 +89,13 @@ public class Quaternion
     return new Quaternion(-this.re, -this.i, -this.j, -this.k);
   }
 
+  /**
+   * Multiplication (to the right) of the {@link Quaternion} <code>b</code>
+   * according to the <i>Hamilton product</i>.
+   * 
+   * @param b Right factor of multiplication
+   * @return Return a new quaternion q with q = this*b
+   */
   public Quaternion mult(final Quaternion b) {
     Quaternion a = this;
     double y0, y1, y2, y3;
@@ -92,16 +107,31 @@ public class Quaternion
     return new Quaternion(y0, y1, y2, y3);
   }
 
+  /**
+   * Calculates the conjugate of the quaternion.
+   * 
+   * @return The conjugated quaternion
+   */
   public Quaternion conjugate() {
     return new Quaternion(this.re, -this.i, -this.j, -this.k);
   }
 
+  /**
+   * Calculates the inverse quaternion.
+   * 
+   * @return this^-1
+   */
   public Quaternion inverse() {
     double mron = 1d / norm();
     return new Quaternion(this.re * mron, -this.i * mron, -this.j * mron,
         -this.k * mron);
   }
 
+  /**
+   * Returns the length (norm) of the quaternion.
+   * 
+   * @return norm of this
+   */
   public double norm() {
     return Math.sqrt(this.i * this.i + this.j * this.j + this.k * this.k +
         this.re * this.re);
@@ -112,6 +142,12 @@ public class Quaternion
         this.re;
   }
 
+  /**
+   * Creates a new {@link UnitQuaternion} which is the normalized equivalent to
+   * <code>this</code>
+   * 
+   * @return unit quaternion representation of <code>this</code>
+   */
   public UnitQuaternion asUnit() {
     double y0, y1, y2, y3;
     double mron = 1d / norm();
@@ -122,10 +158,22 @@ public class Quaternion
     return new UnitQuaternion(y0, y1, y2, y3);
   }
 
+  /**
+   * Converts the {@link Quaternion} to a {@link Point3D}, the real part is
+   * ignored.
+   * 
+   * @return 3d-point
+   */
   public Point3D asPoint3D() {
     return new Point3D(this.i, this.j, this.k);
   }
 
+  /**
+   * Interpreted the {@link Quaternion} as four-dimensional vector and returns
+   * it as {@link Point4D}
+   * 
+   * @return 4d-point
+   */
   public Point4D asPoint4D() {
     return new Point4D(this.re, this.i, this.j, this.k);
   }
@@ -140,6 +188,8 @@ public class Quaternion
   }
 
   /**
+   * Distance between a and b
+   * 
    * @param a
    * @param b
    * @return euclidean distance between a und b
@@ -186,8 +236,8 @@ public class Quaternion
     result = PRIME * result + (int) (temp ^ (temp >>> 32));
     return result;
   }
-  
-  public static boolean isAlmostZero(double d){
+
+  public static boolean isAlmostZero(final double d) {
     return Math.round(r * d) / r == 0;
   }
 

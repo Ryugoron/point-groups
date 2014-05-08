@@ -30,6 +30,12 @@ import pointGroups.util.PointerToString;
 import pointGroups.util.polymake.wrapper.PolymakeWrapper;
 
 
+/**
+ * Main class of the pointgroups project. The code and some documentation
+ * meterial can be found at https://github.com/Ryugoron/point-groups.
+ * 
+ * @author Pointgroups software project team
+ */
 public class PointGroups
 {
   static MainFrame mainframe;
