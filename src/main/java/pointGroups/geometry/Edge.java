@@ -1,10 +1,9 @@
 package pointGroups.geometry;
 
 /**
- * Class for points.
+ * Holds a Pair of Points (via indices) representing an Edge.
  * 
  * @author Alex
- * @param <P>
  */
 public final class Edge
 {

@@ -1,10 +1,8 @@
 package pointGroups.geometry;
 
 /**
- * Right now this only contains a String. We may change this to a propper
- * representation of the result like points and edges.
+ * Representation of a schlegeldiagram
  * 
- * @author nadjascharf
  */
 public class Schlegel
 {
@@ -12,8 +10,7 @@ public class Schlegel
   public final Point3D[] points;
 
   /**
-   * holds edges as pairs of Integers referring to indices of <code> points
-   * </code>
+   * 
    */
   public final Edge[] edges;
 
