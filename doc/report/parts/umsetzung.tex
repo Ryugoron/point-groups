@@ -261,7 +261,7 @@ Die Untergruppenbeziehungen konnten aus den Rotationsgruppen übernommen werden,
          definiert ist, können wir auch dies mit in die Erzeugung mittels
 
          \begin{code}
-new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>{h})
+            new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>{h})
          \end{code}
 
          eingeben und haben so $VC(x)$ berechnet.
@@ -292,17 +292,12 @@ new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>{h})
          $$
             (t - x) \cdot x = 0 \Leftrightarrow - \left( \sum_{i=1}^n x_i^2 \right) + t_1 x_1 + \cdots t_n x_n = 0
          $$
-         und kann auch leicht erstellt werden. Um das von uns gewünschte Polytop zu bekommen, benutzen wir das folgende polymake-Script
+         und kann auch leicht erstellt werden. Um das von uns gewünschte Polytop zu bekommen, benutzen wir ein Polymakescript und können mit
+         den Ergebnissen die Basiswechselmatrix und die Eckpunkte umrechnen.
 
-         \begin{code}
-my \$poly = new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>\$affine);
-print \$poly->VERTICES;
-print \$poly->EDGES;
-print \$poly->FACETS;
-         \end{code}
 
-         \noindent Mit diesen Ergebnissen können wir nun die Basiswechselmatrizen berechnen und so die Punkte umrechnen. Das Objekt \emph{Fundamental} ist somit
-         eine Sammlung dieser Eigenschaften.
+         Das Objekt \emph{Fundamental} ist dann eine Sammlung 
+         von den Eigenschaften des berechneten Polytops und der Basiswechselmatrix.
          
 \begin{lstlisting}[language=Java, caption={Ausschnitt aus dem Fundamental-Interface}, label=fund:interface]
 public interface Fundamental {
