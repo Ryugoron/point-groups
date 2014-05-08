@@ -14,6 +14,11 @@ import pointGroups.geometry.Symmetry;
 import pointGroups.geometry.UnitQuaternion;
 
 
+/**
+ * Enumeration of all (possibly not implemented) cristallographic point-groups.
+ * 
+ * @author Alexander Steen
+ */
 public enum Symmetry3D
   implements Symmetry<Point3D>, Comparable<Symmetry3D> {
 
@@ -378,6 +383,11 @@ public enum Symmetry3D
     return normalPoints.get(this);
   }
 
+  /**
+   * Returns a {@link Collection} of all implemented 3d point-group symmetries.
+   * 
+   * @return All implemented 3d- {@link Symmetry} groups
+   */
   public static Collection<Symmetry3D> getSymmetries() {
     final LinkedList<Symmetry3D> ret = new LinkedList<>(rotations.keySet());
     Collections.sort(ret);
