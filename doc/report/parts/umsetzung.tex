@@ -172,7 +172,7 @@
 %% 3D case
     Die dreidimensionalen Symmetriegruppen sind ausgiebig dokumentiert und nicht sehr umfangreich im Vergleich zum vierdimensionalen Fall. Wir konnten dort die Gruppenelemente als auch die Untergruppen festkodieren. Die Rotationsachsen wurden als statische Variablen gespeichert. Die einzelnen Gruppen werden dann durch diese Auswahl der Rotationsachsen charakterisiert. Die Rotationsachsen werden als Quaternionen dargestellt. \\
 %%%% 4D-case
-Im vierdimensionalen Fall waren die Symmetriegruppen in der Literatur nur durch die Generatoren beschrieben und eine händische oder halbautomatische Erzeugung erscheint bei den Gruppengröße von teilweise einigen tausend Elementen nicht sinnvoll. Wir haben uns dazu für die Erzeugung mittels Gruppen entschieden. Dies ist nachträglich für den dreidimensionalen Fall auch möglich und die Ergebnisse wurden in diesem Fall auch verifiziert. Im vierdimensionalen Fall haben wir die Klassen Symmetrie4D, Symmetry4DReflection, Rotation4D, Reflection4D und SubgroupChecker4D\todo{Wofür wird der noch benutzt? Oder kann der prinzipiell aus dem Projekt entfernt werden?}.
+Im vierdimensionalen Fall waren die Symmetriegruppen in der Literatur nur durch die Generatoren beschrieben und eine händische oder halbautomatische Erzeugung erscheint bei den Gruppengröße von teilweise einigen tausend Elementen nicht sinnvoll. Wir haben uns dazu für die Erzeugung mittels Gruppen entschieden. Dies ist nachträglich für den dreidimensionalen Fall auch möglich und die Ergebnisse wurden in diesem Fall auch verifiziert. Im vierdimensionalen Fall haben wir die Klassen Symmetrie4D, Symmetry4DReflection, Rotation4D und Reflection4D.
 Symmetry4D ist analog zu Symmetry3D aufgebaut. Es werden allerdings die Gruppen mittels Hintereinanderausführen der Generatoren bestimmt und die neuen Elemente werden gespeichert beziehungsweise geladen.
 \begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode der Symmetriegruppenerzeugung}, label=alg:fromgen]
 input: gen = {(l$_1$,r$_1$),...,(l$_n$,r$_n$)}: Generators
@@ -183,7 +183,7 @@ begin
 	do
 		for each (l$_i$,r$_i$) $\in$ sym do
 			for each (l$_j$,r$_j$) $\in$ sym do
-				e $\gets $ (l$_i \cdot$ l$_j$, r$_i \cdot$r$_j$)
+				e $\gets $ (l$_i \cdot$ l$_j$, r$_j \cdot$r$_i$)
 				if (e $\notin$ sym) then
 					sym $\gets$ sym $\cup$ {e}
 					newElem $\gets$ true
@@ -195,8 +195,6 @@ end
 
 
 \end{lstlisting}
-\todo{Muesste e nicht so erzeugt werden, dass$ l_i$ und $r_i$ innen in der Multiplikation sind? Oder beide aussen, aber nicht eins so, das andere so...}
-
 
 Das Hauptproblem dabei ist das Überprüfen, ob ein Element bereits in einer Gruppe vorhanden ist. Bei Gruppen von mehreren tausend Elementen ist eine naive Suche zu zeitintensiv und es kann zu Rundungsfehlern kommen. Aus diesem Grund haben wir uns für eine Hashmap zur Speicherung der Elemente entschieden. Dazu musste für eine Rotation eine Hashmethode erzeugt werden. Die wichtigen Anforderungen an die Hashmethode für unseren Entwurf waren eine effiziente Berechnung, im Einklang mit einer equal-Methode und eine gute Streuung der Elemente.\\
 Für das Hashen von Quaternionen haben wir uns an eine Implementierung von JReality orientiert. Mit den Hash- und Equal-Methoden wird gleichzeitig das Problem von Rundungsfehlern gelöst. Wir runden auf fünf Nachkommastellen und bilden somit ein Gitter. 
@@ -218,7 +216,7 @@ end
 In Rotation4D wird eine Rotation mittels zwei Quaternionen dargestellt und ein Punkt kann mit der Methode gemäß der mathematischen Definition rotiert werden. Als Hashcodefunktion werden die beiden Hashwerte der Quaternionen mit einem XOR verknüpft. Nach ~\cite{conway2003} gelten folgenden Gleichheiten
 $[-l,-r] = [l,r]$ und $[-l,r]=[l,-r]=-[l,r]$. Damit der Hashcode mit den Gleichheiten im Einklang steht, werden negative Quaternionen beim Hashen zu positiven transformiert. Beim Gleichheitstest werden jeweils die einzelnen Quaternionen verglichen.\\
 Die Erzeugung der Rotationsgruppen ist sehr zeitintensiv. Aus diesem Grund werden die Rotationsgruppen im vierdimensionalen Fall mittels Java-ObjectOutputStream jeweils in eine Datei gespeichert und von dort geladen. Sollten die Dateien nicht gefunden werden, so werden die Rotationsgruppen erzeugt und lokal gespeichert. Die erzeugten Gruppen wurden mittels JUnittest überprüft. Dazu wurde jeweils die Gruppengröße der erzeugten Gruppe mit der angegebenen Gruppengröße in der Literatur verglichen. Die Untergruppenbeziehungen wurden mittels naivem Test untersucht. Dazu wurden überprüft, welche Gruppe in einer anderen Gruppe enthalten ist.\\
-Für vierdimensionale Gruppen mit Spiegelungen werden die Rotationsgruppen erweitert. Bei der Berechnung der Bilder werden dazu zunächst alle Bilder unter Rotationen bestimmt. Anschließend werden diese Bilder noch mit dem entsprechenden Quaternion \todo{wieder unklar, was erweitert heißt. Vielleicht oben die Funktion definieren und hier darauf verweisen?}erweitert. 
+Für vierdimensionale Gruppen mit Spiegelungen werden die Rotationsgruppen erweitert. Bei der Berechnung der Bilder werden dazu zunächst alle Bilder unter Rotationen bestimmt. Anschließend werden diese Bilder noch mit der in ~\ref{eq:reflect4D} beschrieben Funktion erweitert. 
 \begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode zur Berechnung aller Bilder unter Spiegelungen}, label=alg:images2]
 input: e = (re,i,j,k): Quaternion // extending element
 	 rotations = (q$_1$,..q$_n$): All rotions of given point p with respect to rotationsym
@@ -232,8 +230,7 @@ begin
 end 
 \end{lstlisting}
 Die Untergruppenbeziehungen konnten aus den Rotationsgruppen übernommen werden, wenn das gleiche Quaternion zur Erweiterung genommen wurde.
-\\ \todo{Umsortieren}
-  \todo{Formulierung?}
+\\ 
 
 
     \subsubsection{Fundamentalbereich}
