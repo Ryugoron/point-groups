@@ -24,7 +24,7 @@ import pointGroups.util.LoggerFactory;
 import pointGroups.util.PointGroupsUtility;
 
 
-/**
+/**Enum for 4D-symmetries without reflections
  * @author Oliver
  */
 public enum Symmetry4D

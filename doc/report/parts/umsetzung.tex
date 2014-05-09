@@ -55,25 +55,25 @@
         Die GUI empfängt dann diese Informationen, bereitet sie auf und zeigt sie an.
 
     \subsubsection{Eventssystem\label{ssec:event}}
-        \begin{figure}[bht]
-            \centering
-            \includegraphics[width=0.8\textwidth]{img/event_classdiagram2}
-            \caption{Klassendiagramm des Eventsystems}
-        \end{figure}
-        \subsubsection*{Events}
             Events sind konkrete Reaktionen auf bestimmte Ereignisse und enthalten je nach Ereignis entsprechende Kontextinformationen.
             Alle Typen von Events erben von der abstrakten Klasse \lstinline|Event<H extends EventHandler>| und stellen einen
             zugehörigen \lstinline|EventHandler|-Typen bereit.
             Komponenten, die auf ein bestimmtes Event reagieren sollen, realisieren das zum Event zugeordnete
             \lstinline|EventHandler|-Interface und implementieren damit eine Reaktionsmethode mit komponentenspezifischem
             Code.
-
-            Eine zentrale Singleton-Instanz, der \lstinline|EventDispatcher|, koordiniert dann das Absenden und Empfangen von Events
+        \begin{figure}[bht]
+            \centering
+            \includegraphics[width=0.8\textwidth]{img/event_classdiagram2}
+            \caption{Klassendiagramm des Eventsystems\label{fig:eventdiagram}}
+        \end{figure}
+            
+            \noindent Eine zentrale Singleton-Instanz, der \lstinline|EventDispatcher|, koordiniert dann das Absenden und Empfangen von Events
             und verteilt die Ereignismeldungen an Interessenten.
             Hierfür muss jede an einem spezifischen Event interessierte Komponente sich als solche beim
             \lstinline|EventDispatcher| registrieren (\lstinline|addHandler(Class<H> eventType, H handler)|).
             Eine designierte Eventquelle hält ebenfalls einen Verweis, um mittels dessen
             \lstinline|fireEvent(Event<?> e)|-Methode im Zuge einer Reaktion ein Event abzufeuern.
+            Eine grobe Struktur des Eventsystems ist in Abbildung~\ref{fig:eventdiagram} zu finden.
 
       %  \subsubsection*{Eventimplementierung}
       %      Event-Typen werden durch Anlegen einer Event-Klasse und einer EventHandler-Klasse hinzugefügt.%
@@ -172,18 +172,19 @@
 %% 3D case
     Die dreidimensionalen Symmetriegruppen sind ausgiebig dokumentiert und nicht sehr umfangreich im Vergleich zum vierdimensionalen Fall. Wir konnten dort die Gruppenelemente als auch die Untergruppen festkodieren. Die Rotationsachsen wurden als statische Variablen gespeichert. Die einzelnen Gruppen werden dann durch diese Auswahl der Rotationsachsen charakterisiert. Die Rotationsachsen werden als Quaternionen dargestellt. \\
 %%%% 4D-case
-Im vierdimensionalen Fall waren die Symmetriegruppen in der Literatur nur durch die Generatoren beschrieben und eine händische oder halbautomatische Erzeugung erscheint bei den Gruppengröße von teilweise einigen tausend Elementen nicht sinnvoll. Wir haben uns dazu für die Erzeugung mittels Gruppen entschieden. Dies ist nachträglich für den dreidimensionalen Fall auch möglich und die Ergebnisse wurden in diesem Fall auch verifiziert. Im vierdimensionalen Fall haben wir die Klassen Symmetrie4D, Symmetry4DReflection, Rotation4D, Reflection4D und SubgroupChecker4D.
+Im vierdimensionalen Fall waren die Symmetriegruppen in der Literatur nur durch die Generatoren beschrieben und eine händische oder halbautomatische Erzeugung erscheint bei den Gruppengröße von teilweise einigen tausend Elementen nicht sinnvoll. Wir haben uns dazu für die Erzeugung mittels Gruppen entschieden. Dies ist nachträglich für den dreidimensionalen Fall auch möglich und die Ergebnisse wurden in diesem Fall auch verifiziert. Im vierdimensionalen Fall haben wir die Klassen Symmetrie4D, Symmetry4DReflection, Rotation4D und Reflection4D.
 Symmetry4D ist analog zu Symmetry3D aufgebaut. Es werden allerdings die Gruppen mittels Hintereinanderausführen der Generatoren bestimmt und die neuen Elemente werden gespeichert beziehungsweise geladen.
-\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode der Symmetriegruppeerzeugung}, label=alg:fromgen]
+\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode der Symmetriegruppenerzeugung}, label=alg:fromgen]
 input: gen = {(l$_1$,r$_1$),...,(l$_n$,r$_n$)}: Generators
 output: sym: Symmetry group
+
 begin	
 	sym $\gets$ gen
 	newElem $\gets$ false
 	do
 		for each (l$_i$,r$_i$) $\in$ sym do
 			for each (l$_j$,r$_j$) $\in$ sym do
-				e $\gets $ (l$_i \cdot$ l$_j$, r$_i \cdot$r$_j$)
+				e $\gets $ (l$_i \cdot$ l$_j$, r$_j \cdot$r$_i$)
 				if (e $\notin$ sym) then
 					sym $\gets$ sym $\cup$ {e}
 					newElem $\gets$ true
@@ -193,10 +194,12 @@ begin
 	while (newElem)
 end 
 
+
 \end{lstlisting}
-Das Hauptproblem dabei ist das Überprüfen, ob ein Element bereits in einer Gruppe vorhanden ist. Bei Gruppen von mehreren tausend Elementen ist eine naive Suche zu zeitintensiv und es kann zu Rundungsfehlern kommen. Aus diesem Grund haben wir uns für eine Hashmap zur Speicherung der Elemente entschieden. Dazu mussten für eine Rotation eine Hashmethode erzeugt werden. Die wichtigen Anforderungen an die Hashmethode für unseren Entwurf waren eine effiziente Berechnung, im Einklang mit einer equal-Methode und eine gute Streuung der Elemente.\\
-Für das Hashen von Quaternionen haben wir uns an eine Implementierung von JReality orientiert. Mit den Hash- und Equal-Methoden wird gleichzeitig, dass Problem von Rundungsfehler gelöst. Wir runden auf fünf Nachkommastellen und bilden somit ein Gitter. 
-\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode der Erzeugung von Hashcode eines Quaternions}, label=alg:hash]
+
+Das Hauptproblem dabei ist das Überprüfen, ob ein Element bereits in einer Gruppe vorhanden ist. Bei Gruppen von mehreren tausend Elementen ist eine naive Suche zu zeitintensiv und es kann zu Rundungsfehlern kommen. Aus diesem Grund haben wir uns für eine Hashmap zur Speicherung der Elemente entschieden. Dazu musste für eine Rotation eine Hashmethode erzeugt werden. Die wichtigen Anforderungen an die Hashmethode für unseren Entwurf waren eine effiziente Berechnung, im Einklang mit einer equal-Methode und eine gute Streuung der Elemente.\\
+Für das Hashen von Quaternionen haben wir uns an eine Implementierung von JReality orientiert. Mit den Hash- und Equal-Methoden wird gleichzeitig das Problem von Rundungsfehlern gelöst. Wir runden auf fünf Nachkommastellen und bilden somit ein Gitter. 
+\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode der Berechnung des Hashwerts eines Quaternions}, label=alg:hash]
 input: q = (re,i,j,k): Quaternion
 output: hashcode: int
 begin	
@@ -214,8 +217,8 @@ end
 In Rotation4D wird eine Rotation mittels zwei Quaternionen dargestellt und ein Punkt kann mit der Methode gemäß der mathematischen Definition rotiert werden. Als Hashcodefunktion werden die beiden Hashwerte der Quaternionen mit einem XOR verknüpft. Nach ~\cite{conway2003} gelten folgenden Gleichheiten
 $[-l,-r] = [l,r]$ und $[-l,r]=[l,-r]=-[l,r]$. Damit der Hashcode mit den Gleichheiten im Einklang steht, werden negative Quaternionen beim Hashen zu positiven transformiert. Beim Gleichheitstest werden jeweils die einzelnen Quaternionen verglichen.\\
 Die Erzeugung der Rotationsgruppen ist sehr zeitintensiv. Aus diesem Grund werden die Rotationsgruppen im vierdimensionalen Fall mittels Java-ObjectOutputStream jeweils in eine Datei gespeichert und von dort geladen. Sollten die Dateien nicht gefunden werden, so werden die Rotationsgruppen erzeugt und lokal gespeichert. Die erzeugten Gruppen wurden mittels JUnittest überprüft. Dazu wurde jeweils die Gruppengröße der erzeugten Gruppe mit der angegebenen Gruppengröße in der Literatur verglichen. Die Untergruppenbeziehungen wurden mittels naivem Test untersucht. Dazu wurden überprüft, welche Gruppe in einer anderen Gruppe enthalten ist.\\
-Für vierdimensionale Gruppen mit Spiegelungen werden in die Rotationsgruppen erweitert. Bei der Berechnung der Bilder werden dazu zu nächst alle Bilder unter Rotationen bestimmt. Anschließend werden diese Bilder noch mit dem entsprechenden Quaternion erweitert.
-\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode für Bilder unter Spiegelungen}, label=alg:images2]
+Für vierdimensionale Gruppen mit Spiegelungen werden die Rotationsgruppen erweitert. Bei der Berechnung der Bilder werden dazu zunächst alle Bilder unter Rotationen bestimmt. Anschließend werden diese Bilder noch mit der in ~\ref{eq:reflect4D} beschrieben Funktion erweitert. 
+\begin{lstlisting}[mathescape, morekeywords={for, each, if, then, fi, do, begin,input, output, end, return}, caption={Peusdocode zur Berechnung aller Bilder unter Spiegelungen}, label=alg:images2]
 input: e = (re,i,j,k): Quaternion // extending element
 	 rotations = (q$_1$,..q$_n$): All rotions of given point p with respect to rotationsym
 	
@@ -228,14 +231,13 @@ begin
 end 
 \end{lstlisting}
 Die Untergruppenbeziehungen konnten aus den Rotationsgruppen übernommen werden, wenn das gleiche Quaternion zur Erweiterung genommen wurde.
-\\ \todo{Umsortieren}
-  \todo{Formulierung?}
+\\ 
 
 
     \subsubsection{Fundamentalbereich}
          In Abschnitt \ref{fundamentalbereich} wurde in Definition \ref{fundamentalbereich:voronoi} der Voronoi-Fundamentalbereich beschrieben. Zur Berechnung der Punktgruppen soll eine dieser Zellen ausgewählt und visualisiert werden.
          Zur einfacheren Darstellung eines Abschnitts der Sphäre $S^3$ berechnen wir zunächst die Projektion des Voronoi--Fundamentalbereichs auf eine $\mathbb{R}^3$ Ebene.
-        \subsubsection*{Idee}
+        \paragraph{Idee}
             Wir lassen zunächst die Symmetriegruppe auf ein ausgezeichnetes Element $x$ wirken.
 
             \noindent Als erstes Berechnen wir die Voronoi--Zelle für $x$ bezüglich des Orbits von $x$. Alle Punkte die innerhalb dieser Voronoi--Zelle liegen, sind Elemente von $S^3$. 
@@ -245,7 +247,7 @@ Die Untergruppenbeziehungen konnten aus den Rotationsgruppen übernommen werden,
             
             Anschließend projizieren wir diese Zelle auf eine Ebene, die tangential auf dem Kugelsegment liegt. Dazu wählen wir die Ebene $h \, : \, [t - x] \cdot x = 0$ in Normalendarstellung, da wir wissen, dass $x$ auf der Kugeloberfläche im Kreissegment liegt und $x$ auch ein Normalenvektor ist.
             
-        \subsubsection*{Umsetzung}
+        \paragraph{Umsetzung}
          Eine Voronoi--Zelle von $x$ für eine Menge von Zentren $S$ ist definiert als 
          $$ VC(x) = \bigcap_{s \in S \setminus \{ x \}} h^+_{x,s}$$
          Wobei $h^+_{x,s}$ der Halbraum ist, der rechts von der Hyperebene liegt, die zu $x$ und $y$ in jedem Punkt den selben Abstand hat.\\
@@ -260,10 +262,10 @@ Die Untergruppenbeziehungen konnten aus den Rotationsgruppen übernommen werden,
          definiert ist, können wir auch dies mit in die Erzeugung mittels
 
          \begin{code}
-new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>{h})
+            new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>{h})
          \end{code}
 
-         eingeben und haben so $VC(x)$ berechnet. \todo{Wieso wird die Ebene mit eingegeben?}
+         eingeben und haben so $VC(x)$ berechnet.
          
          \noindent Das Polytop befindet sich nun in der Ebene. Für die Darstellung in $n-1$ Dimensionen berechnen wir nun eine geeignete Basis, so dass die Eckpunkte des Polytops durch $n-1$ Koordinaten darstellen werden können. 
          Der Punkt $x$ steht senkrecht auf der Ebene und ist damit für die Darstellung 
@@ -273,7 +275,7 @@ new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>{h})
          Wir haben nun also zwei Matrizen, um beide Darstellungen ineinander umzurechnen. In der neuen Basis können wir nun die erste Komponente weg lassen, da diese nach der Projektion auf null abgebildet wird. Daraus resultiert eine Darstellung in $n-1$ Dimensionen.
          Beim Zurückrechnen muss nur beachtet werden, dass sich die Punkte in einer affinen Ebene mit Stützvektor $x$ befinden.
 
-        \subsubsection*{Berechnung}
+        \paragraph{Berechnung}
 
          Die Definition von Hyperebenen in polymake hat die Darstellung
          $$
@@ -291,19 +293,14 @@ new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>{h})
          $$
             (t - x) \cdot x = 0 \Leftrightarrow - \left( \sum_{i=1}^n x_i^2 \right) + t_1 x_1 + \cdots t_n x_n = 0
          $$
-         und kann auch leicht erstellt werden. Um das von uns gewünschte Polytop zu bekommen, benutzen wir das folgende polymake-Script
+         und kann auch leicht erstellt werden. Um das von uns gewünschte Polytop zu bekommen, benutzen wir ein Polymakescript und können mit
+         den Ergebnissen die Basiswechselmatrix und die Eckpunkte umrechnen.
 
-         \begin{code}
-my \$poly = new Polytope(INEQUALITIES=>\$hyperplanes, EQUATIONS=>\$affine);
-print \$poly->VERTICES;
-print \$poly->EDGES;
-print \$poly->FACETS;
-         \end{code}
 
-         \noindent Mit diesen Ergebnissen können wir nun die Basiswechselmatrizen berechnen und so die Punkte umrechnen. Das Objekt \emph{Fundamental} ist somit
-         eine Sammlung dieser Eigenschaften.
+         Das Objekt \emph{Fundamental} ist dann eine Sammlung 
+         von den Eigenschaften des berechneten Polytops und der Basiswechselmatrix.
          
-\begin{lstlisting}[language=Java, caption={Auswahl aus dem Fundamental Interface}, label=fund:interface]
+\begin{lstlisting}[language=Java, caption={Ausschnitt aus dem Fundamental-Interface}, label=fund:interface]
 public interface Fundamental {
    public double[][] getVertices();
                
@@ -319,7 +316,7 @@ public interface Fundamental {
          hebt ihn auf die Oberfläche der $S^{n-1}$ zurück. Die letzte Methode überprüft, ob ein angegebener Punkt überhaupt in der Voronoi--Zelle liegt.
          Diese Methode wird bei der Anzeige benötigt, um bei der Punktauswahl keine Punkte außerhalb das Polytops auszuwählen.\\
 
-         \noindent Das Ganze ist eine Schnittstelle, da wir als Fallback-case, falls die Berechnung das Fundamentalbereichs einmal fehl schlägt, immer noch 
+         \noindent Das Ganze ist eine Schnittstelle, da wir als Fallback-case, falls die Berechnung des Fundamentalbereichs einmal fehl schlägt, immer noch 
          den Bereich $S^{n-2}$ benutzen können. Dies ist kein Fundamentalbereich, da wir alle Orbits mehrfach treffen. Allerdings werden wir, außer im Falle
          der Identität, jeden Orbit mindestens einmal treffen.
 

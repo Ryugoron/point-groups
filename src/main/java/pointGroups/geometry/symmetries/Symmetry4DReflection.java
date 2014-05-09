@@ -12,6 +12,11 @@ import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Quaternion;
 import pointGroups.geometry.Symmetry;
 
+/**
+ * Enum for 4D-symmetries with reflections
+ * @author nadjascharf
+ *
+ */
 
 public enum Symmetry4DReflection
   implements Symmetry<Point4D> {

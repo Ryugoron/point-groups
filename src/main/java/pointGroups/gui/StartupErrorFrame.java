@@ -43,6 +43,13 @@ public class StartupErrorFrame
     setVisible(true);
   }
 
+  /**
+   * create StartupErrorFrame with empty ps and call wait on ps. when receiving
+   * string in Textfield, it will be passed to ps and notify will be called on
+   * ps.
+   * 
+   * @param ps
+   */
   public StartupErrorFrame(final PointerToString ps) {
     this.setLayout(new BorderLayout());
     this.ps = ps;

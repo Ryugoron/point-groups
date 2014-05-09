@@ -9,16 +9,21 @@ Es wurden sowohl drei- als auch vierdimensionale Punktgruppen samt einiger ihrer
 Das Visualisieren der Punktgruppen als dreidimensionale Polyeder bzw. als Schlegeldiagramme wurde erfolgreich umgesetzt. Ebenso wird für jede Punktgruppe ein Fundamentalbereich angezeigt, aus dem ein Punkt zur Berechnung gewählt werden kann. 
 Einzig die Zuordnung der Kanten bei Verformungen ist problematisch, da die zur Anzeige benutze Bibliothek kaum Kontrolle über
 einen glatten Darstellungsübergang erlaubt.
+
 \paragraph{Einschätzung von Problemen.}
 Einige Probleme bereitete uns der Einsatz von Drittsoftware (z.B. \emph{polymake} oder \emph{jReality}): Durch eine mäßige bis sehr schlechte
 Dokumentierung war es teilweise kaum möglich, verlässliche Aussagen über das Verhalten dieser Bibliotheken zu machen. So musste teilweise geraten bzw. intensiv getestet werden, welche Ausgaben erwartet werden können und sogar welche Bedeutung einige Ausgaben überhaupt haben. Diese Probleme traten vor allem bei der Verwendung von \emph{polymake} auf.
-Auch bei erfolgreicher Verwendung fällt ein Mangel auf: Die Berechnungsdauer der resultierenden Polytope ist, bei größeren Symmetriegruppen (> 4000), sehr langsam. Der Flaschenhals der gesamten Applikation ist im Wesentlichen auf \emph{polymake} zurückzuführen, da hier die meisten Berechnungen relativ lange Zeit beanspruchen. So kann man im Falle von großen Symmetriegruppen den Ausgangspunkt nicht interaktiv via Maus
+Auch bei erfolgreicher Verwendung fällt ein Mangel auf: Die Berechnungsdauer der resultierenden Polytope ist, bei größeren Symmetriegruppen (> 250), sehr langsam. Der Flaschenhals der gesamten Applikation ist im Wesentlichen auf \emph{polymake} zurückzuführen, da hier die meisten Berechnungen relativ lange Zeit beanspruchen. So kann man im Falle von großen Symmetriegruppen den Ausgangspunkt nicht interaktiv via Maus
 verschieben und eine flüssige Transformation des Polytops beobachten.
 
 \noindent Beim Projektmanagement gab es zu Anfang des Softwareprojektes schleppende Phasen, in denen fast kein Fortschritt gemacht wurde.
 Dies ist wohl auf den anfänglichen Mangel einer Koordinationsperson (eines `Projektleiters`) zurückzuführen; es wurden zwar Anforderungen und
 Ideen zur Umsetzen diskutiert, allerdings wurden danach keine konkreten Aufgaben verteilt sodass eine Woche später keine oder kaum Ergebnisse vorlagen. Nach einiger Zeit haben sich aber Personen herauskristallisiert, die die Diskussionsleitung, Protokollführung und Aufgabenverteilung 
 in die Hand genommen haben.
+
+Auch einige Verständnisprobleme bei den mathematischen Grundlagen sorgten für einen unerwartet hohen Zeitaufwand: Insbesondere
+die Darstellung und Berechnung von Fundamentalbereichen oder auch die korrekte Interpretation von Symmetrietabellen in der Literatur
+bereiteten einige Probleme. 
 
 \paragraph{Alternative Lösungen.}
 Es wurde diskutiert, die Projektarchitektur nach dem MVC-Pattern zu gestaltet. Wir haben uns aber dennoch für eine ereignisbasierte Architektur
@@ -34,7 +39,7 @@ falls die Dokumentation nicht ausreicht, selber im Code nach schauen, was bestim
 Einsatz von \emph{CGAL}~\cite{cgal} diskutiert. Obwohl wir der Meinung waren, dass der Umfang, die Funktionalität und die Dokumentation von \emph{CGAL} besser sind, haben wir uns doch gegen den Einsatz entschieden. Der Grund: Die Bibliothek ist in C++ geschrieben und 
 verlangt einen erheblichen Mehraufwand beim Anbinden an die Java-Applikation (im Gegensatz zu dem extrem leicht gewichtigen Perl bei \emph{polymake}).
 
-\noindent Auch bei Java-internen Implementierungsdetails gab es oftmals mehrere (sinnvolle) Alternativen. Hier haben wir uns dann bei den Projekttreffen am Montag nach einer Diskussion jeweils für die passendere Alternative entschieden. Entscheidungen beinhalteten
+\noindent Bei Java-internen Implementierungsdetails gab es ebenfalls oftmals mehrere (sinnvolle) Alternativen. Hier haben wir uns dann bei den Projekttreffen am Montag nach einer Diskussion jeweils für die passendere Alternative entschieden. Entscheidungen beinhalteten
 die Modellierung der Symmetriegruppen (Eine Klasse pro Symmetriegruppe vs. eine Klasse pro Dimension), der Berechnungsanfragen
 (Festlegen eines Protokolls für den Dialog mit \emph{polymake} vs. Verschicken von perl-Code) und
 Fehlerbehandlung (Exceptions vs. Logging).
@@ -53,13 +58,11 @@ Prüfung der Korrektheit sind. Auch wenn sich Code im Projekt verändert, kann m
 ob noch alles korrekt ist. Tatsächlich wäre es hier wahrscheinlich wirklich sinnvoll gewesen erst die Tests zu schreiben und dann die
 Klassen zu implementieren.
 
-\noindent Für den Fundamentalbereich hatten wir ein ähnliches Problem, da kaum herauszufinden war, wie ein Fundamentalbereich aussehen sollte,
-geschweige denn berechnet werden soll. So wurde sehr viel Zeit dafür aufgewendet zu verstehen, eine korrekte Implementierung zu finden.
-
 \paragraph{Ausblick.}
-Es sind noch einige offene Fragen für die Verbesserung des Projektes zu klären:\\
-\noindent Wie kann die Performance von \emph{polymake} verbessert werden? Ein naiver Parallelisierungsansatz ist wohl ausgeschlossen,
+Es sind noch einige offene Fragen für die Verbesserung des Projektes zu klären:
+Wie kann die Performance von \emph{polymake} verbessert werden? Ein naiver Parallelisierungsansatz ist wohl ausgeschlossen,
 da die Berechnung innerhalb einer \emph{polymake}-Instanz sequenziell ablaufen und daher genau so lange brauchen.
-Wie kann die GUI intuitiver gestalten, sodass die Bedienung vereinfacht wird?
+
+\noindent Wie kann man die GUI intuitiver gestalten, sodass die Bedienung vereinfacht wird?
 Können weitere Eingabeparameter angeboten werden, um die angebotenen Berechnungen zu verallgemeinern?
 

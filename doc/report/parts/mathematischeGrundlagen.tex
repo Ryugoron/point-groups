@@ -82,7 +82,12 @@ Die durch $l,r$ induzierte Rotationsfunktion $[.]$ ergibt sich dann also durch d
 [l,r]: p \mapsto l p r
 \end{equation*}
 Im Gegensatz zu dreidimensionalen Rotationen muss nur ein Quaternion mehr gespeichert werden,  aber der Berechnungsaufwand erhöht sich nicht.\\
-Für Spiegelung werden jede Rotationsgruppe mit Hilfe einer zusätzlichen Operation erweitert. Alle Gruppenelemente werden mit einem bestimmten Quaternion multipliziert und somit erweitert. Die erweiterten Quaternionen werden in  ~\cite{conway2003} beschrieben. Dadurch bleiben die Untergruppenbeziehungen aus den Rotationsgruppen unter Beachtung des Operators erhalten.
+ Für Spiegelung wird jede Rotationsgruppe mit Hilfe von zwei Quaternionen $e_1,e_2$ erweitert. Diese definieren die neue Funktion:
+\begin{equation*}\label{eq:reflect4D}
+	[e_1,e_2]: p \mapsto \bar{e_1} \bar{p} e_2
+\end{equation*}
+
+Um die vollständige Symmeriegruppe unter Rotation und Spiegelung erhalten, wird auf alle Gruppenelemente der Rotationsgruppe die Funktion angewendet und zusammen bilden diese die Gruppe. Uner Spiegelung verdoppelt sich also in die Gruppengröße im Vergleich zur reinen Rotationsgruppe.  Quaternionen zur Erweiterung werden in  ~\cite{conway2003} beschrieben. Dadurch bleiben die Untergruppenbeziehungen aus den Rotationsgruppen unter Beachtung des Operators erhalten.
 Die Gruppen im vierdimensionalen Fall sind nur mittels Generatoren in ~\cite{conway2003} beschrieben. Die Gruppengrößen variieren zwischen zwölf und 14400 Elemente. Eine explizite Aufzählung existiert nicht. 
 
 \subsection{Punktgruppen}

@@ -11,13 +11,13 @@ be necessary to do it again, due to changes.
 We are using maven (http://maven.apache.org/) as dependency resolver.
 Unfortunatly, we have some dependencies that are not in any official maven
 repositories and because it is mainly third-party software with different
-licenses, we can't host a maven repository for the missing dependecies.
+licenses, we can't host a maven repository for the missing dependencies.
 
-But we want to use maven as depedency resolver to make sure taht everything is
+But we want to use maven as depedency resolver to make sure that everything is
 available at compile time.
 
 So we wrote an ant script that will setup a local maven repository with all the
-needed jar files. This files will be downloaded from the respective places.
+needed jar files. These files will be downloaded from the respective places.
 
 To setup the project simply run
 
@@ -30,7 +30,10 @@ third-party libraries.
 
 To compile the project simply run
 
-> mvn compile
+> mvn package
+
+After the building process is completed, an executable jar is created
+in ./target (should be named ./target/pointgroups.jar).
 
 ===== Further requirements =====
 
