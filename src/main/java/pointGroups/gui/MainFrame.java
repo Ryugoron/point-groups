@@ -34,7 +34,7 @@ public class MainFrame
   protected JMenuBar menuBar;
   protected SchlegelView schlegelView;
   protected PointPicker pointPicker;
-  protected JPanel symmetryChooser;
+  protected SymmetryChooser symmetryChooser;
   protected JSlider scaling;
   protected JPanel coordinates;
   protected JPanel statusBar;

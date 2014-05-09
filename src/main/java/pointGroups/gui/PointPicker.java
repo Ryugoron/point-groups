@@ -228,10 +228,17 @@ public class PointPicker
     this.showFundamental();
   }
 
+  protected void resetShowFundamenal() {
+    fundamental = null;
+    viewerFundamentalScene.setGeometry(null);
+    viewerPointScene.setPickable(false);
+  }
+
   // Maybe i need this.
   @Override
   public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
     uiViewer.setDimensionMode(uiViewer.uiState.isPointPicker3DMode());
+    resetShowFundamenal();
 
     if (event.switchedTo3D()) {
       logger.fine("Point Picker switched to 2D Mode.");
@@ -308,6 +315,10 @@ public class PointPicker
   protected void showFundamental() {
     logger.info("Showing new Fundamental Domain.");
 
+    if (fundamental == null) {
+      return;
+    }
+
     Geometry g;
     // Calculate the new fundamental
     if (this.fundamental.isKnown()) {
@@ -331,7 +342,7 @@ public class PointPicker
     // Reset tools (3D rotation, 2D no Rotation)
     logger.fine("A new Fundamental Region is shown.");
     viewerFundamentalScene.setGeometry(g);
-
+    viewerPointScene.setPickable(true);
     viewerFundamentalScene.setPickable(false);
 
     setPoint(new double[] { 0.0, 0.0, 0.0 });

@@ -16,12 +16,15 @@ public class SymmetryChooser
   private static final long serialVersionUID = -4774655588276858307L;
   public static final Color SelectionBackground = new Color(208, 225, 248);
 
+  protected final SubgroupPanel subgroupChoose;
+  protected final SymmetryPanel symChoose;
+
   public SymmetryChooser() {
     super();
     setLayout(new GridLayout(1, 2));
 
-    final SubgroupPanel subgroupChoose = new SubgroupPanel();
-    final SymmetryPanel symChoose = new SymmetryPanel(subgroupChoose);
+    subgroupChoose = new SubgroupPanel();
+    symChoose = new SymmetryPanel(subgroupChoose);
 
     final JScrollPane x =
         new JScrollPane(subgroupChoose,
@@ -30,7 +33,9 @@ public class SymmetryChooser
 
     final JSplitPane split =
         new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, symChoose, x);
+
     this.add(split);
+
     split.setSize(250, 0);
     split.setOneTouchExpandable(true);
     split.setDividerLocation(0.7d);

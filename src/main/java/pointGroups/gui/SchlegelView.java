@@ -154,6 +154,7 @@ public class SchlegelView
     // SchlegelViewMode
     viewModeButton.setSelected(false);
 
+    uiViewer.setGeometry(null);
     redrawSchlegel();
     uiViewer.resetCamera();
   }

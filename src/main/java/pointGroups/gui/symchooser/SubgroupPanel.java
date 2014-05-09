@@ -13,6 +13,8 @@ import pointGroups.geometry.Point3D;
 import pointGroups.geometry.Point4D;
 import pointGroups.geometry.Symmetry;
 import pointGroups.gui.event.EventDispatcher;
+import pointGroups.gui.event.types.DimensionSwitchEvent;
+import pointGroups.gui.event.types.DimensionSwitchHandler;
 import pointGroups.gui.event.types.Symmetry3DChooseEvent;
 import pointGroups.gui.event.types.Symmetry4DChooseEvent;
 import pointGroups.gui.symchooser.elements.SymmetryListCellRenderer;
@@ -26,7 +28,7 @@ import pointGroups.util.LoggerFactory;
  */
 public class SubgroupPanel
   extends JList<Symmetry<?>>
-
+  implements DimensionSwitchHandler
 {
   private final Logger logger = LoggerFactory.get(this.getClass());
   private Symmetry<?> lastChosenSymmetry;
@@ -66,6 +68,8 @@ public class SubgroupPanel
       }
     });
 
+    EventDispatcher.get().addHandler(DimensionSwitchHandler.class, this);
+
   }
 
   private static final long serialVersionUID = 7253276154708286652L;
@@ -90,5 +94,10 @@ public class SubgroupPanel
     this.setModel(neu);
     this.setSelectedIndex(0);
 
+  }
+
+  @Override
+  public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
+    this.clearSelection();
   }
 }

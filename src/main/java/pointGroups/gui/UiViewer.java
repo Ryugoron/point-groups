@@ -716,6 +716,11 @@ public class UiViewer
       if (event.switchedTo4D()) {
         is4D = true;
       }
+
+      lastSchlegel = null;
+      lastPickedPoint = null;
+      lastPickedSymmetry = null;
+      lastSchlegelViewMode = SchlegelViewMode.VIEW_SCHLEGEL;
     }
 
     @Override

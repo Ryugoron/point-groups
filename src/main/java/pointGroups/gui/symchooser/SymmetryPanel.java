@@ -19,18 +19,22 @@ import pointGroups.geometry.symmetries.Symmetry4D;
 import pointGroups.geometry.symmetries.Symmetry4DReflection;
 import pointGroups.gui.event.EventDispatcher;
 import pointGroups.gui.event.types.DimensionSwitchEvent;
+import pointGroups.gui.event.types.DimensionSwitchHandler;
 import pointGroups.gui.symchooser.elements.SymmetryList;
 import pointGroups.util.LoggerFactory;
 
 
 public class SymmetryPanel
   extends JTabbedPane
+  implements DimensionSwitchHandler
 {
   private static final long serialVersionUID = 8455433801260981217L;
   private final Logger logger = LoggerFactory.get(this.getClass());
 
   protected final JList<Symmetry<Point3D>> symmetries3DPanel;
   protected final JList<Symmetry<Point4D>> symmetries4DPanel;
+  protected final JScrollPane symmetries3DScrollPane;
+  protected final JScrollPane symmetries4DScrollPane;
   protected final DefaultListModel<Symmetry<Point3D>> symmetries3D;
   protected final DefaultListModel<Symmetry<Point4D>> symmetries4D;
 
@@ -50,12 +54,18 @@ public class SymmetryPanel
 
     this.fillPanelsWithSymmetries();
 
-    add("3D", new JScrollPane(symmetries3DPanel,
-        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
-    add("4D", new JScrollPane(symmetries4DPanel,
-        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
+    symmetries3DScrollPane =
+        new JScrollPane(symmetries3DPanel,
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+    symmetries4DScrollPane =
+        new JScrollPane(symmetries4DPanel,
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+    add("3D", symmetries3DScrollPane);
+    add("4D", symmetries4DScrollPane);
 
     addChangeListener(new ChangeListener() {
       @Override
@@ -83,6 +93,8 @@ public class SymmetryPanel
         }
       }
     });
+
+    EventDispatcher.get().addHandler(DimensionSwitchHandler.class, this);
   }
 
   private void fillPanelsWithSymmetries() {
@@ -98,5 +110,15 @@ public class SymmetryPanel
     for (Symmetry4DReflection sym : Symmetry4DReflection.getSymmetries()) {
       this.symmetries4D.addElement(sym);
     }
+  }
+
+  @Override
+  public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
+    this.symmetries3DPanel.clearSelection();
+    this.symmetries4DPanel.clearSelection();
+
+    java.awt.Point topleft = new java.awt.Point(0, 0);
+    symmetries3DScrollPane.getViewport().setViewPosition(topleft);
+    symmetries4DScrollPane.getViewport().setViewPosition(topleft);
   }
 }

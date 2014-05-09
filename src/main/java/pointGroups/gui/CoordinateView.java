@@ -137,6 +137,9 @@ public class CoordinateView
 
   @Override
   public void onDimensionSwitchEvent(DimensionSwitchEvent event) {
+    // reset all coordinates to 0.0
+    inputField.setCoordinate(new double[inputField.dimension]);
+
     if (event.switchedTo3D()) {
       inputField.setDimension(3);
       this.validate();
