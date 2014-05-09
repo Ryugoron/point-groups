@@ -132,7 +132,6 @@ public class SchlegelView
     uiViewer.setGeometry(geom);
 
     uiViewer.setDimensionMode(uiViewer.uiState.isSchlegel3DMode());
-    uiViewer.resetCamera();
   }
 
   @Override
@@ -143,6 +142,7 @@ public class SchlegelView
   @Override
   public void onSchlegelViewModeChanged(SchlegelViewModeChangedEvent event) {
     redrawSchlegel();
+    uiViewer.resetCamera();
   }
 
   @Override
@@ -155,6 +155,7 @@ public class SchlegelView
     viewModeButton.setSelected(false);
 
     redrawSchlegel();
+    uiViewer.resetCamera();
   }
 
 
